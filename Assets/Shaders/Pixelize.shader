@@ -8,7 +8,7 @@
 		PixelTexture("PixelTexture", 2D) = "white" {}
 		MonitorResolutionX("MonitorResolutionX", Int) = 455
 		MonitorResolutionY("MonitorResolutionY", Int) = 256
-		PixelScale("PixelSize", Float) = 2
+		PixelScale("PixelSize", Range(0.5, 3)) = 2
     }
     SubShader
     {

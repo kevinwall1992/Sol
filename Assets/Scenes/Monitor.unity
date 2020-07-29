@@ -154,10 +154,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Input: {fileID: 8400000, guid: f5f1b9f2e243d084db6a21632397264c, type: 2}
-  Intermediate0: {fileID: 8400000, guid: a72d3cfa0c970034cb09451711c7e208, type: 2}
-  Intermediate1: {fileID: 8400000, guid: 65ad9ac896d560148bc7c1ff8403f026, type: 2}
   Output: {fileID: 8400000, guid: 9af40fb68ce1e9a42a95725562f62893, type: 2}
-  Pixelized: {fileID: 2100000, guid: 6088e68b316757d4785e274711794758, type: 2}
+  Pixelized: {fileID: 8400000, guid: d098389a15e29a24c8a78dc86cf82ef2, type: 2}
+  Diffused: {fileID: 8400000, guid: e37b7d28a061feb44bca30829d6a125f, type: 2}
+  Ambient: {fileID: 8400000, guid: 4478e41192e46f64c819ffdcee600d09, type: 2}
+  Pixelize: {fileID: 2100000, guid: 6088e68b316757d4785e274711794758, type: 2}
+  VerticalDiffusion: {fileID: 2100000, guid: a19190ba5ad294149988e17115e6908c, type: 2}
+  HorizontalDiffusion: {fileID: 2100000, guid: c7411928e0eb2324a831158341b0dfaf, type: 2}
+  VerticalAmbience: {fileID: 2100000, guid: f97b03e870ab6f24f8ec1de92e5ebd24, type: 2}
+  HorizontalAmbience: {fileID: 2100000, guid: 0d5b17b00bf158943b173a2b2768ad58, type: 2}
+  Synthesize: {fileID: 2100000, guid: 32b8e3f3df726d74894b771aed84f7b9, type: 2}
 --- !u!20 &172996010
 Camera:
   m_ObjectHideFlags: 0
