@@ -2,11 +2,13 @@
 {
     Properties
     {
-        Image ("Image", 2D) = "white" {}
+		[HideInInspector]
+		_MainTex("Texture", 2D) = "white" {}
+
 		PixelTexture("PixelTexture", 2D) = "white" {}
 		MonitorResolutionX("MonitorResolutionX", Int) = 455
 		MonitorResolutionY("MonitorResolutionY", Int) = 256
-		PixelSize("PixelSize", Float) = 2
+		PixelScale("PixelSize", Float) = 2
     }
     SubShader
     {
@@ -18,8 +20,6 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
-            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -36,18 +36,18 @@
 			};
 
 
-			sampler2D Image;
+			sampler2D _MainTex;
 			sampler2D PixelTexture;
 
 			int MonitorResolutionX;
 			int MonitorResolutionY;
-			float PixelSize;
+			float PixelScale;
 
 			static int pixel_offsets[10] = { 0,  0,
-										     -1,  0,
-											  1,  0,
-											  0, -1,
-											  0,  1 };
+										    -1,  0,
+											 1,  0,
+											 0, -1,
+											 0,  1 };
 
 			FragmentData vert(VertexData vertex_data)
 			{
@@ -60,8 +60,8 @@
 
 			fixed4 frag(FragmentData fragment_data) : SV_Target
 			{
-				float2 normalized_pixel_size = float2(PixelSize / MonitorResolutionX, 
-													  PixelSize / MonitorResolutionY);
+				float2 normalized_pixel_size = float2(PixelScale / MonitorResolutionX, 
+													  PixelScale / MonitorResolutionY);
 
 				int nearest_pixel_x = int(fragment_data.texture_coordinates.x * MonitorResolutionX);
 				int nearest_pixel_y = int(fragment_data.texture_coordinates.y * MonitorResolutionY);
@@ -84,7 +84,7 @@
 						normalized_pixel_size + 
 						float2(0.5f, 0.5f);
 
-					total_light += tex2D(Image, image_space_pixel_coordinates[i]) *
+					total_light += tex2D(_MainTex, image_space_pixel_coordinates[i]) *
 								   tex2D(PixelTexture, pixel_texture_coordinates);
 				}
 
