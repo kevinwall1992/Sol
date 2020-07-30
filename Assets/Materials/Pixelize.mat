@@ -70,6 +70,7 @@ Material:
     - MonitorResolutionY: 256
     - PixelScale: 3.13
     - PixelSize: 2.3
+    - RelativeImageSize: 0.925
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
