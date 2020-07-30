@@ -8,8 +8,9 @@
 		PixelTexture("PixelTexture", 2D) = "white" {}
 		MonitorResolutionX("MonitorResolutionX", Int) = 455
 		MonitorResolutionY("MonitorResolutionY", Int) = 256
-		PixelScale("PixelSize", Range(0.5, 3)) = 2
+		PixelScale("PixelSize", Range(0.5, 5)) = 2
 		DarkPixelSizeModifier("DarkPixelSizeModifier", Range(0.001, 1)) = 0.5
+		Brightness("Brightness", Range(0.1, 2)) = 1
     }
     SubShader
     {
@@ -46,11 +47,17 @@
 
 			float DarkPixelSizeModifier;
 
-			static int pixel_offsets[10] = { 0,  0,
-										    -1,  0,
-											 1,  0,
-											 0, -1,
-											 0,  1 };
+			float Brightness;
+
+			static int pixel_offsets[18] = { -1, -1,
+											 -1,  0,
+											 -1,  1,
+											  0, -1,
+											  0,  0,
+											  0,  1,
+											  1, -1,
+											  1,  0,
+											  1,  1 };
 
 			FragmentData vert(VertexData vertex_data)
 			{
@@ -69,9 +76,9 @@
 				int nearest_pixel_x = int(fragment_data.texture_coordinates.x * MonitorResolutionX);
 				int nearest_pixel_y = int(fragment_data.texture_coordinates.y * MonitorResolutionY);
 
-				float2 image_space_pixel_coordinates[5];
+				float2 image_space_pixel_coordinates[9];
 
-				for (int i = 0; i < 5; i++)
+				for (int i = 0; i < 9; i++)
 				{
 					image_space_pixel_coordinates[i] = float2(
 						(nearest_pixel_x + pixel_offsets[i * 2 + 0] + 0.5f) / float(MonitorResolutionX),
@@ -80,7 +87,7 @@
 
 				float4 total_light = float4(0, 0, 0, 0);
 
-				for (i = 0; i < 5; i++)
+				for (i = 0; i < 9; i++)
 				{
 					fixed4 sample_color = tex2D(_MainTex, image_space_pixel_coordinates[i]);
 
@@ -94,7 +101,7 @@
 								   tex2D(PixelTexture, pixel_texture_coordinates);
 				}
 
-				return 2.0f * total_light / 1.0f;
+				return Brightness * total_light;
 			}
             ENDCG
         }
