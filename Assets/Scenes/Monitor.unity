@@ -161,6 +161,7 @@ MonoBehaviour:
   Output: {fileID: 8400000, guid: 9af40fb68ce1e9a42a95725562f62893, type: 2}
   ScanlineBlur: {fileID: 2100000, guid: 15f7cfef4d4271e4dac35e434942c708, type: 2}
   Diverge: {fileID: 2100000, guid: d269e3c5ccb595e49822d298d8b71da9, type: 2}
+  Respond: {fileID: 2100000, guid: e35adb995e3f6ba46a5c31515aa9386a, type: 2}
   Pixelize: {fileID: 2100000, guid: 6088e68b316757d4785e274711794758, type: 2}
   VerticalDiffusion: {fileID: 2100000, guid: a19190ba5ad294149988e17115e6908c, type: 2}
   HorizontalDiffusion: {fileID: 2100000, guid: c7411928e0eb2324a831158341b0dfaf, type: 2}
@@ -453,6 +454,7 @@ GameObject:
   - component: {fileID: 1501456032}
   - component: {fileID: 1501456031}
   - component: {fileID: 1501456030}
+  - component: {fileID: 1501456034}
   m_Layer: 8
   m_Name: TestUI
   m_TagString: Untagged
@@ -530,10 +532,29 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1501456029}
-  m_LocalRotation: {x: -0, y: -0.00000065565104, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1.778, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1501456034
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501456029}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 800d589fc01da584481ddc99a25d6bcc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

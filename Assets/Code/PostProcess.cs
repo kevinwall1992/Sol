@@ -5,7 +5,8 @@ using UnityEngine;
 [ExecuteAlways]
 public class PostProcess : MonoBehaviour
 {
-    RenderTexture scanline_blurred, temporary_scanline_blurred, 
+    RenderTexture scanline_blurred, temporary_scanline_blurred,
+                  response0, response1,
                   temporary_diffused, 
                   temporary_ambient;
 
@@ -13,12 +14,15 @@ public class PostProcess : MonoBehaviour
 
     public Material ScanlineBlur, 
                     Diverge,
+                    Respond,
                     Pixelize, 
                     VerticalDiffusion, 
                     HorizontalDiffusion, 
                     VerticalAmbience, 
                     HorizontalAmbience,
                     Synthesize;
+
+    bool is_even_frame = true;
 
     private void OnPostRender()
     {
@@ -53,7 +57,24 @@ public class PostProcess : MonoBehaviour
 
         Graphics.Blit(scanline_blurred, Diverged, Diverge);
 
-        Graphics.Blit(Diverged, Pixelized, Pixelize);
+        if (UnityEditor.EditorApplication.isPlaying)
+        {
+            RenderTexture previous_response = response1;
+            RenderTexture response = response0;
+            if (!is_even_frame)
+            {
+                previous_response = response0;
+                response = response1;
+            }
+            is_even_frame = !is_even_frame;
+
+            Respond.SetFloat("time_delta", Time.deltaTime);
+            Graphics.Blit(previous_response, response, Respond);
+
+            Graphics.Blit(response, Pixelized, Pixelize);
+        }
+        else
+            Graphics.Blit(Diverged, Pixelized, Pixelize);
 
         for (int i = 0; i < 3; i++)
         {
@@ -74,16 +95,20 @@ public class PostProcess : MonoBehaviour
     {
         if (scanline_blurred != null && 
             temporary_scanline_blurred != null && 
+            response0 != null && 
+            response1 != null &&
             temporary_diffused != null && 
             temporary_ambient != null)
             return;
 
-        System.Func<RenderTexture, RenderTexture> CopyRenderTexture = render_texture => 
+        System.Func<RenderTexture, RenderTexture> CreateRenderTexture = render_texture => 
             new RenderTexture(render_texture.width, render_texture.height, render_texture.depth);
 
-        scanline_blurred = CopyRenderTexture(Input);
-        temporary_scanline_blurred = CopyRenderTexture(Input);
-        temporary_diffused = CopyRenderTexture(Diffused);
-        temporary_ambient = CopyRenderTexture(Ambient);
+        scanline_blurred = CreateRenderTexture(Input);
+        temporary_scanline_blurred = CreateRenderTexture(Input);
+        response0 = CreateRenderTexture(Input);
+        response1 = CreateRenderTexture(Input);
+        temporary_diffused = CreateRenderTexture(Diffused);
+        temporary_ambient = CreateRenderTexture(Ambient);
     }
 }

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pixelize
-  m_Shader: {fileID: 4800000, guid: 418f67300a26bfa4fb7ebf74de0088d4, type: 3}
+  m_Name: Respond
+  m_Shader: {fileID: 4800000, guid: e328c3856fb484b46a30e5c16ed789b3, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -19,12 +19,8 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Image:
-        m_Texture: {fileID: 8400000, guid: f5f1b9f2e243d084db6a21632397264c, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - PixelTexture:
-        m_Texture: {fileID: 2800000, guid: 4b77eb51235fd3740882eb908e981e43, type: 3}
+    - Signal:
+        m_Texture: {fileID: 8400000, guid: 715a623becdf2454d864f8c529c4b635, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -64,12 +60,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Brightness: 1.45
-    - DarkPixelSizeModifier: 0.4
-    - MonitorResolutionX: 455
-    - MonitorResolutionY: 256
-    - PixelScale: 3.13
-    - PixelSize: 2.3
+    - BlueDecayTime: 18
+    - BlueResponseTime: 8
+    - GreenDecayTime: 16
+    - GreenResponseTime: 9
+    - RedDecayTime: 14
+    - RedResponseTime: 12
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
