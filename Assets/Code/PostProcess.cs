@@ -10,6 +10,8 @@ public class PostProcess : MonoBehaviour
                   temporary_diffused, 
                   temporary_ambient;
 
+    bool is_even_frame = true;
+
     public RenderTexture Input, Diverged, Pixelized, Diffused, Ambient, Output;
 
     public Material ScanlineBlur, 
@@ -22,7 +24,7 @@ public class PostProcess : MonoBehaviour
                     HorizontalAmbience,
                     Synthesize;
 
-    bool is_even_frame = true;
+    public bool UseScanlineBlur;
 
     private void OnPostRender()
     {
@@ -53,9 +55,13 @@ public class PostProcess : MonoBehaviour
             }
         };
 
-        Blur(Input, scanline_blurred, temporary_scanline_blurred, ScanlineBlur, null);
-
-        Graphics.Blit(scanline_blurred, Diverged, Diverge);
+        if (UseScanlineBlur)
+        {
+            Blur(Input, scanline_blurred, temporary_scanline_blurred, ScanlineBlur, null);
+            Graphics.Blit(scanline_blurred, Diverged, Diverge);
+        }
+        else
+            Graphics.Blit(Input, Diverged, Diverge);
 
         if (UnityEditor.EditorApplication.isPlaying)
         {

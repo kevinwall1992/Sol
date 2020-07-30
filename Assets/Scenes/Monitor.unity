@@ -168,6 +168,7 @@ MonoBehaviour:
   VerticalAmbience: {fileID: 2100000, guid: f97b03e870ab6f24f8ec1de92e5ebd24, type: 2}
   HorizontalAmbience: {fileID: 2100000, guid: 0d5b17b00bf158943b173a2b2768ad58, type: 2}
   Synthesize: {fileID: 2100000, guid: 32b8e3f3df726d74894b771aed84f7b9, type: 2}
+  UseScanlineBlur: 0
 --- !u!20 &172996010
 Camera:
   m_ObjectHideFlags: 0
