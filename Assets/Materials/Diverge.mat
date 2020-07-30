@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Synthesize
-  m_Shader: {fileID: 4800000, guid: b447a74361d566b44bd84ae8d597cf4d, type: 3}
+  m_Name: Diverge
+  m_Shader: {fileID: 4800000, guid: a14db960ef8a9f74699a70b6315f6c64, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -19,18 +19,6 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Ambient_:
-        m_Texture: {fileID: 8400000, guid: 4478e41192e46f64c819ffdcee600d09, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - Diffused:
-        m_Texture: {fileID: 8400000, guid: e37b7d28a061feb44bca30829d6a125f, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - Pixelized:
-        m_Texture: {fileID: 8400000, guid: d098389a15e29a24c8a78dc86cf82ef2, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -68,9 +56,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - AmbientWeight: 0.15
-    - DiffusedWeight: 0.3
-    - PixelizedWeight: 1
+    - BlueConvergence: 1.0015
+    - ConvergenceModifierX: 1
+    - ConvergenceModifierY: 1
+    - GreenConvergence: 1
+    - RedConvergence: 0.9985
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1

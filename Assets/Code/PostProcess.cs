@@ -7,9 +7,10 @@ public class PostProcess : MonoBehaviour
 {
     RenderTexture temporary_diffused, temporary_ambient;
 
-    public RenderTexture Input, Output, Pixelized, Diffused, Ambient;
+    public RenderTexture Input, Diverged, Pixelized, Diffused, Ambient, Output;
 
-    public Material Pixelize, 
+    public Material Diverge,
+                    Pixelize, 
                     VerticalDiffusion, 
                     HorizontalDiffusion, 
                     VerticalAmbience, 
@@ -23,7 +24,9 @@ public class PostProcess : MonoBehaviour
         if (temporary_ambient == null)
             temporary_ambient = new RenderTexture(Ambient.width, Ambient.height, Ambient.depth);
 
-        Graphics.Blit(Input, Pixelized, Pixelize);
+        Graphics.Blit(Input, Diverged, Diverge);
+
+        Graphics.Blit(Diverged, Pixelized, Pixelize);
 
         for (int i = 0; i < 3; i++)
         {
