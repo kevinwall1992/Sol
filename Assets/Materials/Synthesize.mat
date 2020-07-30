@@ -23,6 +23,10 @@ Material:
         m_Texture: {fileID: 8400000, guid: 4478e41192e46f64c819ffdcee600d09, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - BlankScreen:
+        m_Texture: {fileID: 2800000, guid: 9d122f356768a514ba9e1585b0d4a59a, type: 3}
+        m_Scale: {x: 455, y: 256}
+        m_Offset: {x: 0, y: 0}
     - Diffused:
         m_Texture: {fileID: 8400000, guid: e37b7d28a061feb44bca30829d6a125f, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -68,8 +72,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - AmbientWeight: 0.15
-    - DiffusedWeight: 0.3
+    - AmbientWeight: 0.08
+    - BlankScreenWeight: 0.06
+    - DiffusedWeight: 0.28
     - PixelizedWeight: 1
     - _BumpScale: 1
     - _Cutoff: 0.5

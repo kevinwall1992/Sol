@@ -2,10 +2,12 @@
 {
     Properties
     {
+		BlankScreen("BlankScreen", 2D) = "white" {}
         Pixelized("Pixelized", 2D) = "white" {}
 		Diffused("Diffused", 2D) = "white" {}
 		Ambient_("Ambient", 2D) = "white" {}
 
+		BlankScreenWeight("BlankScreenWeight", Range(0, 2)) = 1
 		PixelizedWeight("PixelizedWeight", Range(0, 2)) = 1
 		DiffusedWeight("DiffusedWeight", Range(0, 2)) = 1
 		AmbientWeight("AmbientWeight", Range(0, 2)) = 1
@@ -37,11 +39,14 @@
 				float2 texture_coordinates : TEXCOORD0;
 			};
 
-
+			sampler2D BlankScreen;
 			sampler2D Pixelized;
 			sampler2D Diffused;
 			sampler2D Ambient_;
 
+			float4 BlankScreen_ST;
+
+			float BlankScreenWeight;
 			float PixelizedWeight;
 			float DiffusedWeight;
 			float AmbientWeight;
@@ -57,7 +62,8 @@
 
 			fixed4 frag(FragmentData fragment_data) : SV_Target
 			{
-				return PixelizedWeight * tex2D(Pixelized, fragment_data.texture_coordinates) +
+				return BlankScreenWeight * tex2D(BlankScreen, TRANSFORM_TEX(fragment_data.texture_coordinates, BlankScreen)) +
+					   PixelizedWeight * tex2D(Pixelized, fragment_data.texture_coordinates) +
 					   DiffusedWeight * tex2D(Diffused, fragment_data.texture_coordinates) +
 					   AmbientWeight * tex2D(Ambient_, fragment_data.texture_coordinates);
 			}
