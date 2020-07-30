@@ -7,6 +7,8 @@
 		
 		KernelSize("KernelSize", Int) = 3
 		IsHorizontal("IsHorizontal", Int) = 0
+
+		KernelScale("KernelScale", Float) = 1
     }
     SubShader
     {
@@ -42,6 +44,8 @@
 			int KernelSize;
 			bool IsHorizontal;
 
+			float KernelScale;
+
 			FragmentData vert(VertexData vertex_data)
 			{
 				FragmentData fragment_data;
@@ -57,9 +61,9 @@
 
 				for (int i = 0; i < KernelSize; i++)
 					if (IsHorizontal)
-						sum += tex2D(_MainTex, fragment_data.texture_coordinates + float2((i - KernelSize / 2) * _MainTex_TexelSize.x, 0));
+						sum += tex2D(_MainTex, fragment_data.texture_coordinates + KernelScale * float2((i - KernelSize / 2) * _MainTex_TexelSize.x, 0));
 					else
-						sum += tex2D(_MainTex, fragment_data.texture_coordinates + float2(0, (i - KernelSize / 2) * _MainTex_TexelSize.y));
+						sum += tex2D(_MainTex, fragment_data.texture_coordinates + KernelScale * float2(0, (i - KernelSize / 2) * _MainTex_TexelSize.y));
 						
 				return fixed4(sum / KernelSize);
 			}
