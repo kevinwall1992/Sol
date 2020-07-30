@@ -9,6 +9,7 @@
 		MonitorResolutionX("MonitorResolutionX", Int) = 455
 		MonitorResolutionY("MonitorResolutionY", Int) = 256
 		PixelScale("PixelSize", Range(0.5, 3)) = 2
+		DarkPixelSizeModifier("DarkPixelSizeModifier", Range(0.001, 1)) = 0.5
     }
     SubShader
     {
@@ -42,6 +43,8 @@
 			int MonitorResolutionX;
 			int MonitorResolutionY;
 			float PixelScale;
+
+			float DarkPixelSizeModifier;
 
 			static int pixel_offsets[10] = { 0,  0,
 										    -1,  0,
@@ -79,12 +82,15 @@
 
 				for (i = 0; i < 5; i++)
 				{
+					fixed4 sample_color = tex2D(_MainTex, image_space_pixel_coordinates[i]);
+
 					float2 pixel_texture_coordinates = 
 						(fragment_data.texture_coordinates - image_space_pixel_coordinates[i]) /
-						normalized_pixel_size + 
+						(normalized_pixel_size *
+						(max(max(sample_color.r, sample_color.g), sample_color.b) + (1 / DarkPixelSizeModifier - 1)) * DarkPixelSizeModifier) +
 						float2(0.5f, 0.5f);
 
-					total_light += tex2D(_MainTex, image_space_pixel_coordinates[i]) *
+					total_light += sample_color *
 								   tex2D(PixelTexture, pixel_texture_coordinates);
 				}
 
