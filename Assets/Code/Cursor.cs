@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Cursor : MonoBehaviour
 {
     public float Sensitivity = 1;
