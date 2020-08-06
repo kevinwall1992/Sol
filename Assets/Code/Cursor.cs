@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Cursor : MonoBehaviour
+public class Cursor : UIElement
 {
-    public float Sensitivity = 1;
+    public Vector2Int PixelPointedAt { get { return PixelPosition; } }
 
     void Start()
     {
@@ -14,17 +14,14 @@ public class Cursor : MonoBehaviour
 
     void Update()
     {
-        RectTransform rect_transform = transform as RectTransform;
+        RectTransform.anchoredPosition = Scene.The.Style.MonitorResolution * 
+                                         Input.mousePosition.XY() / 
+                                         new Vector2(Screen.width, Screen.height);
 
-        rect_transform.anchoredPosition +=
-            new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")) *
-            Sensitivity;
-
-        Vector2 screen_resolution = 
-            (GetComponentInParent<Canvas>().transform as RectTransform).rect.size;
-
-        rect_transform.anchoredPosition = 
-            new Vector2(Mathf.Min(Mathf.Max(rect_transform.anchoredPosition.x, 0), screen_resolution.x), 
-                        Mathf.Max(Mathf.Min(rect_transform.anchoredPosition.y, 0), -screen_resolution.y));
+        RectTransform.anchoredPosition = 
+            new Vector2(Mathf.Min(Mathf.Max(RectTransform.anchoredPosition.x, 0), 
+                                  Scene.The.Style.MonitorResolution.x), 
+                        Mathf.Min(Mathf.Max(RectTransform.anchoredPosition.y, 0), 
+                                  Scene.The.Style.MonitorResolution.y));
     }
 }

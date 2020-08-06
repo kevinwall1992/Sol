@@ -217,7 +217,7 @@ public static class MathUtility
         return result;
     }
 
-    public static int RoundDown(float value)
+    public static int RoundDown(this float value)
     {
         if (value > 0)
             return (int)value;
@@ -225,7 +225,7 @@ public static class MathUtility
             return (int)(value - 1);
     }
 
-    public static int Round(float value)
+    public static int Round(this float value)
     {
         return RoundDown(value + 0.5f);
     }

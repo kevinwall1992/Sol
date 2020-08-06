@@ -45,6 +45,16 @@ public static class VectorUtility
     public static Vector3 Crossed(this Vector3 vector, Vector3 other) { return Vector3.Cross(vector, other); }
     public static Vector3 Lerped(this Vector3 vector, Vector3 other, float factor) { return Vector3.Lerp(vector, other, factor); }
 
+    public static Vector3 Mapped(this Vector3 vector, System.Func<float, float> Map)
+    {
+        return new Vector3(Map(vector.x), Map(vector.y), Map(vector.z));
+    }
+
+    public static Vector2 Mapped(this Vector2 vector, System.Func<float, float> Map)
+    {
+        return new Vector2(Map(vector.x), Map(vector.y));
+    }
+
     public static Vector3 XChangedTo(this Vector3 vector, float x) { return new Vector3(x, vector.y, vector.z); }
     public static Vector3 YChangedTo(this Vector3 vector, float y) { return new Vector3(vector.x, y, vector.z); }
     public static Vector3 ZChangedTo(this Vector3 vector, float z) { return new Vector3(vector.x, vector.y, z); }
@@ -92,4 +102,44 @@ public static class VectorUtility
     public static Vector2 ZX(this Vector3 vector) { return new Vector2(vector.z, vector.x); }
     public static Vector2 ZY(this Vector3 vector) { return new Vector2(vector.z, vector.y); }
     public static Vector2 ZZ(this Vector3 vector) { return new Vector2(vector.z, vector.z); }
+
+
+    public static Vector2Int ToVector2Int(this Vector2 vector)
+    {
+        return new Vector2Int((int)vector.x,
+                              (int)vector.y);
+    }
+
+    public static Vector3Int ToVector3Int(this Vector3 vector)
+    {
+        return new Vector3Int((int)vector.x,
+                              (int)vector.y,
+                              (int)vector.z);
+    }
+
+    public static Vector2Int RoundDown(this Vector2 vector)
+    {
+        return new Vector2Int(vector.x.RoundDown(),
+                              vector.y.RoundDown());
+    }
+
+    public static Vector3Int RoundDown(this Vector3 vector)
+    {
+        return new Vector3Int(vector.x.RoundDown(),
+                              vector.y.RoundDown(),
+                              vector.z.RoundDown());
+    }
+
+    public static Vector2Int Round(this Vector2 vector)
+    {
+        return new Vector2Int(vector.x.Round(),
+                              vector.y.Round());
+    }
+
+    public static Vector3Int Round(this Vector3 vector)
+    {
+        return new Vector3Int(vector.x.Round(),
+                              vector.y.Round(),
+                              vector.z.Round());
+    }
 }
