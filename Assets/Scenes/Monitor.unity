@@ -339,6 +339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UICamera: {fileID: 172996010}
   Canvas: {fileID: 1850706506}
+  GraphicRaycaster: {fileID: 1850706504}
   Style: {fileID: 181630965}
   Prefabs: {fileID: 181630964}
   ShortcutContainer: {fileID: 1772598315}

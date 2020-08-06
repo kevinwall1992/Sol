@@ -24,7 +24,8 @@ public static class InputUtility
 
     public static bool ContainsCursor(this RectTransform rect_transform)
     {
-        return rect_transform.Contains(Scene.The.Cursor.PixelPointedAt, Scene.The.UICamera);
+        return rect_transform.Contains(Scene.The.Cursor.PixelPointedAt + new Vector2(0.5f, -0.5f), 
+                                       Scene.The.UICamera);
     }
 
     public static bool IsPointedAt(this RectTransform rect_transform)
@@ -51,12 +52,14 @@ public static class InputUtility
         {
             PointerEventData pointer_event_data = new PointerEventData(null);
             pointer_event_data.position = Scene.The.Cursor.PixelPointedAt + 
-                                          new Vector2(0.5f, 0.5f);
+                                          new Vector2(0.5f, -0.5f);
 
             List<RaycastResult> raycast_results = new List<RaycastResult>();
-            Scene.The.Canvas.GetComponent<GraphicRaycaster>().Raycast(pointer_event_data, raycast_results);
+            Scene.The.GraphicRaycaster.Raycast(pointer_event_data, raycast_results);
 
-            return raycast_results[1].gameObject;
+            if (raycast_results.Count == 0)
+                return null;
+            return raycast_results[0].gameObject;
         }
     }
 
