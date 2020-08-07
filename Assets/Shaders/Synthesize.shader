@@ -11,6 +11,8 @@
 		PixelizedWeight("PixelizedWeight", Range(0, 2)) = 1
 		DiffusedWeight("DiffusedWeight", Range(0, 2)) = 1
 		AmbientWeight("AmbientWeight", Range(0, 2)) = 1
+
+		EdgeColor("EdgeColor", Color) = (0, 0, 0, 1)
     }
     SubShader
     {
@@ -51,6 +53,10 @@
 			float DiffusedWeight;
 			float AmbientWeight;
 
+			fixed4 EdgeColor;
+
+			float relative_image_size;
+
 			FragmentData vert(VertexData vertex_data)
 			{
 				FragmentData fragment_data;
@@ -62,7 +68,16 @@
 
 			fixed4 frag(FragmentData fragment_data) : SV_Target
 			{
-				return BlankScreenWeight * tex2D(BlankScreen, TRANSFORM_TEX(fragment_data.texture_coordinates, BlankScreen)) +
+				fixed4 blank_screen_color = 
+					tex2D(BlankScreen, TRANSFORM_TEX(fragment_data.texture_coordinates, BlankScreen));
+
+				if ((fragment_data.texture_coordinates.x < (1 - relative_image_size) / 2) ||
+				    (fragment_data.texture_coordinates.x > 1 - (1 - relative_image_size) / 2) ||
+				    (fragment_data.texture_coordinates.y < (1 - relative_image_size) / 2) ||
+				    (fragment_data.texture_coordinates.y > 1 - (1 - relative_image_size) / 2))
+					blank_screen_color = EdgeColor;
+
+				return BlankScreenWeight * blank_screen_color +
 					   PixelizedWeight * tex2D(Pixelized, fragment_data.texture_coordinates) +
 					   DiffusedWeight * tex2D(Diffused, fragment_data.texture_coordinates) +
 					   AmbientWeight * tex2D(Ambient_, fragment_data.texture_coordinates);

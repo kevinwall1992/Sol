@@ -94,6 +94,8 @@ public class PostProcess : MonoBehaviour
             Graphics.Blit(temporary_ambient, Ambient, HorizontalAmbience);
         }
 
+        Synthesize.SetFloat("relative_image_size", 
+                            Pixelize.GetFloat("RelativeImageSize"));
         Graphics.Blit(null, Output, Synthesize);
     }
 
