@@ -5,8 +5,6 @@
 		[HideInInspector]
 		_MainTex("Texture", 2D) = "white" {}
 
-		Signal("Signal", 2D) = "white" {}
-
 		RedResponseTime("RedResponseTime", Range(0, 200)) = 0
 		GreenResponseTime("GreenResponseTime", Range(0, 200)) = 0
 		BlueResponseTime("BlueResponseTime", Range(0, 200)) = 0

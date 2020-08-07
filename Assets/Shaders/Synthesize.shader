@@ -46,12 +46,13 @@
 			sampler2D Diffused;
 			sampler2D Ambient_;
 
-			float4 BlankScreen_ST;
-
 			float BlankScreenWeight;
 			float PixelizedWeight;
 			float DiffusedWeight;
 			float AmbientWeight;
+
+			int MonitorResolutionX;
+			int MonitorResolutionY;
 
 			fixed4 EdgeColor;
 
@@ -68,8 +69,10 @@
 
 			fixed4 frag(FragmentData fragment_data) : SV_Target
 			{
-				fixed4 blank_screen_color = 
-					tex2D(BlankScreen, TRANSFORM_TEX(fragment_data.texture_coordinates, BlankScreen));
+				fixed4 blank_screen_color =
+					tex2D(BlankScreen, (fragment_data.texture_coordinates + (1 - relative_image_size) / 2) *
+									   float2(MonitorResolutionX, MonitorResolutionY) / 
+									   relative_image_size);
 
 				if ((fragment_data.texture_coordinates.x < (1 - relative_image_size) / 2) ||
 				    (fragment_data.texture_coordinates.x > 1 - (1 - relative_image_size) / 2) ||

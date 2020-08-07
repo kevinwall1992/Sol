@@ -7,8 +7,6 @@
 
 		PixelTexture("PixelTexture", 2D) = "white" {}
 
-		MonitorResolutionX("MonitorResolutionX", Int) = 455
-		MonitorResolutionY("MonitorResolutionY", Int) = 256
 		RelativeImageSize("RelativeImageSize", Range(0.7, 1)) = 0.9
 		PixelScale("PixelSize", Range(0.5, 5)) = 2
 
