@@ -9,11 +9,13 @@ public class Cursor : UIElement
 
     void Start()
     {
-        UnityEngine.Cursor.visible = false;
+        
     }
 
     void Update()
     {
+        UnityEngine.Cursor.visible = false;
+
         RectTransform.anchoredPosition = Scene.The.Style.MonitorResolution * 
                                          Input.mousePosition.XY() / 
                                          new Vector2(Screen.width, Screen.height);
