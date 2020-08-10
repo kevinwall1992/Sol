@@ -59,6 +59,11 @@ public static class VectorUtility
     public static Vector3 YChangedTo(this Vector3 vector, float y) { return new Vector3(vector.x, y, vector.z); }
     public static Vector3 ZChangedTo(this Vector3 vector, float z) { return new Vector3(vector.x, vector.y, z); }
 
+    public static Vector2 XChangedTo(this Vector2 vector, float x) { return new Vector2(x, vector.y); }
+    public static Vector2 YChangedTo(this Vector2 vector, float y) { return new Vector2(vector.x, y); }
+    public static Vector2Int XChangedTo(this Vector2Int vector, int x) { return new Vector2Int(x, vector.y); }
+    public static Vector2Int YChangedTo(this Vector2Int vector, int y) { return new Vector2Int(vector.x, y); }
+
     public static Vector3 XXX(this Vector3 vector) { return new Vector3(vector.x, vector.x, vector.x); }
     public static Vector3 XXY(this Vector3 vector) { return new Vector3(vector.x, vector.x, vector.y); }
     public static Vector3 XXZ(this Vector3 vector) { return new Vector3(vector.x, vector.x, vector.z); }

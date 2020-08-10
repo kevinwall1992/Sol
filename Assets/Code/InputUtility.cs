@@ -22,15 +22,13 @@ public static class InputUtility
         return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
     }
 
-    public static bool ContainsCursor(this RectTransform rect_transform)
-    {
-        return rect_transform.Contains(Scene.The.Cursor.PixelPointedAt + new Vector2(0.5f, -0.5f), 
-                                       Scene.The.UICamera);
-    }
-
     public static bool IsPointedAt(this RectTransform rect_transform)
     {
-        return rect_transform.ContainsCursor();
+        foreach (GameObject game_object in Scene.The.Cursor.CanvasElementsPointedAt)
+            if (game_object.IsChildOf(rect_transform))
+                return true;
+
+        return false;
     }
 
     public static bool IsPointedAt(this GameObject game_object)
@@ -46,32 +44,15 @@ public static class InputUtility
         return mono_behaviour.gameObject.IsPointedAt();
     }
 
-    public static GameObject TouchedCanvasElement
-    {
-        get
-        {
-            PointerEventData pointer_event_data = new PointerEventData(null);
-            pointer_event_data.position = Scene.The.Cursor.PixelPointedAt + 
-                                          new Vector2(0.5f, -0.5f);
-
-            List<RaycastResult> raycast_results = new List<RaycastResult>();
-            Scene.The.GraphicRaycaster.Raycast(pointer_event_data, raycast_results);
-
-            if (raycast_results.Count == 0)
-                return null;
-            return raycast_results[0].gameObject;
-        }
-    }
-
     public static bool IsTouched(this GameObject game_object)
     {
         if (!game_object.IsPointedAt())
             return false;
 
-        if (TouchedCanvasElement == null)
+        if (Scene.The.Cursor.CanvasElementTouched == null)
             return false;
 
-        return TouchedCanvasElement.IsChildOf(game_object);
+        return Scene.The.Cursor.CanvasElementTouched.IsChildOf(game_object);
     }
 
     public static bool IsTouched(this MonoBehaviour mono_behaviour)
