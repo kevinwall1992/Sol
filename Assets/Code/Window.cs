@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.UI;
 
+[ExecuteAlways]
 public class Window : UIElement
 {
-    Vector2Int natural_size = new Vector2Int(100, 200);
+    Vector2Int natural_size = new Vector2Int(240, 120);
     Vector2Int natural_position = new Vector2Int(50, 50);
 
     bool is_grabbed = false;
@@ -12,9 +16,13 @@ public class Window : UIElement
     enum ResizeGrabType { None, Left, BottomLeft, Bottom, BottomRight, Right }
     ResizeGrabType resize_grab_type = ResizeGrabType.None;
 
-    public CanvasGroup CanvasGroup;
 
-    public RectTransform Handle, 
+    public CanvasGroup CanvasGroup;
+    public Image BackgroundImage;
+
+    public RectTransform PageContainer;
+
+    public RectTransform TitleBar, 
                          LeftEdge, 
                          BottomLeftCorner, 
                          BottomEdge, 
@@ -27,10 +35,32 @@ public class Window : UIElement
 
     public Vector2Int MinimumSize;
 
-    public WindowContainer Windows { get { return GetComponentInParent<WindowContainer>(); } }
+    public List<Page> Pages
+    { get { return PageContainer.GetComponentsInChildren<Page>().ToList().Reversed(); } }
+
+    public Page FrontPage
+    {
+        get
+        {
+            if (Pages.Count == 0)
+                return null;
+
+            return Pages.Last();
+        }
+    }
+
+    public WindowContainer Windows
+    { get { return Scene.The.WindowContainer; } }
 
     void Update()
     {
+        TitleBar.sizeDelta = TitleBar.sizeDelta.YChangedTo(DefaultTitleBarHeight);
+        BackgroundImage.color = DefaultBackgroundColor;
+
+        if (!UnityEditor.EditorApplication.isPlaying)
+            return;
+
+
         if(!IsOpen)
         {
             if (Windows != null)
@@ -83,7 +113,7 @@ public class Window : UIElement
         }
 
         if (InputUtility.WasMouseLeftPressed && IsTouched && 
-            (resize_grab_type != ResizeGrabType.None || Handle.IsPointedAt()))
+            (resize_grab_type != ResizeGrabType.None || TitleBar.IsPointedAt()))
         {
             is_grabbed = true;
 
@@ -159,5 +189,66 @@ public class Window : UIElement
 
         if (IsMinimized)
             CanvasGroup.alpha = 0;
+    }
+
+    public void Open(Page page = null, bool dont_change_page_order = false)
+    {
+        Windows.MoveToFront(this);
+
+        if (page == null)
+            return;
+        
+        page.transform.SetParent(PageContainer, false);
+        page.gameObject.SetActive(true);
+        if(!dont_change_page_order)
+            page.transform.SetAsLastSibling();
+
+        foreach (Page other in Pages)
+            if (other != page)
+                other.gameObject.SetActive(false);
+    }
+
+    public void OpenPreviousPage()
+    {
+        int front_page_index = Pages.IndexOf(FrontPage);
+
+        if (front_page_index > 0)
+            Open(Pages[front_page_index - 1], true);
+    }
+
+    public void OpenNextPage()
+    {
+        int front_page_index = Pages.IndexOf(FrontPage);
+
+        if (front_page_index < Pages.Count - 1)
+            Open(Pages[front_page_index + 1], true);
+    }
+
+    public Page RemovePage(Page page)
+    {
+        if (page == FrontPage)
+            OpenPreviousPage();
+
+        page.transform.SetParent(null);
+        Pages.First().gameObject.SetActive(true);
+
+        return page;
+    }
+
+    public void Clear()
+    {
+        foreach(Page page in Pages)
+            GameObject.Destroy(page.gameObject);
+    }
+
+
+    public Color DefaultBackgroundColor = Color.black;
+    public int DefaultTitleBarHeight = 16;
+
+    public static Window Create()
+    {
+        Window window = GameObject.Instantiate(Scene.The.Prefabs.Window);
+
+        return window;
     }
 }

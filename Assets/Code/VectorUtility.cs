@@ -45,6 +45,10 @@ public static class VectorUtility
     public static Vector3 Crossed(this Vector3 vector, Vector3 other) { return Vector3.Cross(vector, other); }
     public static Vector3 Lerped(this Vector3 vector, Vector3 other, float factor) { return Vector3.Lerp(vector, other, factor); }
 
+    public static float Distance(this Vector2 vector, Vector2 other) { return Vector2.Distance(vector, other); }
+    public static Vector2 Scaled(this Vector2 vector, Vector2 other) { return Vector2.Scale(vector, other); }
+    public static Vector2 Lerped(this Vector2 vector, Vector2 other, float factor) { return Vector2.Lerp(vector, other, factor); }
+
     public static Vector3 Mapped(this Vector3 vector, System.Func<float, float> Map)
     {
         return new Vector3(Map(vector.x), Map(vector.y), Map(vector.z));

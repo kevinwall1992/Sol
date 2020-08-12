@@ -5,4 +5,6 @@ public class Prefabs : MonoBehaviour
 {
     public Window Window;
     public TaskbarElement TaskbarElement;
+
+    public ProfilePage ProfilePage;
 }

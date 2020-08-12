@@ -16,6 +16,12 @@ public class Scene : MonoBehaviour
     public Cursor Cursor;
 
 
+    private void Start()
+    {
+        WindowContainer.AddWindow().Open(GameObject.Instantiate(Scene.The.Prefabs.ProfilePage));
+    }
+
+
     static Scene the;
     public static Scene The
     {

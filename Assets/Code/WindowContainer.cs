@@ -17,9 +17,15 @@ public class WindowContainer : UIElement
 
     }
 
-    public void AddWindow(Window window)
+    public Window AddWindow(Window window = null)
     {
-        window.transform.SetParent(transform);
+        if (window == null)
+            window = Window.Create();
+
+        window.transform.SetParent(transform, false);
+        MoveToFront(window);
+
+        return window;
     }
 
     public Window RemoveWindow(Window window)
@@ -28,5 +34,10 @@ public class WindowContainer : UIElement
             window.transform.SetParent(null);
 
         return window;
+    }
+
+    public void MoveToFront(Window window)
+    {
+        window.transform.SetAsLastSibling();
     }
 }
