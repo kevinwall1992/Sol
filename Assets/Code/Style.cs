@@ -7,6 +7,4 @@ public class Style : MonoBehaviour
     { get { return (Scene.The.Canvas.transform as RectTransform).rect.size.Round(); } }
 
     public int StandardEdgeThickness = 2;
-
-    public int TaskbarElementWidth = 100;
 }

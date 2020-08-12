@@ -285,7 +285,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StandardEdgeThickness: 2
-  TaskbarElementWidth: 100
 --- !u!1001 &664762554
 PrefabInstance:
   m_ObjectHideFlags: 0

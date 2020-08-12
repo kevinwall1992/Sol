@@ -14,7 +14,7 @@ public class TaskbarElement : UIElement
 
     void Update()
     {
-        RectTransform.sizeDelta = new Vector2(Scene.The.Style.TaskbarElementWidth, 
+        RectTransform.sizeDelta = new Vector2(DefaultWidth, 
                                               Scene.The.Taskbar.Height - 4);
 
         if (!UnityEditor.EditorApplication.isPlaying)
@@ -37,4 +37,7 @@ public class TaskbarElement : UIElement
 
         return taskbar_element;
     }
+
+
+    public int DefaultWidth = 100;
 }
