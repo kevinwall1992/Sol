@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 public static class UIUtility
 {
+    public static IEnumerable<Transform> Children(this Transform transform)
+    {
+        return transform as IEnumerable<Transform>;
+    }
+
     //Like [RequireComponent], but at runtime
     public static T RequireComponent<T>(this GameObject game_object) where T : MonoBehaviour
     {

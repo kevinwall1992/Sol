@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Scene : MonoBehaviour
 {
+    public Clock Clock;
     public Camera UICamera;
     public Canvas Canvas;
     public GraphicRaycaster GraphicRaycaster;
@@ -14,11 +15,12 @@ public class Scene : MonoBehaviour
     public Taskbar Taskbar;
     public WindowContainer WindowContainer;
     public Cursor Cursor;
+    public SystemMap SystemMap;
 
 
     private void Start()
     {
-        WindowContainer.AddWindow().Open(GameObject.Instantiate(Scene.The.Prefabs.ProfilePage));
+        
     }
 
 

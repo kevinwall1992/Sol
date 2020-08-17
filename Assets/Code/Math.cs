@@ -5,6 +5,8 @@ using System.Linq;
 
 public static class MathUtility
 {
+    public static float GravitationalConstant { get { return 6.674e-11f; } }
+
     public static int RandomIndex(int count)
     {
         return (int)(Random.value* 0.999999f* count);
