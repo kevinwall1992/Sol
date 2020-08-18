@@ -351,6 +351,29 @@ public static class MathUtility
     {
         return a.Point.Distance(b.Point) < (a.Radius + b.Radius);
     }
+
+    public static float Root(System.Func<float, float> function,
+                             System.Func<float, float> derivative,
+                             float error = 1e-6f,
+                             float guess = 0)
+    {
+        float x = guess;
+
+        float dx = 0;
+        int iterations = 0;
+
+        do
+        {
+            dx = function(x) / derivative(x);
+            x -= dx;
+
+            iterations++;
+
+        } while (Mathf.Abs(dx / x) > error && 
+                 iterations < 100);
+
+        return x;
+    }
 }
 
 public abstract class GenericFunction<T>

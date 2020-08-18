@@ -13,7 +13,11 @@ public class SystemMapObject : MonoBehaviour
     public string Name;
     public float Mass;
     public float Radius;
-    public float Altitude;
+    public float Angle;
+    public float Apoapsis;
+    public float Periapsis;
+
+    public bool IsCircularOrbit = true;
 
     public float SizeMultiplier = 1;
     public bool AutomaticVisualSize = true;
@@ -21,18 +25,18 @@ public class SystemMapObject : MonoBehaviour
     public bool IsFocused
     { get { return Scene.The.SystemMap.FocusedObject == this; } }
 
-    public float Velocity
+    public Vector3 SolarPosition
     {
         get
         {
-            return Mathf.Sqrt(MathUtility.GravitationalConstant * 
-                              Primary.Mass / 
-                              Altitude);
+            if (Primary == null)
+                return Vector3.zero;
+
+            return Primary.SolarPosition + 
+                   new Vector3(Mathf.Sin(TrueAnomaly + Angle), 
+                               Mathf.Cos(TrueAnomaly + Angle), 0) * Altitude;
         }
     }
-
-    public float AngularVelocity
-    { get { return Velocity / Altitude; } }
 
     public SystemMapObject Primary
     { get { return transform.parent.GetComponentInParent<SystemMapObject>(); } }
@@ -50,6 +54,12 @@ public class SystemMapObject : MonoBehaviour
 
     void Update()
     {
+        if (IsCircularOrbit)
+            Periapsis = Apoapsis;
+        if (Periapsis > Apoapsis)
+            Utility.Swap(ref Periapsis, ref Apoapsis);
+
+
         gameObject.name = Name;
 
         int sibling_index = transform.GetSiblingIndex();
@@ -59,7 +69,7 @@ public class SystemMapObject : MonoBehaviour
                 transform.parent.GetChild(sibling_index - 1)
                 .GetComponent<SystemMapObject>();
 
-            if(sibling.Altitude > Altitude)
+            if(sibling.AverageAltitude > AverageAltitude)
                 transform.SetAsFirstSibling();
         }
 
@@ -100,15 +110,55 @@ public class SystemMapObject : MonoBehaviour
             Image.gameObject.SetActive(true);
 
 
-        if (Primary == null)
-            return;
-
-        if (Primary == SystemMap.FocusedObject)
-            transform.localPosition =
-                Quaternion.Euler(0, 0, MathUtility.RadiansToDegrees(
-                    AngularVelocity * Scene.The.Clock.Seconds)) *
-                new Vector3(SystemMap.GetPixelSize(Altitude), 0, 0);
-        else
-            transform.localPosition = new Vector3(0, 0, 0);
+        transform.position = SystemMap.SolarPositionToWorldPosition(SolarPosition);
     }
+
+
+    //Derived values
+
+    public float SemimajorAxis
+    { get { return (Apoapsis + Periapsis) / 2; } }
+
+    public float Eccentricity
+    { get { return Apoapsis / SemimajorAxis - 1; } }
+
+    public float Period
+    {
+        get
+        {
+            return 2 * Mathf.PI *
+                   Mathf.Sqrt(Mathf.Pow(SemimajorAxis, 3) /
+                   (MathUtility.GravitationalConstant * Primary.Mass));
+        }
+    }
+
+    public float AverageAltitude
+    { get { return SemimajorAxis * (1 + Mathf.Pow(Eccentricity, 2) / 2); } }
+
+    public float MeanAnomaly
+    { get { return 2 * Mathf.PI * Scene.The.Clock.Seconds / Period; } }
+
+    public float EccentricAnomaly
+    {
+        get
+        {
+            return MathUtility.Root(
+                x => x - Eccentricity * Mathf.Sin(x) - MeanAnomaly,
+                x => 1 - Eccentricity * Mathf.Cos(x),
+                1e-4f,
+                MeanAnomaly);
+        }
+    }
+
+    public float TrueAnomaly
+    {
+        get
+        {
+            return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
+                                  Mathf.Tan(EccentricAnomaly / 2));
+        }
+    }
+
+    public float Altitude
+    { get { return SemimajorAxis * (1 - Eccentricity * Mathf.Cos(EccentricAnomaly)); } }
 }
