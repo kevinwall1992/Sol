@@ -39,8 +39,6 @@ public class SystemMap : Page
     private void Start()
     {
         FocusedObject = Sun;
-
-
     }
 
     void Update()

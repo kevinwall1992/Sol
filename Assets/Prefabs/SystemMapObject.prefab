@@ -184,6 +184,9 @@ MonoBehaviour:
   Name: SystemMapObject
   Mass: 0
   Radius: 69911000
-  Altitude: 0
+  Angle: 0
+  Apoapsis: 0
+  Periapsis: 0
+  IsCircularOrbit: 1
   SizeMultiplier: 1
   AutomaticVisualSize: 1

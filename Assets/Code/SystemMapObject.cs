@@ -26,17 +26,7 @@ public class SystemMapObject : MonoBehaviour
     { get { return Scene.The.SystemMap.FocusedObject == this; } }
 
     public Vector3 SolarPosition
-    {
-        get
-        {
-            if (Primary == null)
-                return Vector3.zero;
-
-            return Primary.SolarPosition + 
-                   new Vector3(Mathf.Sin(TrueAnomaly + Angle), 
-                               Mathf.Cos(TrueAnomaly + Angle), 0) * Altitude;
-        }
-    }
+    { get { return GetSolarPositionAtDate(Scene.The.Clock.Now); } }
 
     public SystemMapObject Primary
     { get { return transform.parent.GetComponentInParent<SystemMapObject>(); } }
@@ -65,11 +55,11 @@ public class SystemMapObject : MonoBehaviour
         int sibling_index = transform.GetSiblingIndex();
         if (sibling_index > 0)
         {
-            SystemMapObject sibling = 
+            SystemMapObject sibling =
                 transform.parent.GetChild(sibling_index - 1)
                 .GetComponent<SystemMapObject>();
 
-            if(sibling.AverageAltitude > AverageAltitude)
+            if (sibling.AverageAltitude > AverageAltitude)
                 transform.SetAsFirstSibling();
         }
 
@@ -77,7 +67,7 @@ public class SystemMapObject : MonoBehaviour
         float visual_size = 0;
         if (IsFocused)
             visual_size = SystemMap.FocusedObjectVisualSize;
-        else if(Primary != null)
+        else if (Primary != null)
         {
 
             float largest_radius = Primary.Satellites.Max(satellite => satellite.Radius);
@@ -97,7 +87,7 @@ public class SystemMapObject : MonoBehaviour
                     1;
             }
 
-            visual_size = SizeMultiplier * 
+            visual_size = SizeMultiplier *
                           SystemMap.LargestSatelliteVisualSize *
                           normalized_size;
         }
@@ -111,6 +101,50 @@ public class SystemMapObject : MonoBehaviour
 
 
         transform.position = SystemMap.SolarPositionToWorldPosition(SolarPosition);
+    }
+
+    public float GetMeanAnomalyAtDate(System.DateTime date)
+    {
+        return 2 * Mathf.PI * 
+               Scene.The.Clock.DateToSecondsSinceEpoch(date) / 
+               Period;
+    }
+
+    public float GetEccentricAnomalyAtDate(System.DateTime date)
+    {
+        float mean_anomaly_at_date = GetMeanAnomalyAtDate(date);
+
+        return MathUtility.Root(
+            x => x - Eccentricity * Mathf.Sin(x) - mean_anomaly_at_date,
+            x => 1 - Eccentricity * Mathf.Cos(x),
+            1e-4f,
+            mean_anomaly_at_date);
+
+    }
+
+    public float GetTrueAnomalyAtDate(System.DateTime date)
+    {
+        return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
+                              Mathf.Tan(GetEccentricAnomalyAtDate(date) / 2));
+
+    }
+
+    public float GetAltitudeAtDate(System.DateTime date)
+    {
+        return SemimajorAxis * (1 - Eccentricity * Mathf.Cos(GetEccentricAnomalyAtDate(date)));
+    }
+
+    public Vector3 GetSolarPositionAtDate(System.DateTime date)
+    {
+        if (Primary == null)
+            return Vector3.zero;
+
+        float true_anomaly_at_date = GetTrueAnomalyAtDate(date);
+
+        return Primary.GetSolarPositionAtDate(date) +
+               new Vector3(Mathf.Sin(true_anomaly_at_date + Angle),
+                           Mathf.Cos(true_anomaly_at_date + Angle), 0) * 
+               GetAltitudeAtDate(date);
     }
 
 
@@ -136,29 +170,14 @@ public class SystemMapObject : MonoBehaviour
     { get { return SemimajorAxis * (1 + Mathf.Pow(Eccentricity, 2) / 2); } }
 
     public float MeanAnomaly
-    { get { return 2 * Mathf.PI * Scene.The.Clock.Seconds / Period; } }
+    { get { return GetMeanAnomalyAtDate(Scene.The.Clock.Now); } }
 
     public float EccentricAnomaly
-    {
-        get
-        {
-            return MathUtility.Root(
-                x => x - Eccentricity * Mathf.Sin(x) - MeanAnomaly,
-                x => 1 - Eccentricity * Mathf.Cos(x),
-                1e-4f,
-                MeanAnomaly);
-        }
-    }
+    { get { return GetEccentricAnomalyAtDate(Scene.The.Clock.Now); } }
 
     public float TrueAnomaly
-    {
-        get
-        {
-            return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
-                                  Mathf.Tan(EccentricAnomaly / 2));
-        }
-    }
+    { get { return GetTrueAnomalyAtDate(Scene.The.Clock.Now); } }
 
     public float Altitude
-    { get { return SemimajorAxis * (1 - Eccentricity * Mathf.Cos(EccentricAnomaly)); } }
+    { get { return GetAltitudeAtDate(Scene.The.Clock.Now); } }
 }

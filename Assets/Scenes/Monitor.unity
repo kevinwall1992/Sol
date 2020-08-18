@@ -300,6 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85e79a53fbe54c84ca73956c2383cd05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EpochDateString: 01/01/2000
+  LoadDateString: 01/01/2033
   GameSpeed: 1000000
 --- !u!1001 &664762554
 PrefabInstance:
