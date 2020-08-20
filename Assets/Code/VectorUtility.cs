@@ -112,6 +112,7 @@ public static class VectorUtility
     public static Vector2 ZY(this Vector3 vector) { return new Vector2(vector.z, vector.y); }
     public static Vector2 ZZ(this Vector3 vector) { return new Vector2(vector.z, vector.z); }
 
+    public static Vector3 WithZ(this Vector2 vector, float z) { return new Vector3(vector.x, vector.y, z); }
 
     public static Vector2Int ToVector2Int(this Vector2 vector)
     {

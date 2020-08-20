@@ -29,6 +29,16 @@ public static class Utility
         return list;
     }
 
+    public static List<T> List<T>(System.Func<int, T> function, int count)
+    {
+        List<T> list = new List<T>();
+
+        for (int i = 0; i < count; i++)
+            list.Add(function(i));
+
+        return list;
+    }
+
     public static Dictionary<T, U> Dictionary<T, U>(params object[] keys_and_values)
     {
         Dictionary<T, U> dictionary = new Dictionary<T, U>();

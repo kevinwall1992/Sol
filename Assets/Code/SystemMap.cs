@@ -6,39 +6,59 @@ using System.Linq;
 [ExecuteAlways]
 public class SystemMap : Page
 {
-    float nearest_satellite_distance, 
-          furthest_satellite_distance;
-
     public RectTransform ObjectsContainer;
     public SystemMapObject Sun;
+
+    public Material OrbitLineMaterial;
 
     public float FocusedObjectVisualSize = 30;
     public float SmallestSatelliteVisualSize = 3,
                  LargestSatelliteVisualSize = 20;
 
-    SystemMapObject focused_object;
+    public float TransitionDuration = 5;
+    public float TransitionMoment
+    {
+        get
+        {
+            return Mathf.Min(1,
+                (float)(System.DateTime.Now - focus_change_timestamp).TotalSeconds /
+                TransitionDuration);
+        }
+    }
+
+    SystemMapObject focused_object, last_focused_object;
+    System.DateTime focus_change_timestamp;
     public SystemMapObject FocusedObject
     {
         get { return focused_object; }
         set
         {
+            last_focused_object = FocusedObject;
+            focus_change_timestamp = System.DateTime.Now;
+
             if (value == null)
                 focused_object = Sun;
             else
                 focused_object = value;
-
-            SystemMapObject reference = FocusedObject;
-            if (reference.Satellites.Count() == 0)
-                reference = FocusedObject.Primary;
-
-            nearest_satellite_distance = reference.Satellites.Min(satellite => satellite.Periapsis);
-            furthest_satellite_distance = reference.Satellites.Max(satellite => satellite.Apoapsis);
         }
     }
+
+    public float PixelRadius
+    {
+        get
+        {
+            return 0.95f / 2 * Mathf.Min(ObjectsContainerContainer.rect.width,
+                                         ObjectsContainerContainer.rect.height);
+        }
+    }
+
+    RectTransform ObjectsContainerContainer
+    { get { return ObjectsContainer.parent as RectTransform; } }
 
     private void Start()
     {
         FocusedObject = Sun;
+        last_focused_object = Sun;
     }
 
     void Update()
@@ -47,39 +67,71 @@ public class SystemMap : Page
             FocusedObject = FocusedObject.Primary;
         if (FocusedObject == null)
             FocusedObject = Sun;
+
+
+        RectTransform canvas_transform = Scene.The.Canvas.transform as RectTransform;
+        Vector2 screen_space_min = canvas_transform
+            .InverseTransformPoint(RectTransform
+            .TransformPoint(RectTransform.rect.min)).XY();
+        Vector2 screen_space_max = canvas_transform
+            .InverseTransformPoint(RectTransform
+            .TransformPoint(RectTransform.rect.max)).XY();
+
+        OrbitLineMaterial.SetVector("MaskMin", screen_space_min);
+        OrbitLineMaterial.SetVector("MaskMax", screen_space_max);
+
+
+        ObjectsContainer.localPosition = ObjectsContainerContainer.rect.size / 2;
     }
 
-    float GetDistanceInPixels(float distance_in_meters)
+    float GetCompressedDistance(SystemMapObject reference, float distance_in_meters)
     {
-        float smallest_dimension = Mathf.Min(RectTransform.rect.width,
-                                             RectTransform.rect.height);
-
-        float normalized_distance = 1;
-        if (FocusedObject.Satellites.Count() > 1)
+        float compressed_distance = 1;
+        if (reference.Satellites.Count() > 1)
         {
             float smallest_normalized_distance =
                 (FocusedObjectVisualSize + LargestSatelliteVisualSize) /
-                smallest_dimension;
+                (2 * PixelRadius);
 
-            normalized_distance =
+            float nearest_satellite_distance = 
+                reference.Satellites.Min(satellite => satellite.Periapsis);
+            float furthest_satellite_distance = 
+                reference.Satellites.Max(satellite => satellite.Apoapsis);
+
+            compressed_distance =
                 (smallest_normalized_distance - 1) *
                 Mathf.Log(distance_in_meters / furthest_satellite_distance) /
                 Mathf.Log(nearest_satellite_distance / furthest_satellite_distance) +
                 1;
         }
 
-        return (smallest_dimension / 2) * 0.95f * normalized_distance;
+        return compressed_distance;
     }
 
-    public Vector2 SolarPositionToWorldPosition(Vector3 solar_position)
+    public Vector3 GetCompressedPosition(SystemMapObject reference, 
+                                         Vector3 physical_position)
     {
-        Vector3 displacement = solar_position - FocusedObject.SolarPosition;
-
+        Vector3 displacement = physical_position - reference.PhysicalPosition;
         if (displacement.magnitude == 0)
-            return ObjectsContainer.position;
+            return Vector3.zero;
 
-        return ObjectsContainer.TransformPoint(
-            displacement.XY().normalized *
-            GetDistanceInPixels(displacement.magnitude));
+        return displacement.XY().normalized *
+               GetCompressedDistance(reference, displacement.magnitude);
+    }
+
+    public Vector3 PhysicalPositionToWorldPosition(Vector3 physical_position)
+    {
+        Vector3 compressed_position = GetCompressedPosition(FocusedObject, physical_position);
+
+        if (TransitionMoment < 1)
+            compressed_position = compressed_position.Lerped(
+                GetCompressedPosition(last_focused_object, physical_position), 
+                1 - TransitionMoment);
+
+        compressed_position = compressed_position.Lerped(
+            GetCompressedPosition(Sun, physical_position), 
+            0.5f);
+
+        return ObjectsContainer.TransformPoint(compressed_position * PixelRadius);
     }
 }

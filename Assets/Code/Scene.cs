@@ -9,6 +9,7 @@ public class Scene : MonoBehaviour
     public Camera UICamera;
     public Canvas Canvas;
     public GraphicRaycaster GraphicRaycaster;
+    public TravelingElementHotel _3DUIElementsContainer;
     public Style Style;
     public Prefabs Prefabs;
     public ShortcutContainer ShortcutContainer;

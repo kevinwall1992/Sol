@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 [ExecuteAlways]
-public class SystemMapObject : MonoBehaviour
+public class SystemMapObject : UIElement
 {
-    public Image Image;
+    public CanvasGroup ImageCanvasGroup;
     public RectTransform SatellitesContainer;
 
+    public LineController LineController;
+    public TravelingElement OrbitLine;
+ 
     public string Name;
     public float Mass;
     public float Radius;
@@ -22,11 +25,15 @@ public class SystemMapObject : MonoBehaviour
     public float SizeMultiplier = 1;
     public bool AutomaticVisualSize = true;
 
+    public float PositionRealizeSpeed = 16;
+    public float SizeChangeSpeed = 3;
+    public float AppearSpeed = 3;
+
     public bool IsFocused
     { get { return Scene.The.SystemMap.FocusedObject == this; } }
 
-    public Vector3 SolarPosition
-    { get { return GetSolarPositionAtDate(Scene.The.Clock.Now); } }
+    public Vector3 PhysicalPosition
+    { get { return PhysicalPositionAtDate(Scene.The.Clock.Now); } }
 
     public SystemMapObject Primary
     { get { return transform.parent.GetComponentInParent<SystemMapObject>(); } }
@@ -41,6 +48,17 @@ public class SystemMapObject : MonoBehaviour
     }
 
     public SystemMap SystemMap { get { return Scene.The.SystemMap; } }
+
+    void Start()
+    {
+        LineController.SamplingFunction =
+            sample => SystemMap.PhysicalPositionToWorldPosition(
+                Primary.PhysicalPosition +
+                LocalPhysicalPositionGivenTrueAnomaly(sample * 2 * Mathf.PI))
+                .ZChangedTo(Scene.The.Canvas.transform.position.z - 1);
+
+        OrbitLine.Destination = Scene.The._3DUIElementsContainer;
+    }
 
     void Update()
     {
@@ -64,10 +82,16 @@ public class SystemMapObject : MonoBehaviour
         }
 
 
-        float visual_size = 0;
-        if (IsFocused)
-            visual_size = SystemMap.FocusedObjectVisualSize;
-        else if (Primary != null)
+        transform.position = transform.position
+            .Lerped(SystemMap.PhysicalPositionToWorldPosition(PhysicalPosition), 
+                    PositionRealizeSpeed * Time.deltaTime);
+
+        LineController.Line.enabled = !IsFocused && 
+                                      Primary != null && 
+                                      ImageCanvasGroup.gameObject.IsTouched();
+
+        float visual_size = SystemMap.FocusedObjectVisualSize;
+        if (!IsFocused && Primary != null)
         {
 
             float largest_radius = Primary.Satellites.Max(satellite => satellite.Radius);
@@ -90,67 +114,135 @@ public class SystemMapObject : MonoBehaviour
             visual_size = SizeMultiplier *
                           SystemMap.LargestSatelliteVisualSize *
                           normalized_size;
+
+            MaterialPropertyBlock material_property_block = new MaterialPropertyBlock();
+            LineController.Line.GetPropertyBlock(material_property_block);
+
+            material_property_block.SetFloat("PathLength", LineController.Length);
+            material_property_block.SetVector("ObjectPosition", 
+                Scene.The.Canvas.transform.InverseTransformPoint(transform.position));
+            material_property_block.SetFloat("ObjectSize", visual_size);
+
+            LineController.Line.SetPropertyBlock(material_property_block);
         }
-        (Image.transform as RectTransform).sizeDelta = visual_size * Vector2.one;
+        RectTransform image_transform = ImageCanvasGroup.transform as RectTransform;
+        image_transform.sizeDelta = image_transform.sizeDelta.Lerped(
+            visual_size * Vector2.one, SizeChangeSpeed * Time.deltaTime);
 
         if (!Application.isEditor || Application.isPlaying)
-            Image.gameObject.SetActive(SystemMap.FocusedObject == this ||
-                                       SystemMap.FocusedObject == Primary);
+        {
+            float target_alpha = 0;
+
+            if (Primary == null ||
+                Primary.IsAncestorTo(SystemMap.FocusedObject) ||
+                Primary.IsFocused)
+            {
+                ImageCanvasGroup.blocksRaycasts = true;
+                target_alpha = 1;
+            }
+            else
+                ImageCanvasGroup.blocksRaycasts = false;
+
+            ImageCanvasGroup.alpha = 
+                Mathf.Lerp(ImageCanvasGroup.alpha, target_alpha, AppearSpeed * Time.deltaTime);
+        }
         else
-            Image.gameObject.SetActive(true);
-
-
-        transform.position = SystemMap.SolarPositionToWorldPosition(SolarPosition);
+        {
+            ImageCanvasGroup.blocksRaycasts = true;
+            ImageCanvasGroup.alpha = 1;
+        }
     }
 
-    public float GetMeanAnomalyAtDate(System.DateTime date)
+    public bool IsAncestorTo(SystemMapObject object_)
     {
-        return 2 * Mathf.PI * 
-               Scene.The.Clock.DateToSecondsSinceEpoch(date) / 
-               Period;
+        if (object_.Primary == null)
+            return false;
+
+        if (object_.Primary == this)
+            return true;
+
+        return IsAncestorTo(object_.Primary);
     }
 
-    public float GetEccentricAnomalyAtDate(System.DateTime date)
+    public bool IsSiblingTo(SystemMapObject object_)
     {
-        float mean_anomaly_at_date = GetMeanAnomalyAtDate(date);
-
-        return MathUtility.Root(
-            x => x - Eccentricity * Mathf.Sin(x) - mean_anomaly_at_date,
-            x => 1 - Eccentricity * Mathf.Cos(x),
-            1e-4f,
-            mean_anomaly_at_date);
-
-    }
-
-    public float GetTrueAnomalyAtDate(System.DateTime date)
-    {
-        return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
-                              Mathf.Tan(GetEccentricAnomalyAtDate(date) / 2));
-
-    }
-
-    public float GetAltitudeAtDate(System.DateTime date)
-    {
-        return SemimajorAxis * (1 - Eccentricity * Mathf.Cos(GetEccentricAnomalyAtDate(date)));
-    }
-
-    public Vector3 GetSolarPositionAtDate(System.DateTime date)
-    {
-        if (Primary == null)
-            return Vector3.zero;
-
-        float true_anomaly_at_date = GetTrueAnomalyAtDate(date);
-
-        return Primary.GetSolarPositionAtDate(date) +
-               new Vector3(Mathf.Sin(true_anomaly_at_date + Angle),
-                           Mathf.Cos(true_anomaly_at_date + Angle), 0) * 
-               GetAltitudeAtDate(date);
+        return Primary == object_.Primary;
     }
 
 
     //Derived values
 
+    public float MeanAnomalyAtDate(System.DateTime date)
+    {
+        return 2 * Mathf.PI *
+               Scene.The.Clock.DateToSecondsSinceEpoch(date) /
+               Period;
+    }
+
+    public float EccentricAnomalyGivenMeanAnomaly(float mean_anomaly)
+    {
+        return MathUtility.Root(
+            x => x - Eccentricity * Mathf.Sin(x) - mean_anomaly,
+            x => 1 - Eccentricity * Mathf.Cos(x),
+            1e-4f,
+            mean_anomaly);
+
+    }
+
+    public float TrueAnomalyGivenMeanAnomaly(float mean_anomaly)
+    {
+        return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
+                              Mathf.Tan(EccentricAnomalyGivenMeanAnomaly(mean_anomaly) / 2));
+    }
+
+    public float AltitudeGivenTrueAnomaly(float true_anomaly)
+    {
+        return SemimajorAxis * (1 - Mathf.Pow(Eccentricity, 2)) /
+               (1 + Eccentricity * Mathf.Cos(true_anomaly));
+    }
+
+    public float VelocityGivenTrueAnomaly(float true_anomaly)
+    {
+        return Mathf.Sqrt(MathUtility.GravitationalConstant * Primary.Mass *
+                          (2 / AltitudeGivenTrueAnomaly(true_anomaly) - 1 / SemimajorAxis));
+    }
+
+    public Vector3 LocalPhysicalPositionGivenMeanAnomaly(float mean_anomaly)
+    {
+        if (Primary == null)
+            return Vector3.zero;
+
+        float true_anomaly = TrueAnomalyGivenMeanAnomaly(mean_anomaly);
+
+        return new Vector3(Mathf.Sin(true_anomaly + Angle),
+                           Mathf.Cos(true_anomaly + Angle), 0) *
+               AltitudeGivenTrueAnomaly(true_anomaly);
+    }
+
+    public Vector3 LocalPhysicalPositionGivenTrueAnomaly(float true_anomaly)
+    {
+        if (Primary == null)
+            return Vector3.zero;
+
+        return new Vector3(Mathf.Sin(true_anomaly + Angle),
+                           Mathf.Cos(true_anomaly + Angle), 0) *
+               AltitudeGivenTrueAnomaly(true_anomaly);
+    }
+
+    public Vector3 PhysicalPositionAtDate(System.DateTime date)
+    {
+        if (Primary == null)
+            return Vector3.zero;
+
+        return Primary.PhysicalPositionAtDate(date) + 
+               LocalPhysicalPositionGivenMeanAnomaly(MeanAnomalyAtDate(date));
+    }
+
+
     public float SemimajorAxis
+    { get { return (Apoapsis + Periapsis) / 2; } }
+
+    public float SemiminorAxis
     { get { return (Apoapsis + Periapsis) / 2; } }
 
     public float Eccentricity
@@ -170,14 +262,20 @@ public class SystemMapObject : MonoBehaviour
     { get { return SemimajorAxis * (1 + Mathf.Pow(Eccentricity, 2) / 2); } }
 
     public float MeanAnomaly
-    { get { return GetMeanAnomalyAtDate(Scene.The.Clock.Now); } }
+    { get { return MeanAnomalyAtDate(Scene.The.Clock.Now); } }
 
     public float EccentricAnomaly
-    { get { return GetEccentricAnomalyAtDate(Scene.The.Clock.Now); } }
+    { get { return EccentricAnomalyGivenMeanAnomaly(MeanAnomaly); } }
 
     public float TrueAnomaly
-    { get { return GetTrueAnomalyAtDate(Scene.The.Clock.Now); } }
+    { get { return TrueAnomalyGivenMeanAnomaly(MeanAnomaly); } }
 
     public float Altitude
-    { get { return GetAltitudeAtDate(Scene.The.Clock.Now); } }
+    { get { return AltitudeGivenTrueAnomaly(TrueAnomaly); } }
+
+    public float Velocity
+    { get { return VelocityGivenTrueAnomaly(TrueAnomaly); } }
+
+    public float PathLength
+    { get { return MathUtility.EllipseCircumference(SemimajorAxis, Eccentricity); } }
 }

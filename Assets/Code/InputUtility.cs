@@ -24,6 +24,9 @@ public static class InputUtility
 
     public static bool IsPointedAt(this RectTransform rect_transform)
     {
+        if (Scene.The.Cursor.CanvasElementsPointedAt == null)
+            return false;
+
         foreach (GameObject game_object in Scene.The.Cursor.CanvasElementsPointedAt)
             if (game_object.IsChildOf(rect_transform))
                 return true;

@@ -374,6 +374,39 @@ public static class MathUtility
 
         return x;
     }
+
+    public static float EllipseCircumference(float semimajor_axis, float eccentricity, float error = -1)
+    {
+        if (error < 0)
+            error = semimajor_axis / 1000000;
+
+        float factor = 2 * Mathf.PI * semimajor_axis;
+
+
+        float sum = 1;
+
+        int i = 0;
+        float numerator_product = 1;
+        float denominator_product = 1;
+        float next_term;
+
+        do
+        {
+            numerator_product *= (1 + i * 2);
+            denominator_product *= (i + 1) * 2;
+
+            next_term =
+                Mathf.Pow(numerator_product / denominator_product, 2) *
+                Mathf.Pow(eccentricity, (i + 1) * 2) /
+                (1 + i * 2);
+
+            sum -= next_term;
+            i++;
+
+        } while ((next_term * factor) > error && i < 100);
+
+        return sum * factor;
+    }
 }
 
 public abstract class GenericFunction<T>
