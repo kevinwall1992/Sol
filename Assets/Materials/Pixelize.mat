@@ -64,11 +64,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Brightness: 0.828
-    - DarkPixelSizeModifier: 0.4
+    - Brightness: 0.52
+    - DarkPixelSizeModifier: 0.1
     - MonitorResolutionX: 480
     - MonitorResolutionY: 270
-    - PixelScale: 2.4
+    - PixelScale: 3.2
     - PixelSize: 2.3
     - RelativeImageSize: 0.925
     - _BumpScale: 1
