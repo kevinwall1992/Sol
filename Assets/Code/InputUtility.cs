@@ -21,6 +21,29 @@ public static class InputUtility
     {
         return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
     }
+    
+    public static bool IsPixelPositionWithinBounds(this RectTransform rect_transform, 
+                                                   Vector2Int pixel_position)
+    {
+        Vector2 min = Scene.The.Canvas.transform
+            .InverseTransformPoint(rect_transform
+                .TransformPoint(rect_transform.rect.min));
+
+        Vector2 max = Scene.The.Canvas.transform
+            .InverseTransformPoint(rect_transform
+                .TransformPoint(rect_transform.rect.max));
+
+        if (pixel_position.x < min.x || pixel_position.x > max.x ||
+            pixel_position.y < min.y || pixel_position.y > max.y)
+            return false;
+
+        return true;
+    }
+
+    public static bool IsCursorWithinBounds(this RectTransform rect_transform)
+    {
+        return rect_transform.IsPixelPositionWithinBounds(Scene.The.Cursor.PixelPosition);
+    }
 
     public static bool IsPointedAt(this RectTransform rect_transform)
     {

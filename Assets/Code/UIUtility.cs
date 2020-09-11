@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class UIUtility
 {
     public static IEnumerable<Transform> Children(this Transform transform)
     {
-        return transform as IEnumerable<Transform>;
+        return transform.Cast<Transform>();
     }
 
     //Like [RequireComponent], but at runtime

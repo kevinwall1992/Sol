@@ -3,10 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class MathUtility
+public static class MathConstants
 {
     public static float GravitationalConstant { get { return 6.674e-11f; } }
+    public static float StandardPressure { get { return 101325f; } }
+    public static float IdealGasConstant { get { return 8.214f; } }
+}
 
+public static class MathUtility
+{
     public static int RandomIndex(int count)
     {
         return (int)(Random.value* 0.999999f* count);
@@ -271,20 +276,25 @@ public static class MathUtility
         return dividend % divisor;
     }
 
-    public static float ZenoLerp(float a, float b, float speed, float critical_distance)
+    public static float Gaussian(float x, float standard_deviation = 1)
     {
-        float distance = Mathf.Abs(a - b);
-        float speedup_factor = Mathf.Pow((distance + critical_distance) / distance, 3);
-
-        return Mathf.Lerp(a, b, speed * speedup_factor);
+        return Mathf.Pow((float)System.Math.E, -0.5f * Mathf.Pow(x / standard_deviation, 2)) / 
+               (standard_deviation * Mathf.Sqrt(2 * Mathf.PI));
     }
 
-    public static float ZenoLerpAngle(float a, float b, float speed, float critical_distance)
+    static float GaussianTailHeight = Gaussian(-3);
+    static float GaussianPeakHeight = Gaussian(0);
+    public static float GetSmoothedLerpFactor(float factor)
     {
-        float distance = Mathf.Abs(a - b);
-        float speedup_factor = Mathf.Pow((distance + critical_distance) / distance, 3);
+        factor = Mathf.Max(0, Mathf.Min(1, factor));
 
-        return Mathf.LerpAngle(a, b, speed * speedup_factor);
+        return (Gaussian(factor * 3 - 3) - GaussianTailHeight) /
+               (GaussianPeakHeight - GaussianTailHeight);
+    }
+
+    public static float SmoothLerp(float a, float b, float factor)
+    {
+        return Mathf.Lerp(a, b, GetSmoothedLerpFactor(factor));
     }
 
     public static IEnumerable<float> GetFloatRange(int sample_count, float scale = 1, float bias = 0)

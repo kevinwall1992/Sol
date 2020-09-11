@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [ExecuteAlways]
 public class PixelSnapper : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PixelSnapper : MonoBehaviour
         RectTransform rect_transform = transform as RectTransform;
 
         rect_transform.anchoredPosition = rect_transform.anchoredPosition.Round();
-        rect_transform.sizeDelta = rect_transform.sizeDelta.Round();
+
+        if(Application.isEditor && !Application.isPlaying)
+            rect_transform.sizeDelta = rect_transform.sizeDelta.Round();
     }
 }

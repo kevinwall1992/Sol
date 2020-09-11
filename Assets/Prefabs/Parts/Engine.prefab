@@ -1,0 +1,519 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &393811757634715645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6085838660983074722}
+  - component: {fileID: 6848758034496420205}
+  - component: {fileID: 907785075654462084}
+  - component: {fileID: 401028979262595707}
+  - component: {fileID: 2356183752706773516}
+  m_Layer: 0
+  m_Name: LiquidOxygenTank
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6085838660983074722
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393811757634715645}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5557716058174905650}
+  m_Father: {fileID: 814017376281466915}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6848758034496420205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393811757634715645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DryMass: 100
+  Volume: 26.5
+  DebugItemMass: 30000
+  DebugItemVolume: 26.279999
+--- !u!114 &907785075654462084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393811757634715645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 190bcf3db673beb48b5df83369928530, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &401028979262595707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393811757634715645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a465798941cb5724bb0c9cbbff093837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2356183752706773516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393811757634715645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8aba7a489b203d41a6b1ce236a4fa6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowedItems:
+  - Liquid Oxygen
+--- !u!1 &1823446897217084506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2885208522023498453}
+  - component: {fileID: 6577208061931529234}
+  - component: {fileID: 757967139646844489}
+  - component: {fileID: 7168932156633244951}
+  - component: {fileID: 817010264766122442}
+  m_Layer: 0
+  m_Name: LiquidHydrogenTank
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2885208522023498453
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823446897217084506}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 982183055619242035}
+  m_Father: {fileID: 814017376281466915}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6577208061931529234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823446897217084506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DryMass: 100
+  Volume: 12.5
+  DebugItemMass: 874.6
+  DebugItemVolume: 12.33186
+--- !u!114 &757967139646844489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823446897217084506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 190bcf3db673beb48b5df83369928530, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7168932156633244951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823446897217084506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a465798941cb5724bb0c9cbbff093837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &817010264766122442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823446897217084506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8aba7a489b203d41a6b1ce236a4fa6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowedItems:
+  - Liquid Hydrogen
+--- !u!1 &4755544892678581895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814017376281466915}
+  - component: {fileID: 3534995665428981729}
+  m_Layer: 0
+  m_Name: Engine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &814017376281466915
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755544892678581895}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 6085838660983074722}
+  - {fileID: 2885208522023498453}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3534995665428981729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755544892678581895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745dca27a04479445a29de17cd9e322a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Mass: 0
+  Tanks:
+    reorderableList:
+      canAdd: 1
+      canRemove: 1
+      draggable: 1
+      expandable: 1
+      multipleSelection: 1
+      isExpanded: 1
+      label:
+        m_Text: Keys
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+      headerHeight: 18
+      footerHeight: 13
+      slideEasing: 0.15
+      verticalSpacing: 2
+      showDefaultBackground: 1
+      elementDisplayType: 0
+      elementNameProperty: 
+      elementNameOverride: 
+      elementIcon: {fileID: 0}
+    reqReferences: {fileID: 0}
+    isExpanded: 1
+    _keyValues:
+    - Liquid Oxygen
+    - Liquid Hydrogen
+    _keys:
+    - Liquid Oxygen
+    - Liquid Hydrogen
+    _values:
+    - {fileID: 907785075654462084}
+    - {fileID: 757967139646844489}
+  Propellent:
+    Components:
+      reorderableList:
+        canAdd: 1
+        canRemove: 1
+        draggable: 1
+        expandable: 1
+        multipleSelection: 1
+        isExpanded: 1
+        label:
+          m_Text: Keys
+          m_Image: {fileID: 0}
+          m_Tooltip: 
+        headerHeight: 18
+        footerHeight: 13
+        slideEasing: 0.15
+        verticalSpacing: 2
+        showDefaultBackground: 1
+        elementDisplayType: 0
+        elementNameProperty: 
+        elementNameOverride: 
+        elementIcon: {fileID: 0}
+      reqReferences: {fileID: 0}
+      isExpanded: 1
+      _keyValues:
+      - Liquid Oxygen
+      - Liquid Hydrogen
+      _keys:
+      - Liquid Oxygen
+      - Liquid Hydrogen
+      _values:
+      - 34.3
+      - 1
+  ExhaustVelocity: 3800
+--- !u!1001 &2172940180370427878
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6085838660983074722}
+    m_Modifications:
+    - target: {fileID: 191766317196972155, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: Quantity
+      value: 30000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8243228142373770829, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+      propertyPath: m_Name
+      value: LiquidOxygen
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+--- !u!224 &5557716058174905650 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5982799952329888468, guid: 52f497269d851b84c87c785941327ee5, type: 3}
+  m_PrefabInstance: {fileID: 2172940180370427878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6820216281905457895
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2885208522023498453}
+    m_Modifications:
+    - target: {fileID: 191766317196972155, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: Quantity
+      value: 874.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8243228142373770829, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+      propertyPath: m_Name
+      value: LiquidHydrogen
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+--- !u!224 &982183055619242035 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5982799952329888468, guid: 203eefde62a4e6548a0bf13aca12e5cb, type: 3}
+  m_PrefabInstance: {fileID: 6820216281905457895}
+  m_PrefabAsset: {fileID: 0}

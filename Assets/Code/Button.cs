@@ -4,16 +4,21 @@ using UnityEngine.UI;
 
 public abstract class Button : UIElement
 {
-    Sprite rest_sprite;
-    Color rest_color;
+    protected Sprite rest_sprite;
+    protected Color rest_color;
 
     public Image Image;
     public Sprite TouchSprite, DownSprite;
     public Color TouchColor = Color.white, 
                  DownColor = Color.white;
 
+    public bool IsDown { get { return IsTouched && InputUtility.IsMouseLeftPressed; } }
+
     protected virtual void Start()
     {
+        if (Image == null)
+            return;
+
         rest_sprite = Image.sprite;
         rest_color = Image.color;
 
@@ -26,18 +31,18 @@ public abstract class Button : UIElement
 
     protected virtual void Update()
     {
-        if (IsTouched)
+        if (Image == null)
+            return;
+
+        if (IsDown)
         {
-            if (InputUtility.IsMouseLeftPressed)
-            {
-                Image.sprite = DownSprite;
-                Image.color = DownColor;
-            }
-            else
-            {
-                Image.sprite = TouchSprite;
-                Image.color = TouchColor;
-            }
+            Image.sprite = DownSprite;
+            Image.color = DownColor;
+        }
+        else if (IsTouched)
+        {
+            Image.sprite = TouchSprite;
+            Image.color = TouchColor;
 
             if (InputUtility.WasMouseLeftReleased)
                 OnButtonUp();

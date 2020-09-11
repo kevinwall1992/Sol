@@ -4,9 +4,12 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
+
 [ExecuteAlways]
 public class SystemMapObject : UIElement
 {
+    public SatelliteMotion Motion;
+
     public CanvasGroup ImageCanvasGroup;
     public RectTransform SatellitesContainer;
 
@@ -16,12 +19,9 @@ public class SystemMapObject : UIElement
     public string Name;
     public float Mass;
     public float Radius;
-    public float Angle;
-    public float Apoapsis;
-    public float Periapsis;
 
-    public bool IsCircularOrbit = true;
-
+    public float VisualSize = 20;
+    public float FocusedVisualSize = 40;
     public float SizeMultiplier = 1;
     public bool AutomaticVisualSize = true;
 
@@ -33,10 +33,13 @@ public class SystemMapObject : UIElement
     { get { return Scene.The.SystemMap.FocusedObject == this; } }
 
     public Vector3 PhysicalPosition
-    { get { return PhysicalPositionAtDate(Scene.The.Clock.Now); } }
+    { get { return Motion.PositionAtDate(Scene.The.Clock.Now); } }
+
+    public float Altitude { get { return Motion.DistanceFromPrimary; } }
+    public Vector3 Velocity { get { return Motion.Velocity; } }
 
     public SystemMapObject Primary
-    { get { return transform.parent.GetComponentInParent<SystemMapObject>(); } }
+    { get { return Motion.Primary; } }
 
     public IEnumerable<SystemMapObject> Satellites
     {
@@ -49,26 +52,29 @@ public class SystemMapObject : UIElement
 
     public SystemMap SystemMap { get { return Scene.The.SystemMap; } }
 
-    void Start()
+    protected virtual void Start()
     {
+        Motion.Primary = transform.parent.GetComponentInParent<SystemMapObject>();
+
         LineController.SamplingFunction =
             sample => SystemMap.PhysicalPositionToWorldPosition(
                 Primary.PhysicalPosition +
-                LocalPhysicalPositionGivenTrueAnomaly(sample * 2 * Mathf.PI))
+                Motion.LocalPositionGivenTrueAnomaly(sample * 2 * Mathf.PI))
                 .ZChangedTo(Scene.The.Canvas.transform.position.z - 1);
 
         OrbitLine.Destination = Scene.The._3DUIElementsContainer;
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        if (IsCircularOrbit)
-            Periapsis = Apoapsis;
-        if (Periapsis > Apoapsis)
-            Utility.Swap(ref Periapsis, ref Apoapsis);
+        UpdateParent();
+
+        if (Motion.Periapsis > Motion.Apoapsis)
+            Utility.Swap(ref Motion.Periapsis, ref Motion.Apoapsis);
 
 
-        gameObject.name = Name;
+        if (gameObject.name != Name)
+            gameObject.name = Name;
 
         int sibling_index = transform.GetSiblingIndex();
         if (sibling_index > 0)
@@ -77,7 +83,7 @@ public class SystemMapObject : UIElement
                 transform.parent.GetChild(sibling_index - 1)
                 .GetComponent<SystemMapObject>();
 
-            if (sibling.AverageAltitude > AverageAltitude)
+            if (sibling.Motion.Periapsis > Motion.Periapsis)
                 transform.SetAsFirstSibling();
         }
 
@@ -90,10 +96,8 @@ public class SystemMapObject : UIElement
                                       Primary != null && 
                                       ImageCanvasGroup.gameObject.IsTouched();
 
-        float visual_size = SystemMap.FocusedObjectVisualSize;
         if (!IsFocused && Primary != null)
         {
-
             float largest_radius = Primary.Satellites.Max(satellite => satellite.Radius);
             float smallest_radius = Primary.Satellites.Min(satellite => satellite.Radius);
 
@@ -111,9 +115,10 @@ public class SystemMapObject : UIElement
                     1;
             }
 
-            visual_size = SizeMultiplier *
-                          SystemMap.LargestSatelliteVisualSize *
-                          normalized_size;
+            if (AutomaticVisualSize)
+                VisualSize = SizeMultiplier *
+                             SystemMap.LargestSatelliteVisualSize *
+                             normalized_size;
 
             MaterialPropertyBlock material_property_block = new MaterialPropertyBlock();
             LineController.Line.GetPropertyBlock(material_property_block);
@@ -121,20 +126,21 @@ public class SystemMapObject : UIElement
             material_property_block.SetFloat("PathLength", LineController.Length);
             material_property_block.SetVector("ObjectPosition", 
                 Scene.The.Canvas.transform.InverseTransformPoint(transform.position));
-            material_property_block.SetFloat("ObjectSize", visual_size);
+            material_property_block.SetFloat("ObjectSize", VisualSize);
 
             LineController.Line.SetPropertyBlock(material_property_block);
         }
         RectTransform image_transform = ImageCanvasGroup.transform as RectTransform;
+        float target_visual_size = IsFocused ? FocusedVisualSize : VisualSize;
         image_transform.sizeDelta = image_transform.sizeDelta.Lerped(
-            visual_size * Vector2.one, SizeChangeSpeed * Time.deltaTime);
+            target_visual_size * Vector2.one, SizeChangeSpeed * Time.deltaTime);
 
         if (!Application.isEditor || Application.isPlaying)
         {
             float target_alpha = 0;
 
             if (Primary == null ||
-                Primary.IsAncestorTo(SystemMap.FocusedObject) ||
+                SystemMap.FocusedObject.IsChildOf(Primary) || 
                 Primary.IsFocused)
             {
                 ImageCanvasGroup.blocksRaycasts = true;
@@ -144,7 +150,9 @@ public class SystemMapObject : UIElement
                 ImageCanvasGroup.blocksRaycasts = false;
 
             ImageCanvasGroup.alpha = 
-                Mathf.Lerp(ImageCanvasGroup.alpha, target_alpha, AppearSpeed * Time.deltaTime);
+                Mathf.Lerp(ImageCanvasGroup.alpha, 
+                           target_alpha, 
+                           AppearSpeed * Time.deltaTime);
         }
         else
         {
@@ -153,129 +161,56 @@ public class SystemMapObject : UIElement
         }
     }
 
-    public bool IsAncestorTo(SystemMapObject object_)
+    void UpdateParent()
     {
-        if (object_.Primary == null)
-            return false;
-
-        if (object_.Primary == this)
-            return true;
-
-        return IsAncestorTo(object_.Primary);
+        if (Primary != null && 
+            transform.parent != Motion.Primary.SatellitesContainer)
+            transform.SetParent(Primary.SatellitesContainer);
     }
 
-    public bool IsSiblingTo(SystemMapObject object_)
+    public void ChangeMotion(SatelliteMotion motion)
     {
-        return Primary == object_.Primary;
+        Motion = motion;
+
+        UpdateParent();
+    }
+}
+
+
+public static class SystemMapObjectExtensions
+{
+    public static Craft Craft(this SystemMapObject object_)
+    {
+        return object_.GetComponent<Craft>();
     }
 
-
-    //Derived values
-
-    public float MeanAnomalyAtDate(System.DateTime date)
+    public static bool IsCraft(this SystemMapObject object_)
     {
-        return 2 * Mathf.PI *
-               Scene.The.Clock.DateToSecondsSinceEpoch(date) /
-               Period;
+        return object_.Craft() != null;
     }
 
-    public float EccentricAnomalyGivenMeanAnomaly(float mean_anomaly)
+    public static Station Station(this SystemMapObject object_)
     {
-        return MathUtility.Root(
-            x => x - Eccentricity * Mathf.Sin(x) - mean_anomaly,
-            x => 1 - Eccentricity * Mathf.Cos(x),
-            1e-4f,
-            mean_anomaly);
-
+        return object_.GetComponent<Station>();
     }
 
-    public float TrueAnomalyGivenMeanAnomaly(float mean_anomaly)
+    public static bool IsStation(this SystemMapObject object_)
     {
-        return 2 * Mathf.Atan(Mathf.Sqrt((1 + Eccentricity) / (1 - Eccentricity)) *
-                              Mathf.Tan(EccentricAnomalyGivenMeanAnomaly(mean_anomaly) / 2));
+        return object_.Station() != null;
     }
 
-    public float AltitudeGivenTrueAnomaly(float true_anomaly)
+    public static Visitable Place(this SystemMapObject object_)
     {
-        return SemimajorAxis * (1 - Mathf.Pow(Eccentricity, 2)) /
-               (1 + Eccentricity * Mathf.Cos(true_anomaly));
+        if (object_.HasComponent<Station>())
+            return object_.GetComponent<Station>();
+        else if (object_.HasComponent<NaturalBody>())
+            return object_.GetComponent<NaturalBody>();
+
+        return null;
     }
 
-    public float VelocityGivenTrueAnomaly(float true_anomaly)
+    public static bool IsVisitable(this SystemMapObject object_)
     {
-        return Mathf.Sqrt(MathUtility.GravitationalConstant * Primary.Mass *
-                          (2 / AltitudeGivenTrueAnomaly(true_anomaly) - 1 / SemimajorAxis));
+        return object_.Place() != null;
     }
-
-    public Vector3 LocalPhysicalPositionGivenMeanAnomaly(float mean_anomaly)
-    {
-        if (Primary == null)
-            return Vector3.zero;
-
-        float true_anomaly = TrueAnomalyGivenMeanAnomaly(mean_anomaly);
-
-        return new Vector3(Mathf.Sin(true_anomaly + Angle),
-                           Mathf.Cos(true_anomaly + Angle), 0) *
-               AltitudeGivenTrueAnomaly(true_anomaly);
-    }
-
-    public Vector3 LocalPhysicalPositionGivenTrueAnomaly(float true_anomaly)
-    {
-        if (Primary == null)
-            return Vector3.zero;
-
-        return new Vector3(Mathf.Sin(true_anomaly + Angle),
-                           Mathf.Cos(true_anomaly + Angle), 0) *
-               AltitudeGivenTrueAnomaly(true_anomaly);
-    }
-
-    public Vector3 PhysicalPositionAtDate(System.DateTime date)
-    {
-        if (Primary == null)
-            return Vector3.zero;
-
-        return Primary.PhysicalPositionAtDate(date) + 
-               LocalPhysicalPositionGivenMeanAnomaly(MeanAnomalyAtDate(date));
-    }
-
-
-    public float SemimajorAxis
-    { get { return (Apoapsis + Periapsis) / 2; } }
-
-    public float SemiminorAxis
-    { get { return (Apoapsis + Periapsis) / 2; } }
-
-    public float Eccentricity
-    { get { return Apoapsis / SemimajorAxis - 1; } }
-
-    public float Period
-    {
-        get
-        {
-            return 2 * Mathf.PI *
-                   Mathf.Sqrt(Mathf.Pow(SemimajorAxis, 3) /
-                   (MathUtility.GravitationalConstant * Primary.Mass));
-        }
-    }
-
-    public float AverageAltitude
-    { get { return SemimajorAxis * (1 + Mathf.Pow(Eccentricity, 2) / 2); } }
-
-    public float MeanAnomaly
-    { get { return MeanAnomalyAtDate(Scene.The.Clock.Now); } }
-
-    public float EccentricAnomaly
-    { get { return EccentricAnomalyGivenMeanAnomaly(MeanAnomaly); } }
-
-    public float TrueAnomaly
-    { get { return TrueAnomalyGivenMeanAnomaly(MeanAnomaly); } }
-
-    public float Altitude
-    { get { return AltitudeGivenTrueAnomaly(TrueAnomaly); } }
-
-    public float Velocity
-    { get { return VelocityGivenTrueAnomaly(TrueAnomaly); } }
-
-    public float PathLength
-    { get { return MathUtility.EllipseCircumference(SemimajorAxis, Eccentricity); } }
 }

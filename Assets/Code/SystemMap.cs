@@ -9,11 +9,15 @@ public class SystemMap : Page
     public RectTransform ObjectsContainer;
     public SystemMapObject Sun;
 
+    public TransportCraftPanel TransportCraftPanel;
+    public PlacePanel PlacePanel;
+
     public Material OrbitLineMaterial;
 
-    public float FocusedObjectVisualSize = 30;
     public float SmallestSatelliteVisualSize = 3,
                  LargestSatelliteVisualSize = 20;
+
+    public float InnermostOrbitMargin = 20;
 
     public float TransitionDuration = 5;
     public float TransitionMoment
@@ -25,6 +29,9 @@ public class SystemMap : Page
                 TransitionDuration);
         }
     }
+
+    public IEnumerable<SystemMapObject> Objects
+    { get { return GetComponentsInChildren<SystemMapObject>(); } }
 
     SystemMapObject focused_object, last_focused_object;
     System.DateTime focus_change_timestamp;
@@ -86,24 +93,42 @@ public class SystemMap : Page
 
     float GetCompressedDistance(SystemMapObject reference, float distance_in_meters)
     {
-        float compressed_distance = 1;
-        if (reference.Satellites.Count() > 1)
+        float innermost_satellite_visual_size = 0;
+        if (reference.Satellites.Count() > 0)
+            innermost_satellite_visual_size = reference.Satellites
+                .MinElement(satellite => satellite.Motion.Periapsis).VisualSize;
+
+        float smallest_normalized_distance =
+            (FocusedObject.FocusedVisualSize + 
+             innermost_satellite_visual_size +
+             InnermostOrbitMargin) /
+            (2 * PixelRadius);
+        if (reference != Sun)
+            smallest_normalized_distance *= 1.4f;
+
+        float nearest_distance;
+        float furthest_distance;
+        if (reference.Satellites.Count() > 0)
         {
-            float smallest_normalized_distance =
-                (FocusedObjectVisualSize + LargestSatelliteVisualSize) /
-                (2 * PixelRadius);
-
-            float nearest_satellite_distance = 
-                reference.Satellites.Min(satellite => satellite.Periapsis);
-            float furthest_satellite_distance = 
-                reference.Satellites.Max(satellite => satellite.Apoapsis);
-
-            compressed_distance =
-                (smallest_normalized_distance - 1) *
-                Mathf.Log(distance_in_meters / furthest_satellite_distance) /
-                Mathf.Log(nearest_satellite_distance / furthest_satellite_distance) +
-                1;
+            nearest_distance = 
+                reference.Satellites.Min(satellite => satellite.Motion.Periapsis);
+            furthest_distance = 
+                reference.Satellites.Max(satellite => satellite.Motion.Apoapsis);
         }
+        else
+        {
+            nearest_distance = 10 * reference.Radius;
+            furthest_distance = 100 * reference.Radius;
+        }
+
+        if (nearest_distance == furthest_distance)
+            nearest_distance = furthest_distance / 10;
+
+        float compressed_distance =
+            (smallest_normalized_distance - 1) *
+            Mathf.Log(distance_in_meters / furthest_distance) /
+            Mathf.Log(nearest_distance / furthest_distance) +
+            1;
 
         return compressed_distance;
     }

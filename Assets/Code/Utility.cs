@@ -75,6 +75,21 @@ public static class Utility
         return a.Count == b.Count && a.Except(b).Count() == 0;
     }
 
+    public static T ElementAtRelativeIndex<T>(this List<T> list, T element, int relative_index)
+    {
+        return list[list.IndexOf(element) + relative_index];
+    }
+
+    public static T PreviousElement<T>(this List<T> list, T element)
+    {
+        return list.ElementAtRelativeIndex(element, -1);
+    }
+
+    public static T NextElement<T>(this List<T> list, T element)
+    {
+        return list.ElementAtRelativeIndex(element, +1);
+    }
+
     public static T Take<T>(this List<T> list, T element)
     {
         list.Remove(element);
@@ -278,5 +293,24 @@ public static class Utility
             throw new ArgumentException("Type T must be an Enum");
 
         return (T[])System.Enum.GetValues(typeof(T));
+    }
+
+
+    public static void SaveAsPNG(this RenderTexture render_texture, 
+                                 string filepath = "Other/render_texture.png")
+    {
+        RenderTexture active_render_texture = RenderTexture.active;
+        RenderTexture.active = render_texture;
+
+        Texture2D temporary_texture = 
+            new Texture2D(render_texture.width, render_texture.height);
+        temporary_texture.hideFlags = HideFlags.HideAndDontSave;
+
+        temporary_texture.ReadPixels(
+            new Rect(0, 0, render_texture.width, render_texture.height), 0, 0);
+        System.IO.File.WriteAllBytes(filepath, temporary_texture.EncodeToPNG());
+        Texture2D.Destroy(temporary_texture);
+
+        RenderTexture.active = active_render_texture;
     }
 }

@@ -373,6 +373,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd7f72e70659634f9f213dec1571bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion:
+    Primary: {fileID: 0}
+    Periapsis: 0
+    Apoapsis: 0
+    ArgumentOfPeriapsis: 0
+    MeanAnomalyAtEpoch: 0
   ImageCanvasGroup: {fileID: 5004580290119416462}
   SatellitesContainer: {fileID: 8750878423828865469}
   LineController: {fileID: 557972400408846293}
@@ -380,12 +386,13 @@ MonoBehaviour:
   Name: SystemMapObject
   Mass: 0
   Radius: 69911000
-  Angle: 0
-  Apoapsis: 0
-  Periapsis: 0
-  IsCircularOrbit: 1
+  VisualSize: 20
+  FocusedVisualSize: 60
   SizeMultiplier: 1
   AutomaticVisualSize: 1
+  PositionRealizeSpeed: 16
+  SizeChangeSpeed: 3
+  AppearSpeed: 3
 --- !u!114 &557972400408846293
 MonoBehaviour:
   m_ObjectHideFlags: 0
