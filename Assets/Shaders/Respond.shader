@@ -66,24 +66,30 @@
 				fixed4 signal = tex2D(Signal, fragment_data.texture_coordinates);
 				fixed4 previous_response = tex2D(_MainTex, fragment_data.texture_coordinates);
 
-				fixed4 response = fixed4(0, 0, 0, 1);
+				float4 response = float4(0, 0, 0, 1);
 
 				if (signal.r > previous_response.r)
-					response.r = lerp(previous_response.r, signal.r, 1000 * time_delta / RedResponseTime);
+					response.r = lerp(previous_response.r, signal.r, 
+									  clamp(1000 * time_delta / RedResponseTime, 0, 1));
 				else
-					response.r = lerp(previous_response.r, signal.r, 1000 * time_delta / RedDecayTime);
+					response.r = lerp(previous_response.r, signal.r, 
+									  clamp(1000 * time_delta / RedDecayTime, 0, 1));
 
 				if (signal.g > previous_response.g)
-					response.g = lerp(previous_response.g, signal.g, 1000 * time_delta / GreenResponseTime);
+					response.g = lerp(previous_response.g, signal.g, 
+									  clamp(1000 * time_delta / GreenResponseTime, 0, 1));
 				else
-					response.g = lerp(previous_response.g, signal.g, 1000 * time_delta / GreenDecayTime);
+					response.g = lerp(previous_response.g, signal.g, 
+									  clamp(1000 * time_delta / GreenDecayTime, 0, 1));
 
 				if (signal.b > previous_response.b)
-					response.b = lerp(previous_response.b, signal.b, 1000 * time_delta / BlueResponseTime);
+					response.b = lerp(previous_response.b, signal.b, 
+									  clamp(1000 * time_delta / BlueResponseTime, 0, 1));
 				else
-					response.b = lerp(previous_response.b, signal.b, 1000 * time_delta / BlueDecayTime);
+					response.b = lerp(previous_response.b, signal.b, 
+								      clamp(1000 * time_delta / BlueDecayTime, 0, 1));
 
-				return response;
+				return fixed4(response);
 			}
             ENDCG
         }
