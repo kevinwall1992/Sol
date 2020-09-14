@@ -31,27 +31,27 @@ public abstract class Button : UIElement
 
     protected virtual void Update()
     {
-        if (Image == null)
-            return;
+        if (Image != null)
+        {
+            if (IsDown)
+            {
+                Image.sprite = DownSprite;
+                Image.color = DownColor;
+            }
+            else if (IsTouched)
+            {
+                Image.sprite = TouchSprite;
+                Image.color = TouchColor;
+            }
+            else
+            {
+                Image.sprite = rest_sprite;
+                Image.color = rest_color;
+            }
+        }
 
-        if (IsDown)
-        {
-            Image.sprite = DownSprite;
-            Image.color = DownColor;
-        }
-        else if (IsTouched)
-        {
-            Image.sprite = TouchSprite;
-            Image.color = TouchColor;
-
-            if (InputUtility.WasMouseLeftReleased)
-                OnButtonUp();
-        }
-        else
-        {
-            Image.sprite = rest_sprite;
-            Image.color = rest_color;
-        }
+        if(IsTouched && InputUtility.WasMouseLeftReleased)
+            OnButtonUp();
     }
 
     protected abstract void OnButtonUp();
