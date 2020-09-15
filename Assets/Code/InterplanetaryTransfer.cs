@@ -28,7 +28,7 @@ public class InterplanetaryTransfer : Navigation.Transfer
                                   System.DateTime earliest_launch_date)
         : base(original_motion, target_motion)
     {
-        SystemMapObject transfer_primary = null;
+        Satellite transfer_primary = null;
         foreach(SatelliteMotion octave in original_motion.Hierarchy)
             if(target_motion.Hierarchy.Contains(octave.Primary.Motion))
             {

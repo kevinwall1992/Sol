@@ -2,11 +2,11 @@
 using System.Linq;
 using UnityEngine;
 
-//struct?
+
 [System.Serializable]
-public class SatelliteMotion
+public class SatelliteMotion : Motion
 {
-    public SystemMapObject Primary;
+    public Satellite Primary;
 
     public float Periapsis;
     public float Apoapsis;
@@ -49,12 +49,12 @@ public class SatelliteMotion
     { get { return AltitudeGivenTrueAnomaly(TrueAnomaly); } }
 
     //Velocity with respect to Primary
-    public Vector3 Velocity
-    { get { return VelocityGivenTrueAnomaly(TrueAnomaly); } }
+    public Vector3 LocalVelocity
+    { get { return LocalVelocityGivenTrueAnomaly(TrueAnomaly); } }
 
     //Velocity with respect to top level primary
-    public Vector3 SolarVelocity
-    { get { return SolarVelocityAtDate(Scene.The.Clock.Now); } }
+    public Vector3 Velocity
+    { get { return VelocityAtDate(Scene.The.Clock.Now); } }
 
     public float PathLength
     { get { return MathUtility.EllipseCircumference(SemimajorAxis, Eccentricity); } }
@@ -76,7 +76,7 @@ public class SatelliteMotion
         }
     }
 
-    public SatelliteMotion(SystemMapObject primary,
+    public SatelliteMotion(Satellite primary,
                            float periapsis, 
                            float apoapsis, 
                            float argument_of_periapsis, 
@@ -142,7 +142,7 @@ public class SatelliteMotion
         return AltitudeGivenTrueAnomaly(TrueAnomalyAtDate(date));
     }
 
-    public Vector3 VelocityGivenTrueAnomaly(float true_anomaly)
+    public Vector3 LocalVelocityGivenTrueAnomaly(float true_anomaly)
     {
         float eccentric_anomaly = EccentricAnomalyGivenTrueAnomaly(true_anomaly);
 
@@ -159,14 +159,14 @@ public class SatelliteMotion
                            velocity.x * Mathf.Sin(ArgumentOfPeriapsis));
     }
 
-    public Vector3 VelocityAtDate(System.DateTime date)
+    public Vector3 LocalVelocityAtDate(System.DateTime date)
     {
-        return VelocityGivenTrueAnomaly(TrueAnomalyAtDate(date));
+        return LocalVelocityGivenTrueAnomaly(TrueAnomalyAtDate(date));
     }
 
     public Vector3 EquatorialVelocityGivenTrueAnomaly(float true_anomaly)
     {
-        Vector3 velocity = VelocityGivenTrueAnomaly(true_anomaly);
+        Vector3 velocity = LocalVelocityGivenTrueAnomaly(true_anomaly);
 
         return new Vector3(
             -(velocity.y * Mathf.Cos(true_anomaly) + velocity.x * Mathf.Sin(true_anomaly)),
@@ -174,10 +174,10 @@ public class SatelliteMotion
             0);
     }
 
-    public Vector3 SolarVelocityAtDate(System.DateTime date)
+    public Vector3 VelocityAtDate(System.DateTime date)
     {
-        return VelocityAtDate(date) + 
-               (Primary != null ? Primary.Motion.SolarVelocity : 
+        return LocalVelocityAtDate(date) + 
+               (Primary != null ? Primary.Motion.Velocity : 
                                   Vector3.zero);
     }
 

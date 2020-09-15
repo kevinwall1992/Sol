@@ -61,7 +61,7 @@ public class ScheduleElement : UIElement, TransportCraftPanel.Element
     {
         get
         {
-            SystemMapObject primary;
+            Satellite primary;
 
             if (IsInTransit || ArrivalTransfer == null)
                 primary = this.TransportCraftPanel().Craft.Primary;

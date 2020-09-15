@@ -38,7 +38,7 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
 
         if (IsCraftWelcome())
             TextShadow.text = Text.text = "  Select";
-        else if(this.PlacePanel().Place is NaturalBody)
+        else if(this.PlacePanel().Place is NaturalSatellite)
             TextShadow.text = Text.text = "Cant Land";
         else
             TextShadow.text = Text.text = "Cant Dock";

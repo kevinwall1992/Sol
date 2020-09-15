@@ -6,7 +6,7 @@ using System.Linq;
 [RequireComponent(typeof(Craft))]
 public class Station : MonoBehaviour, Visitable
 {
-    public string PlaceName { get { return Craft.SystemMapObject.Name; } }
+    public string PlaceName { get { return Craft.Satellite.Name; } }
 
     [SerializeField]
     string description = "";
@@ -36,7 +36,7 @@ public class Station : MonoBehaviour, Visitable
                          Mathf.Pow(velocity, 2);
 
         return new SatelliteMotion(
-            Craft.SystemMapObject, 
+            Craft.Satellite, 
             distance, distance, 
             0, Random.value * 2 * Mathf.PI);
     }

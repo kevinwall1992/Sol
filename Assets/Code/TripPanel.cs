@@ -13,10 +13,10 @@ public class TripPanel : MonoBehaviour, TransportCraftPanel.Element
     public Navigation.Transfer Transfer
     { get { return ScheduleElement.DepartureTransfer; } }
 
-    public SystemMapObject Origin
+    public Satellite Origin
     { get { return ScheduleElement.DepartureTransfer.OriginalMotion.Primary; } }
 
-    public SystemMapObject Destination
+    public Satellite Destination
     { get { return ScheduleElement.DepartureTransfer.TargetMotion.Primary; } }
 
     private void Update()

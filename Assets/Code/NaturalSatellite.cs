@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(SystemMapObject))]
-public class NaturalBody : MonoBehaviour, Visitable
+[RequireComponent(typeof(Satellite))]
+public class NaturalSatellite : MonoBehaviour, Visitable
 {
-    public string PlaceName { get { return SystemMapObject.Name; } }
+    public string PlaceName { get { return Satellite.Name; } }
 
     [SerializeField]
     string description = "";
@@ -14,8 +14,8 @@ public class NaturalBody : MonoBehaviour, Visitable
     public IEnumerable<Craft> Visitors
     { get { return new List<Craft>(); } }
 
-    public SystemMapObject SystemMapObject
-    { get { return GetComponent<SystemMapObject>(); } }
+    public Satellite Satellite
+    { get { return GetComponent<Satellite>(); } }
 
     public SatelliteMotion GetVisitingMotion(Craft craft)
     {

@@ -73,8 +73,8 @@ public class Engine : MonoBehaviour, Craft.Part
         //maneuver
 
         if (maneuver.ResultingMotion.Primary == Craft.Primary)
-            return (maneuver.ResultingMotion.VelocityAtDate(maneuver.Date) - 
-                    Craft.Motion.VelocityAtDate(maneuver.Date))
+            return (maneuver.ResultingMotion.LocalVelocityAtDate(maneuver.Date) - 
+                    Craft.Motion.LocalVelocityAtDate(maneuver.Date))
                     .magnitude;
 
         //In the more complex case of changing your orbit to another body,
@@ -104,8 +104,8 @@ public class Engine : MonoBehaviour, Craft.Part
             innermost_motion.Hierarchy[imaginary_primary_index];
 
         float top_level_velocity_change =
-            (outermost_motion.VelocityAtDate(maneuver.Date) -
-            top_level_satellite.VelocityAtDate(maneuver.Date)).magnitude;
+            (outermost_motion.LocalVelocityAtDate(maneuver.Date) -
+            top_level_satellite.LocalVelocityAtDate(maneuver.Date)).magnitude;
 
         float current_level_velocity_change = top_level_velocity_change;
 
@@ -139,7 +139,7 @@ public class Engine : MonoBehaviour, Craft.Part
             velocity_change = Mathf.Abs(
                 Mathf.Sqrt(2 * (Mathf.Pow(top_level_velocity_change, 2) / 2 - 
                                 potential_energy_sum)) - 
-                innermost_motion.VelocityAtDate(maneuver.Date).magnitude);
+                innermost_motion.LocalVelocityAtDate(maneuver.Date).magnitude);
         }
         else
         {
@@ -166,7 +166,7 @@ public class Engine : MonoBehaviour, Craft.Part
             {
                 SatelliteMotion imaginary_craft_motion =
                     innermost_motion.Hierarchy[imaginary_primary_index - 1];
-                SystemMapObject imaginary_primary = imaginary_craft_motion.Primary;
+                Satellite imaginary_primary = imaginary_craft_motion.Primary;
 
                 float escape_velocity = Mathf.Sqrt(
                     2 * MathConstants.GravitationalConstant *
@@ -181,7 +181,7 @@ public class Engine : MonoBehaviour, Craft.Part
 
                 velocity_change = Mathf.Abs(
                     periapsis_velocity -
-                    imaginary_craft_motion.VelocityAtDate(maneuver.Date).magnitude);
+                    imaginary_craft_motion.LocalVelocityAtDate(maneuver.Date).magnitude);
 
                 imaginary_primary_index--;
             }

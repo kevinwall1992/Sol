@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 
 [ExecuteAlways]
-[RequireComponent(typeof(SystemMapObject))]
+[RequireComponent(typeof(Satellite))]
 public class Craft : MonoBehaviour
 {
     public RectTransform PartsContainer;
 
-    public SystemMapObject SystemMapObject
-    { get { return GetComponent<SystemMapObject>(); } }
+    public Satellite Satellite
+    { get { return GetComponent<Satellite>(); } }
 
-    public string Name { get { return SystemMapObject.Name; } }
+    public string Name { get { return Satellite.Name; } }
 
-    public SystemMapObject Primary
-    { get { return SystemMapObject.Primary; } }
+    public Satellite Primary
+    { get { return Satellite.Primary; } }
 
     public SatelliteMotion Motion
     {
-        get { return SystemMapObject.Motion; }
-        set { SystemMapObject.ChangeMotion(value); }
+        get { return Satellite.Motion; }
+        set { Satellite.ChangeMotion(value); }
     }
 
     public IEnumerable<Part> Parts
@@ -74,10 +74,10 @@ public class Craft : MonoBehaviour
 
     void Update()
     {
-        SystemMapObject.Mass = Mass;
+        Satellite.Mass = Mass;
 
         if(Primary != null && HasEngine)
-            SystemMapObject.ImageCanvasGroup.transform.rotation =
+            this.Satellite.SystemMapObject().ImageCanvasGroup.transform.rotation =
                 Quaternion.Euler(0, 0, MathUtility.RadiansToDegrees(
                     Motion.TrueAnomaly + Motion.ArgumentOfPeriapsis));
     }

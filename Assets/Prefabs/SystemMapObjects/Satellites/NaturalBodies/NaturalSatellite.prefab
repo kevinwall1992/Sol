@@ -66,11 +66,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -480
+      value: -472
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -264.42593
+      value: -259.92593
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_SizeDelta.x
@@ -114,11 +114,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 696116188602862457, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: Name
-      value: NaturalBody
+      value: NaturalSatellite
       objectReference: {fileID: 0}
     - target: {fileID: 8934150241507691817, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_Name
-      value: NaturalBody
+      value: NaturalSatellite
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
