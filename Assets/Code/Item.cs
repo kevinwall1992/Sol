@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Item : MonoBehaviour
 {
-    public string Name;//Is this the user facing name?
+    public string Name;
 
     public float Quantity;
 
