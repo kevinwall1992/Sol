@@ -52,7 +52,7 @@ public class Cursor : UIElement
             .Where(rect_transform => rect_transform.Contains(
                 PixelPointedAt + new Vector2(0.5f, -0.5f),
                 Scene.The.UICamera))
-            .Select(rect_transform => rect_transform.gameObject);
+            .Select(rect_transform => rect_transform.gameObject).ToList();
                
         
         PointerEventData pointer_event_data = new PointerEventData(null);
