@@ -117,6 +117,17 @@ public class InventoryPage : Page
     }
 
 
+    public static Item GetItemFromInventoryElement(GameObject game_object)
+    {
+        if (game_object.HasComponent<IconInventoryElement>())
+            return game_object.GetComponent<IconInventoryElement>().Item;
+        else if (game_object.HasComponent<LineInventoryElement>())
+            return game_object.GetComponent<LineInventoryElement>().Item;
+        else
+            return null;
+    }
+
+
     public IconInventoryElement IconInventoryElementPrefab;
     public LineInventoryElement LineInventoryElementPrefab;
 }
