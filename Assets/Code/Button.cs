@@ -14,6 +14,8 @@ public abstract class Button : UIElement
 
     public bool IsDown { get { return IsTouched && InputUtility.IsMouseLeftPressed; } }
 
+    bool DontModifyImageSprite { get; set; }
+
     protected virtual void Start()
     {
         if (Image == null)
@@ -21,6 +23,8 @@ public abstract class Button : UIElement
 
         rest_sprite = Image.sprite;
         rest_color = Image.color;
+
+        DontModifyImageSprite = TouchSprite == null;
 
         if (TouchSprite == null)
             TouchSprite = rest_sprite;
@@ -35,17 +39,20 @@ public abstract class Button : UIElement
         {
             if (IsDown)
             {
-                Image.sprite = DownSprite;
+                if(!DontModifyImageSprite)
+                    Image.sprite = DownSprite;
                 Image.color = DownColor;
             }
             else if (IsTouched)
             {
-                Image.sprite = TouchSprite;
+                if (!DontModifyImageSprite)
+                    Image.sprite = TouchSprite;
                 Image.color = TouchColor;
             }
             else
             {
-                Image.sprite = rest_sprite;
+                if (!DontModifyImageSprite)
+                    Image.sprite = rest_sprite;
                 Image.color = rest_color;
             }
         }
