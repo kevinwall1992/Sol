@@ -248,6 +248,7 @@ public class Window : UIElement
     public static Window Create()
     {
         Window window = GameObject.Instantiate(Scene.The.Prefabs.Window);
+        Scene.The.WindowContainer.AddWindow(window);
 
         return window;
     }
