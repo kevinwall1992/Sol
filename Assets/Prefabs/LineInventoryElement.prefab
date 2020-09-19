@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5434269690191404058}
   - component: {fileID: 1499373431554836916}
   - component: {fileID: 5060810988512954409}
+  - component: {fileID: 2584348409469828054}
   m_Layer: 0
   m_Name: LineInventoryElement
   m_TagString: Untagged
@@ -83,6 +84,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22b9d6d04bd106f4a879ce0768ca5ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2584348409469828054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767353375372629273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cb51c78830e15448ab678c2bfa76524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Image: {fileID: 0}
+  TouchSprite: {fileID: 0}
+  DownSprite: {fileID: 0}
+  TouchColor: {r: 1, g: 1, b: 1, a: 1}
+  DownColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5958507748742583250
 GameObject:
   m_ObjectHideFlags: 0

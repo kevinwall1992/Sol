@@ -7,4 +7,5 @@ public class Prefabs : MonoBehaviour
     public TaskbarElement TaskbarElement;
 
     public ProfilePage ProfilePage;
+    public ItemPage ItemPage;
 }
