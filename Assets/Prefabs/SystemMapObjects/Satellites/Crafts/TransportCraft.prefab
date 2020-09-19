@@ -209,6 +209,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: TransportCraft
       objectReference: {fileID: 0}
+    - target: {fileID: 668919118639030258, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d0c03dc6188c6ed499d04a5194bf8880, type: 3}
+    - target: {fileID: 1971198680343650357, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
+      propertyPath: VisualSize
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 2410650695489843007, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -231,7 +239,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8373578075681073973, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
       propertyPath: Mass
-      value: 54556.6
+      value: 54606.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971604286331517130, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971604286331517130, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 9042211902514959705, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -279,7 +295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9042211902514959705, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -472
+      value: -465.3889
       objectReference: {fileID: 0}
     - target: {fileID: 9042211902514959705, guid: e64296bd4e1c3b74ea99d52ede0e00f4, type: 3}
       propertyPath: m_AnchoredPosition.y

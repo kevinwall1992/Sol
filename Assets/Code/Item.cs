@@ -4,21 +4,39 @@ using System.Collections;
 
 public class Item : MonoBehaviour
 {
-    public string Name;
+    public string Name, Units, ShortName, Qualifier;
+
+    [TextArea(15, 20)]
+    public string Description;
 
     public float Quantity;
+
+    public Sprite ProfilePicture, Icon;
+
+    public System.Func<string> GetQuantityString { get; set; }
 
     public ItemContainer Container
     { get { return GetComponentInParent<ItemContainer>(); } }
 
     void Start()
     {
-
+        
     }
 
     void Update()
     {
+        if (GetQuantityString == null)
+            GetQuantityString = delegate ()
+            {
+                if (Quantity < 10)
+                    return Quantity.ToString("F1");
 
+                string short_quantity_string = ((int)Quantity).ToString("D");
+                int digit_count = short_quantity_string.Length;
+
+                return short_quantity_string.Substring(0, 3) + 
+                       "E" + (digit_count - 3).ToString();
+            };
     }
 
     public Item RemoveQuantity(float quantity_removed)
