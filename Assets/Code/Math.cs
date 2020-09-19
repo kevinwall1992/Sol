@@ -226,7 +226,7 @@ public static class MathUtility
 
     public static int RoundDown(this float value)
     {
-        if (value > 0)
+        if (value >= 0)
             return (int)value;
         else
             return (int)(value - 1);
