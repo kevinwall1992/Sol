@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class InventoryPage : MonoBehaviour
+public class InventoryPage : Page
 {
     public Grid ElementGrid;
     public Switch IconSwitch;
