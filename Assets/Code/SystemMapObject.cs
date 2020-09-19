@@ -31,11 +31,17 @@ public class SystemMapObject : MonoBehaviour
     private void Start()
     {
         OrbitLine.Destination = Scene.The._3DUIElementsContainer;
+
+        
     }
 
     private void Update()
     {
         Image.sprite = Icon;
+
+        //Necessary to prevent culling bug in Unity...
+        Image.color = Color.black;
+        Image.color = Color.white;
 
         //Size
         RectTransform image_transform = Image.transform as RectTransform;
