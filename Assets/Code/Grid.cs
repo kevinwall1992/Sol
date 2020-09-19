@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 
 [ExecuteAlways]
-public class GridContainer : UIElement
+public class Grid : UIElement
 {
     Vector2 AdjustedMargin
     {
@@ -62,9 +65,6 @@ public class GridContainer : UIElement
     {
         RectTransform.pivot = RectTransform.pivot.Round();
 
-        Stride.x = (RectTransform.pivot.x == 0 ? 1 : -1) * Mathf.Abs(Stride.x);
-        Stride.y = (RectTransform.pivot.y == 0 ? 1 : -1) * Mathf.Abs(Stride.y);
-
         Margin = Mathf.Abs(Margin);
 
         if (transform.childCount == 0)
@@ -75,10 +75,16 @@ public class GridContainer : UIElement
             Stride.x == 0 || Stride.y == 0)
             Stride = (transform.GetChild(0).transform as RectTransform).rect.size;
 
-        foreach (Transform child in transform)
+        Stride.x = (RectTransform.pivot.x == 0 ? 1 : -1) * Mathf.Abs(Stride.x);
+        Stride.y = (RectTransform.pivot.y == 0 ? 1 : -1) * Mathf.Abs(Stride.y);
+
+        List<RectTransform> sorted_elements = GetSortedElements();
+        for(int i = 0; i< sorted_elements.Count; i++)
         {
-            int column = child.GetSiblingIndex() % ColumnCount;
-            int row = child.GetSiblingIndex() / ColumnCount;
+            RectTransform element = sorted_elements[i];
+
+            int column = i % ColumnCount;
+            int row = i / ColumnCount;
 
             Vector2Int stride_factor;
             if (IsVertical)
@@ -86,8 +92,26 @@ public class GridContainer : UIElement
             else
                 stride_factor = new Vector2Int(row, column);
 
-            child.localPosition = 
+            element.localPosition = 
                 (Vector3)((Stride + Stride.Mapped(value => value < 0 ? -1 : 1) * AdjustedMargin) * stride_factor);
         }
+    }
+
+    List<RectTransform> GetSortedElements()
+    {
+        IEnumerable<RectTransform> elements = 
+            transform.Children().Select(child => child as RectTransform);
+
+        IEnumerable<ComparableElement> comparable_elements = 
+            elements.Where(element => element.HasComponent<ComparableElement>()).Select(element => element.GetComponent<ComparableElement>());
+
+        IEnumerable<RectTransform> incomparable_elements = elements.Where(element => !element.HasComponent<ComparableElement>());
+
+        List<RectTransform> sorted_elements = new List<ComparableElement>(comparable_elements)
+            .Sorted(element => element.Comparable)
+            .Select(element => element.transform as RectTransform).ToList();
+        sorted_elements.AddRange(incomparable_elements.ToList());
+
+        return sorted_elements;
     }
 }
