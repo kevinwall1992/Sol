@@ -5,7 +5,7 @@ public class MoveToFrontWhenPressed : UIElement
 {
     private void Update()
     {
-        if (IsTouched && InputUtility.IsMouseLeftPressed)
+        if (IsTouched && InputUtility.WasMouseLeftPressed)
             transform.SetAsLastSibling();
     }
 }
