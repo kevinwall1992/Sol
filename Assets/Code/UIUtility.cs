@@ -10,6 +10,32 @@ public static class UIUtility
         return transform.Cast<Transform>();
     }
 
+    //For some reason, Unity has an override for GetComponentInChildren()
+    //to find inactive child components, but not for GetComponentInParent()
+    public static T GetComponentInParent<T>(this Transform transform, 
+                                            bool include_inactive) where T : MonoBehaviour
+    {
+        if (!include_inactive)
+            return transform.GetComponentInParent<T>();
+
+        Transform parent = transform;
+        do
+        {
+            if (parent.HasComponent<T>())
+                return parent.GetComponent<T>();
+
+            parent = parent.parent;
+        } while (parent.parent != null);
+
+        return null;
+    }
+
+    public static T GetComponentInParent<T>(this MonoBehaviour mono_behaviour,
+                                            bool include_inactive) where T : MonoBehaviour
+    {
+        return mono_behaviour.transform.GetComponentInParent<T>(include_inactive);
+    }
+
     //Like [RequireComponent], but at runtime
     public static T RequireComponent<T>(this GameObject game_object) where T : MonoBehaviour
     {
