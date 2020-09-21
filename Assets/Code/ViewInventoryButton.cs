@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ViewInventoryButton : Button
+public class ViewInventoryButton : Button, TransportCraftPanel.Element
 {
     protected override void OnButtonUp()
     {
-        throw new System.NotImplementedException();
+        Scene.The.CraftInventoryPage.Craft = this.TransportCraftPanel().Craft;
+        Scene.The.CraftInventoryPage.InventoryPage.Window.Open();
     }
 }
