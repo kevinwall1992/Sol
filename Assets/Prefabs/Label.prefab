@@ -55,6 +55,7 @@ MonoBehaviour:
   Background: {fileID: 3808722247483318121}
   TextColor: {r: 1, g: 1, b: 1, a: 1}
   BackgroundColor: {r: 0.24705884, g: 0.24705884, b: 0.24705884, a: 1}
+  CharacterWidth: 6
   AutomaticWidth: 0
 --- !u!114 &7115270870573673184
 MonoBehaviour:

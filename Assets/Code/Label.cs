@@ -9,6 +9,8 @@ public class Label : UIElement
     public Image Background;
     public Color TextColor, BackgroundColor;
 
+    public int CharacterWidth;
+
     public bool AutomaticWidth = false;
 
     private void Update()
@@ -16,7 +18,7 @@ public class Label : UIElement
         Text.color = TextColor;
         Background.color = BackgroundColor;
 
-        int text_width = Text.text.Length * 6;
+        int text_width = Text.text.Length * CharacterWidth;
 
         RectTransform background_transform = Background.transform as RectTransform;
         background_transform.sizeDelta =  
