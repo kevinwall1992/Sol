@@ -17,6 +17,7 @@ public class Scene : MonoBehaviour
     public WindowContainer WindowContainer;
     public Cursor Cursor;
     public SystemMap SystemMap;
+    public ItemPage ItemPage;
 
 
     private void Start()
