@@ -196,19 +196,6 @@ MonoBehaviour:
   LineMargin: 2
   IconInventoryElementPrefab: {fileID: 1282803271651848411, guid: e313fadb1f427624cb104a61d4bbbd30, type: 3}
   LineInventoryElementPrefab: {fileID: 1499373431554836916, guid: a9ccf8e2aa701744f8dd9acdebec12b1, type: 3}
---- !u!114 &6768235149593903417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1895721125223038086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f14f6918acf4e3499c30f1cee7a7967, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Craft: {fileID: 0}
 --- !u!1001 &729531392588583374
 PrefabInstance:
   m_ObjectHideFlags: 0
