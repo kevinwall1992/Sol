@@ -24,7 +24,7 @@ public class Taskbar : UIElement
             TaskbarElements.Select(taskbar_element => taskbar_element.Window);
 
         foreach (Window window in Scene.The.WindowContainer.Windows)
-            if (!windows_with_taskbar_elements.Contains(window))
+            if (window.IsOpen && !windows_with_taskbar_elements.Contains(window))
                 TaskbarElement.Create(window).transform.SetParent(TaskbarElementsContainer, false);
 
         Vector2Int offset = Vector2Int.zero;

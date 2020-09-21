@@ -52,6 +52,12 @@ public class Window : UIElement
     public WindowContainer Windows
     { get { return Scene.The.WindowContainer; } }
 
+    private void Start()
+    {
+        if (!IsOpen)
+            gameObject.SetActive(false);
+    }
+
     void Update()
     {
         TitleBar.sizeDelta = TitleBar.sizeDelta.YChangedTo(DefaultTitleBarHeight);
@@ -60,21 +66,14 @@ public class Window : UIElement
         if (!UnityEditor.EditorApplication.isPlaying)
             return;
 
-
-        if(!IsOpen)
-        {
-            if (Windows != null)
-                Windows.RemoveWindow(this);
-
-            CanvasGroup.alpha = 0;
-
-            return;
-        }
-        else
-            CanvasGroup.alpha = 1;
-
         if (Windows == null)
             Scene.The.WindowContainer.AddWindow(this);
+
+        if (!IsOpen)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
 
         if (!is_grabbed)
         {
@@ -189,10 +188,15 @@ public class Window : UIElement
 
         if (IsMinimized)
             CanvasGroup.alpha = 0;
+        else
+            CanvasGroup.alpha = 1;
     }
 
     public void Open(Page page = null, bool dont_change_page_order = false)
     {
+        IsOpen = true;
+        gameObject.SetActive(true);
+
         Windows.MoveToFront(this);
 
         if (page == null)
