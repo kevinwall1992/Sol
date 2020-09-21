@@ -12,6 +12,7 @@ public class InventoryElementButton : Button
     {
         Item item = InventoryPage.GetItemFromInventoryElement(gameObject);
 
-        Window.Create().Open(ItemPage.Create(item));
+        Scene.The.ItemPage.Item = item;
+        Scene.The.ItemPage.Window.Open();
     }
 }
