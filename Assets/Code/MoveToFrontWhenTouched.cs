@@ -6,6 +6,6 @@ public class MoveToFrontWhenTouched : UIElement
     private void Update()
     {
         if (IsPointedAt)
-            transform.SetSiblingIndex(transform.parent.childCount - 1);
+            transform.SetAsLastSibling();
     }
 }
