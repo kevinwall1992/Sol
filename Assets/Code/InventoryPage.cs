@@ -72,6 +72,9 @@ public class InventoryPage : Page
     {
         foreach (IconInventoryElement element in IconInventoryElements.ToList())
             GameObject.Destroy(element.gameObject);
+
+        foreach (LineInventoryElement element in LineInventoryElements.ToList())
+            GameObject.Destroy(element.gameObject);
     }
 
     void ValidateElements()
