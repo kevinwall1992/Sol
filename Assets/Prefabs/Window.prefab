@@ -817,6 +817,7 @@ GameObject:
   - component: {fileID: 6950027795083538284}
   - component: {fileID: 3104855293044960513}
   - component: {fileID: 8619336530769263769}
+  - component: {fileID: 5069396870935302848}
   m_Layer: 8
   m_Name: Window
   m_TagString: Untagged
@@ -898,6 +899,18 @@ MonoBehaviour:
   MinimumSize: {x: 80, y: 60}
   DefaultBackgroundColor: {r: 0.078431375, g: 0.078431375, b: 0.078431375, a: 1}
   DefaultTitleBarHeight: 16
+--- !u!114 &5069396870935302848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6451109147881564466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d395b69efa325654f988c39d10cef643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6696073468408334233
 GameObject:
   m_ObjectHideFlags: 0
