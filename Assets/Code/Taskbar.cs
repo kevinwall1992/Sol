@@ -32,7 +32,7 @@ public class Taskbar : UIElement
         {
             taskbar_element.RectTransform.anchoredPosition = new Vector3(offset.x, offset.y, 0);
 
-            offset += taskbar_element.RectTransform.rect.size.ToVector2Int();
+            offset += taskbar_element.RectTransform.rect.size.YChangedTo(0).ToVector2Int();
         }
     }
 }
