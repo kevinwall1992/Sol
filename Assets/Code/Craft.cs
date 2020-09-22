@@ -72,6 +72,9 @@ public class Craft : MonoBehaviour
         }
     }
 
+    public float NonFuelMass
+    { get { return Mass - (HasEngine ? Engine.FuelMass : 0); } }
+
     void Update()
     {
         Satellite.Mass = Mass;

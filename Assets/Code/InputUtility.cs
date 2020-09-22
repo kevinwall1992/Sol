@@ -22,6 +22,14 @@ public static class InputUtility
         return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
     }
     
+    public static Vector3 PixelPositionToLocalPosition(this RectTransform rect_transform,
+                                                    Vector2Int pixel_position)
+    {
+        return rect_transform.InverseTransformPoint(
+            Scene.The.Canvas.transform.TransformPoint(
+                new Vector3(pixel_position.x, pixel_position.y)));
+    }
+
     public static bool IsPixelPositionWithinBounds(this RectTransform rect_transform, 
                                                    Vector2Int pixel_position)
     {

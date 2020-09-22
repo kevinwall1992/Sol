@@ -30,7 +30,7 @@ public class Engine : MonoBehaviour, Craft.Part
         
     }
 
-    //This method simply calculates the necessary Dv and then instantaneously 
+    //This method simply calculates the necessary dV and then instantaneously 
     //enters the new orbital path.
     //For maneuvers that change the craft's primary, this will alter the 
     //length of the journey from reality. However, given the extreme length
@@ -39,18 +39,16 @@ public class Engine : MonoBehaviour, Craft.Part
 
     public void ApplyManeuver(Navigation.Transfer.Maneuver maneuver)
     {
-        float reaction_mass = Craft.Mass -  
-            Craft.Mass *
-            Mathf.Pow((float)System.Math.E, -GetVelocityChange(maneuver) / ExhaustVelocity);
+        float reaction_mass = GetReactionMassRequired(maneuver);
+
+        if (GetUsefulFuelMassAvailable() < reaction_mass)
+            return;
 
         Propellent.Normalize();
         Dictionary<string, float> MassRequirements = 
             Propellent.Components.Keys.ToDictionary(
                 component_name => component_name, 
                 component_name => reaction_mass * Propellent.Components[component_name]);
-
-        if (GetUsefulFuelMassAvailable() < MassRequirements.Values.Sum())
-            return;
 
         foreach (string component_name in Propellent.Components.Keys)
         {
@@ -66,7 +64,19 @@ public class Engine : MonoBehaviour, Craft.Part
         Craft.Motion = maneuver.ResultingMotion;
     }
 
-    float GetVelocityChange(Navigation.Transfer.Maneuver maneuver)
+    public float GetReactionMassRequired(Navigation.Transfer.Maneuver maneuver, 
+                                         float craft_mass = -1)
+    {
+        if (craft_mass < 0)
+            craft_mass = Craft.Mass;
+
+        return craft_mass -
+               craft_mass *
+               Mathf.Pow((float)System.Math.E, -GetVelocityChangeRequired(maneuver) / 
+                                               ExhaustVelocity);
+    }
+
+    public float GetVelocityChangeRequired(Navigation.Transfer.Maneuver maneuver)
     {
         //If craft's primary does not change, just take the difference in
         //velocities between current and target motion at the date of the 
@@ -78,11 +88,11 @@ public class Engine : MonoBehaviour, Craft.Part
                     .magnitude;
 
         //In the more complex case of changing your orbit to another body,
-        //this problem is solved by calculating total Dv needed to escape n levels 
+        //this problem is solved by calculating total dV needed to escape n levels 
         //(i.e. escaping lunar orbit to solar orbit is going down 2 levels) of 
         //orbit and achieve the correct final relative velocity between craft 
         //immediately before and after maneuver. Because of reversiblity of 
-        //orbits, the same Dv is required for insertion (f.e. inserting into lunar
+        //orbits, the same dV is required for insertion (f.e. inserting into lunar
         //orbit from solar orbit) Therefore, I simply figure out which side would 
         //be prior to escape ("innermost") and which would be after escape 
         //("outermost"), and then solve the problem as an escape.
@@ -152,10 +162,10 @@ public class Engine : MonoBehaviour, Craft.Part
             //"infinity velocity" you should have upon escaping earth. This 
             //is difference between earth's velocity and the craft's velocity 
             //after the maneuver. Using the infinity velocity and the escape 
-            //velocity of earth, we can calculate the Dv required to reach 
+            //velocity of earth, we can calculate the dV required to reach 
             //that speed, given altitude. Then, assuming we aren't done 
             //(if the craft is directly orbiting the earth, rather than the 
-            //moon, we're done), we use that Dv as the new infinity velocity, 
+            //moon, we're done), we use that dV as the new infinity velocity, 
             //in this case the velocity we should have upon escaping the moon. 
             //In both examples, the altitude used for escape velocity is 
             //derived from going one level down in the hierarchy; with earth 

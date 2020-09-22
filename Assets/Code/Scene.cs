@@ -19,6 +19,7 @@ public class Scene : MonoBehaviour
     public SystemMap SystemMap;
     public CraftInventoryPage CraftInventoryPage;
     public ItemPage ItemPage;
+    public RefuelingPage RefuelingPage;
 
 
     private void Start()

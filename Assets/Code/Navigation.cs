@@ -13,15 +13,26 @@ public class Navigation : MonoBehaviour, Craft.Part
 
     public List<Transfer> Transfers = new List<Transfer>();
 
+    public List<Transfer> UpcomingTransfers
+    {
+        get
+        {
+            if (transfers_completed >= Transfers.Count)
+                return new List<Transfer>();
+
+            return Transfers.GetRange(transfers_completed, 
+                                      Transfers.Count - transfers_completed);
+        }
+    }
+
     public Transfer NextTransfer
     {
         get
         {
-            if (Transfers.Count == 0 || 
-                Transfers.Count <= transfers_completed)
-                return null;
+            if (UpcomingTransfers.Count == 0)
+                return null;  
 
-            return Transfers[transfers_completed];
+            return UpcomingTransfers.First();
         }
     }
 
