@@ -27,9 +27,9 @@ public class HohmannTransfer : Navigation.Transfer
                 transfer_motion.ArgumentOfPeriapsis = 
                     Mathf.Atan2(departure_position.y, departure_position.x);
 
-                transfer_motion.MeanAnomalyAtEpoch = 2 * Mathf.PI * 
+                transfer_motion.MeanAnomalyAtEpoch = (float)(2 * Mathf.PI * 
                     (0 - (Scene.The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
-                          transfer_motion.Period) % 1);
+                          transfer_motion.Period) % 1));
             }
             else
             {
@@ -39,9 +39,9 @@ public class HohmannTransfer : Navigation.Transfer
                 transfer_motion.ArgumentOfPeriapsis =
                     Mathf.Atan2(-departure_position.y, -departure_position.x);
 
-                transfer_motion.MeanAnomalyAtEpoch = 2 * Mathf.PI * 
+                transfer_motion.MeanAnomalyAtEpoch = (float)(2 * Mathf.PI * 
                     (0.5f - (Scene.The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
-                             transfer_motion.Period) % 1);
+                             transfer_motion.Period) % 1));
             }
 
             return transfer_motion;

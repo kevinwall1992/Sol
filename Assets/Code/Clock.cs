@@ -12,7 +12,7 @@ public class Clock : MonoBehaviour
     public DateTime Epoch { get { return Convert.ToDateTime(EpochDateString); } }
     public DateTime Now { get; set; }
 
-    public float SecondsSinceEpoch
+    public double SecondsSinceEpoch
     { get { return DateToSecondsSinceEpoch(Now); } }
 
     void Start()
@@ -36,8 +36,8 @@ public class Clock : MonoBehaviour
         Now = Convert.ToDateTime(LoadDateString);
     }
 
-    public float DateToSecondsSinceEpoch(DateTime date)
+    public double DateToSecondsSinceEpoch(DateTime date)
     {
-        return (float)(date - Epoch).TotalSeconds;
+        return (date - Epoch).TotalSeconds;
     }
 }

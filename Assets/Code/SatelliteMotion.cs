@@ -98,10 +98,9 @@ public class SatelliteMotion : Motion
 
     public float MeanAnomalyAtDate(System.DateTime date)
     {
-        return 2 * Mathf.PI *
-               Scene.The.Clock.DateToSecondsSinceEpoch(date) /
-               Period +
-               MeanAnomalyAtEpoch;
+        return (float)(2 * Mathf.PI *
+               ((Scene.The.Clock.DateToSecondsSinceEpoch(date) / Period) % 1) +
+               MeanAnomalyAtEpoch);
     }
 
     public float EccentricAnomalyGivenMeanAnomaly(float mean_anomaly)
