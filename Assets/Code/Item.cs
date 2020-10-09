@@ -41,8 +41,7 @@ public class Item : MonoBehaviour
 
     public Item RemoveQuantity(float quantity_removed)
     {
-        if (quantity_removed >= Quantity)
-            return this;
+        quantity_removed = Mathf.Min(quantity_removed, Quantity);
 
         Item removed = GameObject.Instantiate(this);
 
@@ -50,6 +49,14 @@ public class Item : MonoBehaviour
         removed.Quantity = quantity_removed;
 
         return removed;
+    }
+
+    public Item Copy()
+    {
+        Item copy = RemoveQuantity(0);
+        copy.Quantity = Quantity;
+
+        return copy;
     }
 
     [RequireComponent(typeof(Item))]
@@ -62,57 +69,51 @@ public class Item : MonoBehaviour
 
 public static class ItemExtensions
 {
-    public static bool IsPhysicalItem(this Item item) { return item.GetComponent<PhysicalItem>() != null; }
-    public static PhysicalItem PhysicalItem(this Item item) { return item.GetComponent<PhysicalItem>(); }
+    public static bool IsPhysical(this Item item) { return item.Physical() != null; }
+    public static PhysicalItem Physical(this Item item) { return item.GetComponent<PhysicalItem>(); }
 
-    public static bool IsPerishableItem(this Item item) { return item.GetComponent<PerishableItem>() != null; }
-    public static PerishableItem PerishableItem(this Item item) { return item.GetComponent<PerishableItem>(); }
+    public static bool IsPerishable(this Item item) { return item.Perishable() != null; }
+    public static PerishableItem Perishable(this Item item) { return item.GetComponent<PerishableItem>(); }
 
-    public static bool IsLiquidItem(this Item item) { return item.GetComponent<LiquidItem>() != null; }
-    public static LiquidItem LiquidItem(this Item item) { return item.GetComponent<LiquidItem>(); }
+    public static bool IsLiquid(this Item item) { return item.Liquid() != null; }
+    public static LiquidItem Liquid(this Item item) { return item.GetComponent<LiquidItem>(); }
 
-    public static bool IsGasItem(this Item item) { return item.GetComponent<GasItem>() != null; }
-    public static GasItem GasItem(this Item item) { return item.GetComponent<GasItem>(); }
+    public static bool IsGas(this Item item) { return item.Gas() != null; }
+    public static GasItem Gas(this Item item) { return item.GetComponent<GasItem>(); }
 
-    public static bool IsPerson(this Item item) { return item.GetComponent<Person>() != null; }
+    public static bool IsPerson(this Item item) { return item.Person(); }
     public static Person Person(this Item item) { return item.GetComponent<Person>(); }
 
     public static float Mass(this Item item)
-    { return item.PhysicalItem().Mass; }
+    { return item.Physical().Mass; }
 
     public static float SetMass(this Item item, float mass)
-    { return item.PhysicalItem().Mass = mass; }
+    { return item.Physical().Mass = mass; }
 
     public static Item RemoveMass(this Item item, float mass_removed)
-    { return item.RemoveQuantity(mass_removed / item.PhysicalItem().MassPerUnit); }
+    { return item.RemoveQuantity(mass_removed / item.Physical().MassPerUnit); }
 
     public static float Volume(this Item item)
-    { return item.PhysicalItem().Volume; }
+    { return item.Physical().Volume; }
 
     public static Item RemoveVolume(this Item item, float volume_removed)
-    { return item.RemoveQuantity(volume_removed / item.PhysicalItem().VolumePerUnit); }
+    { return item.RemoveQuantity(volume_removed / item.Physical().VolumePerUnit); }
 
     public static float SetVolume(this Item item, float volume)
-    { return item.PhysicalItem().Volume = volume; }
+    { return item.Physical().Volume = volume; }
 
     public static float Temperature(this Item item)
-    { return item.PhysicalItem().Temperature; }
+    { return item.Physical().Temperature; }
 
     public static float Moles(this Item item)
-    { return item.GasItem().Moles; }
+    { return item.Gas().Moles; }
 
     public static float Pressure(this Item item)
-    { return item.GasItem().Pressure; }
+    { return item.Gas().Pressure; }
 
     public static float Condition(this Item item)
-    { return item.PerishableItem().Condition; }
+    { return item.Perishable().Condition; }
 
     public static bool IsSolid(this Item item)
     { return !item.IsLiquid() && !item.IsGas(); }
-
-    public static bool IsLiquid(this Item item)
-    { return item.IsLiquid(); }
-
-    public static bool IsGas(this Item item)
-    { return item.IsGas(); }
 }

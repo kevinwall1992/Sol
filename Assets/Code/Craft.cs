@@ -7,6 +7,8 @@ using System.Linq;
 [RequireComponent(typeof(Satellite))]
 public class Craft : MonoBehaviour
 {
+    public User Owner;
+
     public RectTransform PartsContainer;
 
     public Satellite Satellite
@@ -28,20 +30,24 @@ public class Craft : MonoBehaviour
 
     public Hull Hull { get { return GetPart<Hull>(); } }
 
+    public CargoMount CargoMount { get { return GetPart<CargoMount>(); } }
+    public bool HasCargoMount { get { return CargoMount != null; } }
+
     public Engine Engine { get { return GetPart<Engine>(); } }
     public bool HasEngine { get { return Engine != null; } }
 
     public Navigation Navigation { get { return GetPart<Navigation>(); } }
     public bool HasNavigation { get { return Navigation != null; } }
 
-    public IEnumerable<ItemContainer> Storage
+    public Storage Cargo
     {
         get
         {
-            return GetPartsOfType<ItemContainer>()
-                .Where(container => !container.HasComponent<LifeSupport>())
-                .Where(container => !HasEngine ? true : !Engine.Tanks.Values
-                    .Select(tank => tank.Container).Contains(container));
+            if (HasCargoMount)
+                return new Storage(CargoMount.CargoContainers
+                    .Select(cargo_container => cargo_container.Container));
+            else
+                return new Storage();
         }
     }
 
@@ -72,8 +78,15 @@ public class Craft : MonoBehaviour
         }
     }
 
-    public float NonFuelMass
-    { get { return Mass - (HasEngine ? Engine.FuelMass : 0); } }
+    public float EmptyTankMass
+    { get { return Mass - (HasEngine ? Engine.PropellentMass : 0); } }
+
+    public float CurbMass { get { return Mass - Cargo.ItemMass; } }
+
+    public Station Station
+    { get { return transform.parent.GetComponentInParent<Station>(); } }
+
+    public bool IsDocked { get { return Station != null; } }
 
     void Update()
     {

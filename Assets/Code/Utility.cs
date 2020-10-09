@@ -153,6 +153,14 @@ public static class Utility
         return (list as IEnumerable<T>).Merged(other) as List<T>;
     }
 
+    public static Dictionary<T, U> Merge<T, U>(this Dictionary<T, U> a, Dictionary<T, U> b)
+    {
+        foreach (T key in b.Keys)
+            a[key] = b[key];
+
+        return a;
+    }
+
     public static Dictionary<T, U> Merged<T, U>(this Dictionary<T, U> a, Dictionary<T, U> b)
     {
         Dictionary<T, U> merged = new Dictionary<T, U>(a);
@@ -186,7 +194,8 @@ public static class Utility
         return string_.Substring(0, string_.Length - trim_count);
     }
 
-    public static List<T> Sorted<T, U>(this List<T> list, Func<T, U> comparable_fetcher) where U : IComparable
+    public static List<T> Sorted<T, U>(this List<T> list, 
+                                       Func<T, U> comparable_fetcher) where U : IComparable
     {
         List<T> sorted = new List<T>(list);
         sorted.Sort((a, b) => (comparable_fetcher(a).CompareTo(comparable_fetcher(b))));
@@ -194,12 +203,14 @@ public static class Utility
         return sorted;
     }
 
-    public static List<T> Sorted<T, U>(this IEnumerable<T> enumerable, Func<T, U> comparable_fetcher) where U : IComparable
+    public static List<T> Sorted<T, U>(this IEnumerable<T> enumerable, 
+                                       Func<T, U> comparable_fetcher) where U : IComparable
     {
         return Sorted(new List<T>(enumerable), comparable_fetcher);
     }
 
-    public static T MinElement<T, U>(this IEnumerable<T> enumerable, Func<T, U> comparable_fetcher) where U : IComparable
+    public static T MinElement<T, U>(this IEnumerable<T> enumerable, 
+                                     Func<T, U> comparable_fetcher) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
@@ -207,7 +218,8 @@ public static class Utility
         return enumerable.Sorted(comparable_fetcher).First();
     }
 
-    public static T MaxElement<T, U>(this IEnumerable<T> enumerable, Func<T, U> comparable_fetcher) where U : IComparable
+    public static T MaxElement<T, U>(this IEnumerable<T> enumerable, 
+                                     Func<T, U> comparable_fetcher) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
@@ -286,6 +298,19 @@ public static class Utility
         return true;
     }
 
+    public static IEnumerable<U> SelectComponents<T, U>(this IEnumerable<T> enumerable)
+        where T : Component
+        where U : Component
+    {
+        return enumerable.Select(component => component.GetComponent<U>())
+                         .Where(component => component != null);
+    }
+
+    public static IEnumerable<U> SelectComponents<U>(this IEnumerable<Transform> transforms)
+        where U : Component
+    {
+        return transforms.SelectComponents<Transform, U>();
+    }
 
     public static IEnumerable<T> GetEnumValues<T>()
     {

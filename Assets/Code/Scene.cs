@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,18 @@ public class Scene : MonoBehaviour
     public CraftInventoryPage CraftInventoryPage;
     public ItemPage ItemPage;
     public RefuelingPage RefuelingPage;
+
+
+    public Bank DefaultBank;
+
+    public IEnumerable<Craft> Crafts { get { return FindObjectsOfType<Craft>(); } }
+
+    public IEnumerable<Station> Stations
+    { get { return Crafts.SelectComponents<Craft, Station>(); } }
+
+    public IEnumerable<User> Users { get { return FindObjectsOfType<User>(); } }
+
+    public IEnumerable<Bank> Banks { get { return Users.SelectComponents<User, Bank>(); } }
 
 
     private void Start()

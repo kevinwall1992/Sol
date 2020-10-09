@@ -9,25 +9,58 @@ public class Engine : MonoBehaviour, Craft.Part
 {
     public float Mass;
 
-    public TankDictionary Tanks;
-
-    public Mixture Propellent;
+    public Item Propellent;
     public float ExhaustVelocity;
 
     public Craft Craft { get { return this.Craft(); } }
 
-    public SatelliteMotion Motion { get { return Craft.Motion; } }
-
     public float PartMass { get { return Mass; } }
 
-    public float FuelMass
+    //Is this useful when you can just use Craft.Cargo?
+    Storage PropellentStorage
     {
-        get { return Tanks.Values.Sum(tank => tank.Container.ItemMass); }
+        get
+        {
+            return Craft.Cargo.GetSubset(
+                container => container.IsStorable(Propellent));
+        }
+    }
+
+    public float PropellentMass
+    {
+        get
+        {
+            return PropellentStorage.ItemContainers
+                .Sum(container => container.ItemMass);
+        }
+    }
+
+    public float MaximumPropellentMass
+    {
+        get
+        {
+            return PropellentStorage.GetMaximumVolumeOf(Propellent);
+        }
+    }
+
+    public float GetVelocityChangeAvailable()
+    {
+        return ExhaustVelocity *
+                Mathf.Log(Craft.Mass / (Craft.Mass - PropellentMass));
+    }
+
+    public float GetMaximumVelocityChange()
+    {
+        float full_tank_craft_mass = (Craft.Mass - PropellentMass) + MaximumPropellentMass;
+
+        return ExhaustVelocity *
+                Mathf.Log(full_tank_craft_mass /
+                          (full_tank_craft_mass - MaximumPropellentMass));
     }
 
     void Update()
     {
-        
+
     }
 
     //This method simply calculates the necessary dV and then instantaneously 
@@ -39,52 +72,79 @@ public class Engine : MonoBehaviour, Craft.Part
 
     public void ApplyManeuver(Navigation.Transfer.Maneuver maneuver)
     {
-        float reaction_mass = GetReactionMassRequired(maneuver);
+        float propellent_mass = 
+            GetPropellentMassLossRequired(maneuver, Craft.Motion, Craft.Mass);
 
-        if (GetUsefulFuelMassAvailable() < reaction_mass)
+        if (PropellentMass < propellent_mass)
             return;
 
-        Propellent.Normalize();
-        Dictionary<string, float> MassRequirements = 
-            Propellent.Components.Keys.ToDictionary(
-                component_name => component_name, 
-                component_name => reaction_mass * Propellent.Components[component_name]);
-
-        foreach (string component_name in Propellent.Components.Keys)
-        {
-            ItemContainer tank = Tanks[component_name].Container;
-
-            float required_quantity = 
-                MassRequirements[component_name] / 
-                tank.GetItem(component_name).PhysicalItem().MassPerUnit;
-
-            tank.TakeOut(component_name, required_quantity);
-        }
+        Item propellent = PropellentStorage.Retrieve(
+            Propellent.Name,
+            propellent_mass / Propellent.Physical().MassPerUnit);
+        GameObject.Destroy(propellent.gameObject);
 
         Craft.Motion = maneuver.ResultingMotion;
     }
 
-    public float GetReactionMassRequired(Navigation.Transfer.Maneuver maneuver, 
-                                         float craft_mass = -1)
+    //How much mass must be lost from craft_mass to push the remainder
+    public float GetPropellentMassLossRequired(Navigation.Transfer.Maneuver maneuver,
+                                             SatelliteMotion craft_motion,
+                                             float craft_mass)
     {
-        if (craft_mass < 0)
-            craft_mass = Craft.Mass;
+        float payload_fraction = Mathf.Pow(
+            (float)System.Math.E,
+            -GetVelocityChangeRequired(maneuver, craft_motion) / ExhaustVelocity);
 
-        return craft_mass -
-               craft_mass *
-               Mathf.Pow((float)System.Math.E, -GetVelocityChangeRequired(maneuver) / 
-                                               ExhaustVelocity);
+        return craft_mass * (1 - payload_fraction);
+    }
+    
+    //How much additional mass is required to push craft_mass
+    public float GetPropellentMassRequired(Navigation.Transfer.Maneuver maneuver, 
+                                         SatelliteMotion craft_motion, 
+                                         float craft_mass)
+    {
+        float payload_fraction = Mathf.Pow(
+            (float)System.Math.E,
+            -GetVelocityChangeRequired(maneuver, craft_motion) / ExhaustVelocity);
+
+        return craft_mass / (1 / (1 - payload_fraction) - 1);
     }
 
-    public float GetVelocityChangeRequired(Navigation.Transfer.Maneuver maneuver)
+    public float GetPropellentMassRequired(Navigation.Transfer transfer,
+                                         float craft_mass)
+    {
+        float total_propellent_mass = 0;
+
+        List<Navigation.Transfer.Maneuver> maneuvers = transfer.Maneuvers;
+        foreach (Navigation.Transfer.Maneuver maneuver in maneuvers.Reversed())
+        {
+            int maneuver_index = maneuvers.IndexOf(maneuver);
+
+            SatelliteMotion craft_motion;
+            if (maneuver_index > 0)
+                craft_motion = maneuvers[maneuver_index - 1].ResultingMotion;
+            else
+                craft_motion = transfer.OriginalMotion;
+
+            total_propellent_mass +=
+                GetPropellentMassRequired(maneuver, 
+                                          craft_motion, 
+                                          craft_mass + total_propellent_mass);
+        }
+
+        return total_propellent_mass;
+    }
+
+    public float GetVelocityChangeRequired(Navigation.Transfer.Maneuver maneuver,
+                                           SatelliteMotion craft_motion)
     {
         //If craft's primary does not change, just take the difference in
         //velocities between current and target motion at the date of the 
         //maneuver
 
         if (maneuver.ResultingMotion.Primary == Craft.Primary)
-            return (maneuver.ResultingMotion.LocalVelocityAtDate(maneuver.Date) - 
-                    Craft.Motion.LocalVelocityAtDate(maneuver.Date))
+            return (maneuver.ResultingMotion.LocalVelocityAtDate(maneuver.Date) -
+                    craft_motion.LocalVelocityAtDate(maneuver.Date))
                     .magnitude;
 
         //In the more complex case of changing your orbit to another body,
@@ -97,20 +157,20 @@ public class Engine : MonoBehaviour, Craft.Part
         //be prior to escape ("innermost") and which would be after escape 
         //("outermost"), and then solve the problem as an escape.
 
-        SatelliteMotion innermost_motion = Craft.Motion, 
+        SatelliteMotion innermost_motion = craft_motion,
                         outermost_motion = maneuver.ResultingMotion;
-        if (maneuver.ResultingMotion.Primary.IsChildOf(Craft.Motion.Primary))
+        if (maneuver.ResultingMotion.Primary.IsChildOf(craft_motion.Primary))
             Utility.Swap(ref innermost_motion, ref outermost_motion);
 
         Debug.Assert(
-            maneuver.ResultingMotion.Primary.IsChildOf(Craft.Motion.Primary) || 
-            Craft.Motion.Primary.IsChildOf(maneuver.ResultingMotion.Primary),
+            maneuver.ResultingMotion.Primary.IsChildOf(craft_motion.Primary) ||
+            craft_motion.Primary.IsChildOf(maneuver.ResultingMotion.Primary),
             "Cannot enter orbit around primary's cousin in a single step.");
 
         int imaginary_primary_index =
             innermost_motion.Hierarchy.IndexOf(outermost_motion.Primary.Motion) - 1;
 
-        SatelliteMotion top_level_satellite = 
+        SatelliteMotion top_level_satellite =
             innermost_motion.Hierarchy[imaginary_primary_index];
 
         float top_level_velocity_change =
@@ -147,8 +207,8 @@ public class Engine : MonoBehaviour, Craft.Part
             }
 
             velocity_change = Mathf.Abs(
-                Mathf.Sqrt(2 * (Mathf.Pow(top_level_velocity_change, 2) / 2 - 
-                                potential_energy_sum)) - 
+                Mathf.Sqrt(2 * (Mathf.Pow(top_level_velocity_change, 2) / 2 -
+                                potential_energy_sum)) -
                 innermost_motion.LocalVelocityAtDate(maneuver.Date).magnitude);
         }
         else
@@ -200,88 +260,75 @@ public class Engine : MonoBehaviour, Craft.Part
         return velocity_change;
     }
 
-    public float GetUsefulFuelMassAvailable()
+    public float PropellentMassToUnits(float mass)
     {
-        float min_ratio = float.MaxValue;
-
-        foreach (string component_name in Propellent.Components.Keys)
-            min_ratio = Mathf.Min(min_ratio,
-                Tanks[component_name].Container.GetItem(component_name).Mass() /
-                Propellent.Components[component_name]);
-
-        float total_mass = 0;
-
-        foreach (string component_name in Propellent.Components.Keys)
-            total_mass +=
-                Propellent.Components[component_name] *
-                min_ratio;
-
-        return total_mass;
+        return mass / Propellent.Physical().MassPerUnit;
     }
 
-    public float GetMaximumUsefulFuelMass()
+    public float GetPropellentPurchaseCost(float propellent_mass, Market market)
     {
-        float min_ratio = float.MaxValue;
-
-        foreach (string component_name in Propellent.Components.Keys)
-        {
-            Item component = Tanks[component_name].Container.GetItem(component_name);
-
-            min_ratio = Mathf.Min(min_ratio,
-                Tanks[component_name].Container.Volume /
-                component.PhysicalItem().VolumePerUnit *
-                component.PhysicalItem().MassPerUnit /
-                Propellent.Components[component_name]);
-        }
-
-        float total_mass = 0;
-
-        foreach (string component_name in Propellent.Components.Keys)
-        {
-            Item component = Tanks[component_name].Container.GetItem(component_name);
-
-            total_mass +=
-                Propellent.Components[component_name] *
-                min_ratio;
-        }
-
-        return total_mass;
+        return market.GetPurchaseCost(
+            Propellent.Name,
+            PropellentMassToUnits(propellent_mass));
     }
 
-    public float GetVelocityChangeAvailable()
+    public float GetPropellentPurchaseCostPerKg(float propellent_mass, Market market)
     {
-        return ExhaustVelocity *
-                Mathf.Log(Craft.Mass / (Craft.Mass - GetUsefulFuelMassAvailable()));
+        return GetPropellentPurchaseCost(propellent_mass, market) / propellent_mass;
     }
 
-    public float GetMaximumVelocityChange()
+    public float GetPropellentSaleValue(float propellent_mass, Market market)
     {
-        float maximum_useful_fuel_mass = GetMaximumUsefulFuelMass();
-        float maximum_craft_mass = (Craft.Mass - FuelMass) + maximum_useful_fuel_mass;
+        return market.GetSaleValue(
+            Propellent.Name,
+            PropellentMassToUnits(propellent_mass));
+    }
 
-        return ExhaustVelocity *
-                Mathf.Log(maximum_craft_mass /
-                            (maximum_craft_mass - maximum_useful_fuel_mass));
+    public float GetPropellentSaleValuePerKg(float propellent_mass, Market market)
+    {
+        return GetPropellentSaleValue(propellent_mass, market) / propellent_mass;
+    }
+
+    public float GetRefuelingCost(float target_propellent_mass, Market market)
+    {
+        if (target_propellent_mass > PropellentMass)
+            return GetPropellentPurchaseCost(target_propellent_mass - PropellentMass, market);
+        else if (target_propellent_mass < PropellentMass)
+            return -GetPropellentSaleValue(PropellentMass - target_propellent_mass, market);
+        else
+            return 0;
+    }
+
+    public bool PurchasePropellent(float propellent_mass, Market market)
+    {
+        return market.Purchase(Craft.Owner,
+                               Propellent.Name,
+                               PropellentMassToUnits(propellent_mass),
+                               PropellentStorage);
+    }
+
+    public bool SellPropellent(float propellent_mass, Market market)
+    {
+        if (PropellentMass < propellent_mass)
+            propellent_mass = PropellentMass;
+
+        Item propellent = PropellentStorage.Retrieve(
+            Propellent.Name,
+            PropellentMassToUnits(propellent_mass));
+
+        return market.Sell(Craft.Owner, propellent);
+    }
+
+    public bool Refuel(float minimum_fuel_mass, Market market)
+    {
+        if (minimum_fuel_mass > PropellentMass)
+            return PurchasePropellent(minimum_fuel_mass - 
+                                      PropellentMass, market);
+
+        return true;
     }
 
 
     [System.Serializable]
     public class TankDictionary : SerializableDictionaryBase<string, FluidContainer> { }
-}
-
-[System.Serializable]
-public class Mixture
-{
-    public ComponentDictionary Components;
-
-    public void Normalize()
-    {
-        float total_weight = Components.Values.Sum();
-
-        foreach (string component_name in Components.Keys.ToList())
-            Components[component_name] /= total_weight;
-    }
-    
-    [System.Serializable]
-    public class ComponentDictionary : SerializableDictionaryBase<string, float> { }
 }

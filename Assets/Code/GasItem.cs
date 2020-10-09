@@ -21,7 +21,7 @@ public class GasItem : Item.Script
 
         set
         {
-            Item.PhysicalItem().VolumePerUnit =
+            Item.Physical().VolumePerUnit =
                 Moles *
                 MathConstants.IdealGasConstant *
                 Item.Temperature() /

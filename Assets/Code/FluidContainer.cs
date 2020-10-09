@@ -3,28 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[ExecuteAlways]
+[RequireComponent(typeof(SingleItemContainer))]
 public class FluidContainer : ItemContainer.Script, 
                               ItemContainer.Filter
 {
-    public Item Fluid
-    {
-        get
-        {
-            if (Container.Items.Count() == 0)
-                return null;
+    SingleItemContainer SingleItemContainer
+    { get { return GetComponent<SingleItemContainer>(); } }
 
-            return Container.Items.Values.First();
-        }
-    }
+    public Item AllowedFluid
+    { get { return SingleItemContainer.AllowedItem; } }
 
     public bool IsStorable(Item item)
     {
         if (item.IsSolid())
             return false;
 
-        if (Fluid != null)
-            return Fluid.Name == item.Name;
+        if (AllowedFluid != null)
+            return AllowedFluid.Name == item.Name;
 
         return true;
+    }
+
+    private void Update()
+    {
+        if (SingleItemContainer.AllowedItem != null &&
+            !IsStorable(SingleItemContainer.AllowedItem))
+            SingleItemContainer.AllowedItem = null;
     }
 }

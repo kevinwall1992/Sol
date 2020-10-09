@@ -9,6 +9,6 @@ public class BlacklistItemContainer : ItemContainer.Script,
 
     public bool IsStorable(Item item)
     {
-        return !ProhibitedItems.Contains(item.name);
+        return !ProhibitedItems.Contains(item.Name);
     }
 }

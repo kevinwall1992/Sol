@@ -6,6 +6,8 @@ using System.Linq;
 [RequireComponent(typeof(Craft))]
 public class Station : MonoBehaviour, Visitable
 {
+    public Market OfficialMarket;
+
     public string PlaceName { get { return Craft.Satellite.Name; } }
 
     [SerializeField]

@@ -27,8 +27,8 @@ public class RefuelBar : UIElement
     {
         Craft craft = RefuelPage.Craft;
 
-        ProgressBar.MaximumValue = craft.Engine.GetMaximumUsefulFuelMass();
-        ProgressBar.Value = craft.Engine.GetUsefulFuelMassAvailable();
+        ProgressBar.MaximumValue = craft.Engine.MaximumPropellentMass;
+        ProgressBar.Value = craft.Engine.PropellentMass;
 
         FillerupButton.RequiredFuelMass = ProgressBar.MaximumValue;
 
@@ -120,9 +120,9 @@ public class RefuelBar : UIElement
         {
             foreach (Navigation.Transfer.Maneuver maneuver in transfer_.Maneuvers)
             {
-                float dV = craft.Engine.GetVelocityChangeRequired(maneuver);
+                float dV = craft.Engine.GetVelocityChangeRequired(maneuver, craft.Motion);
 
-                reaction_mass = dV * (craft.NonFuelMass + reaction_mass) / 
+                reaction_mass = dV * (craft.EmptyTankMass + reaction_mass) / 
                                 craft.Engine.ExhaustVelocity;
             }
         }

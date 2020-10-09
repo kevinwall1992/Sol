@@ -41,8 +41,8 @@ public class TransportCraftPanel : UIElement
 
         if (FuelBar.State == FuelBar.MeasurementState.Tonnes)
         {
-            FuelBar.MaximumValue = Craft.Engine.GetMaximumUsefulFuelMass() / 1000;
-            FuelBar.Value = Craft.Engine.GetUsefulFuelMassAvailable() / 1000;
+            FuelBar.MaximumValue = Craft.Engine.MaximumPropellentMass / 1000;
+            FuelBar.Value = Craft.Engine.PropellentMass / 1000;
         }
         else
         {
@@ -50,8 +50,8 @@ public class TransportCraftPanel : UIElement
             FuelBar.Value = Craft.Engine.GetVelocityChangeAvailable() / 1000;
         }
 
-        StorageBar.MaximumValue = Craft.Storage.Sum(container => container.Volume);
-        StorageBar.Value = Craft.Storage.Sum(container => container.ItemVolume);
+        StorageBar.MaximumValue = Craft.Cargo.ItemContainers.Sum(container => container.Volume);
+        StorageBar.Value = Craft.Cargo.ItemContainers.Sum(container => container.ItemVolume);
 
         EasePositionController.TargetPosition = GetTargetPosition();
     }

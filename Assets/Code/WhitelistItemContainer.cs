@@ -9,6 +9,6 @@ public class WhitelistItemContainer : ItemContainer.Script,
 
     public bool IsStorable(Item item)
     {
-        return AllowedItems.Contains(item.name);
+        return AllowedItems.Contains(item.Name);
     }
 }

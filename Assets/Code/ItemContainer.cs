@@ -11,6 +11,8 @@ public class ItemContainer : MonoBehaviour, Craft.Part
 
     public float PartMass { get { return DryMass; } }
 
+    public float TotalMass { get { return PartMass + ItemMass; } }
+
     public float ItemVolume
     { get { return Items.Values.Sum(item => item.Volume()); } }
 
@@ -106,27 +108,44 @@ public class ItemContainer : MonoBehaviour, Craft.Part
         return item.Quantity;
     }
 
-    public Item PutIn(Item item)
+    public bool Contains(string name)
+    {
+        return GetQuantity(name) > 0;
+    }
+
+    public bool PutIn(Item item)
     {
         if (AvailableVolume == 0)
-            return item;
+            return false;
 
         Pack(item);
 
         if (!IsStorable(item))
         {
             Unpack(item);
-            return item;
+            return false;
         }
 
-        Item overflow = null;
         if (AvailableVolume < item.Volume())
-            overflow = item.RemoveVolume(item.Volume() - AvailableVolume);
+        {
+            PutIn(item.RemoveVolume(item.Volume() - AvailableVolume));
 
-        item.transform.SetParent(transform);
-        Items[item.Name] = item;
+            Unpack(item);
+            return false;
+        }
 
-        return overflow;
+        if (!Items.ContainsKey(item.Name))
+        {
+            item.transform.SetParent(transform);
+            Items[item.Name] = item;
+        }
+        else
+        {
+            Items[item.Name].Quantity += item.Quantity;
+            GameObject.Destroy(item.gameObject);
+        }
+
+        return true;
     }
 
     public Item TakeOut(string name, float quantity = -1)
@@ -134,19 +153,24 @@ public class ItemContainer : MonoBehaviour, Craft.Part
         if (!Items.ContainsKey(name))
             return null;
 
-        Item item;
+        Item removed_item = GetItem(name).RemoveQuantity(quantity);
 
-        if (quantity >= Items[name].Quantity)
-            item = Items[name];
-        else
-        {
-            item = GameObject.Instantiate(Items[name]);
+        Unpack(removed_item);
 
-            Items[name].Quantity -= item.Quantity = quantity;
-        }
+        return removed_item;
+    }
 
-        Unpack(item);
-        return item;
+    public float TakeOutQuantity(string name, float quantity)
+    {
+        if (!Items.ContainsKey(name))
+            return 0;
+
+        Item item = GetItem(name);
+
+        quantity = Mathf.Min(quantity, item.Quantity);
+
+        item.Quantity -= quantity;
+        return quantity;
     }
 
 

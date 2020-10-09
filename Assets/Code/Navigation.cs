@@ -49,6 +49,8 @@ public class Navigation : MonoBehaviour, Craft.Part
 
     public float PartMass { get { return Mass; } }
 
+    public Engine Engine { get { return this.Craft().Engine; } }
+
     private void Start()
     {
         
@@ -59,7 +61,33 @@ public class Navigation : MonoBehaviour, Craft.Part
         if (NextManeuver != null &&
             Scene.The.Clock.Now > NextManeuver.Date)
         {
-            this.Craft().Engine.ApplyManeuver(NextManeuver);
+            if (maneuvers_completed_in_transfer == 0)
+            {
+                float propellent_mass_required = 
+                    1.001f *
+                    Engine.GetPropellentMassRequired(NextTransfer,
+                                                     this.Craft().EmptyTankMass);
+
+                if (Engine.PropellentMass < propellent_mass_required)
+                {
+                    bool sucessfully_refueled = false;
+
+                    if (this.Craft().Station != null)
+                        sucessfully_refueled = Engine.Refuel(
+                            propellent_mass_required, 
+                            this.Craft().Station.OfficialMarket);
+
+                    if(!sucessfully_refueled)
+                    {
+                        int index = Transfers.IndexOf(NextTransfer);
+
+                        Transfers.RemoveRange(index, Transfers.Count - index);
+                        return;
+                    }
+                }
+            }
+
+            Engine.ApplyManeuver(NextManeuver);
             maneuvers_completed_in_transfer++;
 
             if (maneuvers_completed_in_transfer == NextTransfer.Maneuvers.Count())

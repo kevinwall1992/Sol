@@ -10,17 +10,17 @@ public class GasContainer : ItemContainer.Script,
 
     public bool IsStorable(Item item)
     {
-        return !item.IsSolid();
+        return item.IsGas();
     }
 
     public void Pack(Item item)
     {
-        item.GasItem().Pressure = Pressure;
+        item.Gas().Pressure = Pressure;
     }
 
     public void Unpack(Item item)
     {
-        item.GasItem().Pressure = MathConstants.StandardPressure;
+        item.Gas().Pressure = MathConstants.StandardPressure;
     }
 
     private void Update()
