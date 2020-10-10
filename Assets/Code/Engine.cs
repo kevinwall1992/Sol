@@ -5,16 +5,12 @@ using RotaryHeart.Lib.SerializableDictionary;
 using System.Linq;
 
 
-public class Engine : MonoBehaviour, Craft.Part
+public class Engine : Craft.Part
 {
-    public float Mass;
-
     public Item Propellent;
     public float ExhaustVelocity;
 
     public Craft Craft { get { return this.Craft(); } }
-
-    public float PartMass { get { return Mass; } }
 
     //Is this useful when you can just use Craft.Cargo?
     Storage PropellentStorage
@@ -56,11 +52,6 @@ public class Engine : MonoBehaviour, Craft.Part
         return ExhaustVelocity *
                 Mathf.Log(full_tank_craft_mass /
                           (full_tank_craft_mass - MaximumPropellentMass));
-    }
-
-    void Update()
-    {
-
     }
 
     //This method simply calculates the necessary dV and then instantaneously 
@@ -301,7 +292,7 @@ public class Engine : MonoBehaviour, Craft.Part
 
     public bool PurchasePropellent(float propellent_mass, Market market)
     {
-        return market.Purchase(Craft.Owner,
+        return market.Purchase(Craft.Item.Owner,
                                Propellent.Name,
                                PropellentMassToUnits(propellent_mass),
                                PropellentStorage);
@@ -316,7 +307,7 @@ public class Engine : MonoBehaviour, Craft.Part
             Propellent.Name,
             PropellentMassToUnits(propellent_mass));
 
-        return market.Sell(Craft.Owner, propellent);
+        return market.Sell(Craft.Item.Owner, propellent);
     }
 
     public bool Refuel(float minimum_fuel_mass, Market market)

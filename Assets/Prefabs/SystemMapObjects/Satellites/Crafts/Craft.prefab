@@ -49,6 +49,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartsContainer: {fileID: 3532464777332292690}
+--- !u!114 &4504142552165649266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459806238392446309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Craft
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
 --- !u!1001 &2646184854779905743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -164,11 +185,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -472
+      value: -456.8889
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -259.92593
+      value: -255.42593
       objectReference: {fileID: 0}
     - target: {fileID: 63497655948162325, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_SizeDelta.x
@@ -204,11 +225,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 80079123325900934, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 80079123325900934, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 80079123325900934, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_LocalRotation.z
@@ -258,10 +279,14 @@ PrefabInstance:
       propertyPath: Mass
       value: 4000
       objectReference: {fileID: 0}
+    - target: {fileID: 7405870351612149881, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
+      propertyPath: VisualSize
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 8418792848594894782, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 68f435df489f60543905dd3de5745ecb, type: 3}
+      objectReference: {fileID: 21300000, guid: d0c03dc6188c6ed499d04a5194bf8880, type: 3}
     - target: {fileID: 8934150241507691817, guid: 0a1bfe5a2fd631c43b33035d07a2eda1, type: 3}
       propertyPath: m_Name
       value: Craft

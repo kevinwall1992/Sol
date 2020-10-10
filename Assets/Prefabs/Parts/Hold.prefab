@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2884901128873901108}
   - component: {fileID: 3860539175700331336}
   - component: {fileID: 9053694865656367828}
+  - component: {fileID: 8569335855519247388}
+  - component: {fileID: 8931627228839192284}
   m_Layer: 0
   m_Name: Hold
   m_TagString: Untagged
@@ -49,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DryMass: 2000
   Volume: 600
 --- !u!114 &9053694865656367828
 MonoBehaviour:
@@ -63,3 +64,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7de7c2d4025ec74ba0234df9b2c03bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8569335855519247388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5110413513077703404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Hold
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &8931627228839192284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5110413513077703404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0

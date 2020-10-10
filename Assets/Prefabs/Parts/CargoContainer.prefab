@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1528081961778778163}
   - component: {fileID: 5340092135517338885}
   - component: {fileID: 2761816459599646283}
+  - component: {fileID: 1476872632008952240}
+  - component: {fileID: 886578985757926787}
   m_Layer: 0
   m_Name: CargoContainer
   m_TagString: Untagged
@@ -49,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DryMass: 3000
   Volume: 1000
 --- !u!114 &2761816459599646283
 MonoBehaviour:
@@ -63,3 +64,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a1e71825f6cfe438eb1f99203888d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1476872632008952240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2685874469992360618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Cargo Container
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &886578985757926787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2685874469992360618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0

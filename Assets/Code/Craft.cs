@@ -5,10 +5,9 @@ using System.Linq;
 
 [ExecuteAlways]
 [RequireComponent(typeof(Satellite))]
-public class Craft : MonoBehaviour
+[RequireComponent(typeof(Item))]
+public class Craft : Item.Script
 {
-    public User Owner;
-
     public RectTransform PartsContainer;
 
     public Satellite Satellite
@@ -73,8 +72,9 @@ public class Craft : MonoBehaviour
     {
         get
         {
-            return DryMass +
-                   GetComponentsInChildren<Item>().Sum(item => item.Mass());
+            return GetComponentsInChildren<Item>()
+                .Where(item => item.IsPhysical())
+                .Sum(item => item.Mass());
         }
     }
 
@@ -98,12 +98,12 @@ public class Craft : MonoBehaviour
                     Motion.TrueAnomaly + Motion.ArgumentOfPeriapsis));
     }
 
-    public IEnumerable<T> GetPartsOfType<T>() where T : class, Part
+    public IEnumerable<T> GetPartsOfType<T>() where T : Part
     {
         return Parts.Where(part => part is T).Select(part => part as T);
     }
 
-    public T GetPart<T>() where T : class, Part
+    public T GetPart<T>() where T : Part
     {
         IEnumerable<T> parts = GetPartsOfType<T>();
         if (parts.Count() == 0)
@@ -113,9 +113,17 @@ public class Craft : MonoBehaviour
     }
 
 
-    public interface Part
+    [ExecuteAlways]
+    [RequireComponent(typeof(PhysicalItem))]
+    public class Part : Item.Script
     {
-        float PartMass { get; }
+        public float PartMass { get { return Item.Mass(); } }
+
+        protected virtual void Update()
+        {
+            if (Item.Owner == null && this.Craft() != null)
+                Item.Owner = this.Craft().Item.Owner;
+        }
     }
 }
 

@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-public class Navigation : MonoBehaviour, Craft.Part
+[ExecuteAlways]
+public class Navigation : Craft.Part
 {
     int transfers_completed = 0;
     int maneuvers_completed_in_transfer = 0;
-
-    public float Mass;
 
     public List<Transfer> Transfers = new List<Transfer>();
 
@@ -47,8 +46,6 @@ public class Navigation : MonoBehaviour, Craft.Part
         }
     }
 
-    public float PartMass { get { return Mass; } }
-
     public Engine Engine { get { return this.Craft().Engine; } }
 
     private void Start()
@@ -56,8 +53,13 @@ public class Navigation : MonoBehaviour, Craft.Part
         
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
+        if (!Application.isPlaying)
+            return;
+
         if (NextManeuver != null &&
             Scene.The.Clock.Now > NextManeuver.Date)
         {

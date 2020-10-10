@@ -20,7 +20,7 @@ public class User : MonoBehaviour
     }
 
     public IEnumerable<Craft> Crafts
-    { get { return Scene.The.Crafts.Where(craft => craft.Owner == this); } }
+    { get { return Scene.The.Crafts.Where(craft => craft.Item.Owner == this); } }
 
     private void Start()
     {

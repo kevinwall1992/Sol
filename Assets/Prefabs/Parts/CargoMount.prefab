@@ -22,6 +22,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7943836611105512280}
   - component: {fileID: 2394941744147703043}
+  - component: {fileID: 6007968245433487057}
+  - component: {fileID: 6848421433319990497}
   m_Layer: 0
   m_Name: CargoMount
   m_TagString: Untagged
@@ -61,7 +63,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8558844c3636104fbd8adc8d29d9748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mass: 2000
+--- !u!114 &6007968245433487057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4561958461666032154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Cargo Mount
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &6848421433319990497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4561958461666032154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0
 --- !u!1001 &3931941663133110904
 PrefabInstance:
   m_ObjectHideFlags: 0

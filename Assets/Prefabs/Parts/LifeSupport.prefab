@@ -11,8 +11,10 @@ GameObject:
   - component: {fileID: 7464959667496144468}
   - component: {fileID: 8866652003357993205}
   - component: {fileID: 2161058962585514277}
+  - component: {fileID: 8637398186124223546}
+  - component: {fileID: 3658875894853928531}
   m_Layer: 0
-  m_Name: Crew Quarters
+  m_Name: LifeSupport
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,10 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DryMass: 400
   Volume: 100
-  DebugItemMass: 0
-  DebugItemVolume: 0
 --- !u!114 &2161058962585514277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,3 +64,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf71d850dea486428b9df8a66c63fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8637398186124223546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490939057105268616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Life Support
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &3658875894853928531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490939057105268616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0

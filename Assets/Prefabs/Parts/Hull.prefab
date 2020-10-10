@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5290269926707318806}
   - component: {fileID: 1293148206289377328}
+  - component: {fileID: 7006280461578080230}
+  - component: {fileID: 1805357066627775177}
   m_Layer: 0
   m_Name: Hull
   m_TagString: Untagged
@@ -43,6 +45,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f60715bc8f6a84c9fdbdb3a55b7e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mass: 4000
   Strength: 1000
   Damage: 0
+--- !u!114 &7006280461578080230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416151671816858921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Hull
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &1805357066627775177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416151671816858921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0

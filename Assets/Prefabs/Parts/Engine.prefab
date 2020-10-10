@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 814017376281466915}
   - component: {fileID: 3534995665428981729}
+  - component: {fileID: 4241717868035740863}
+  - component: {fileID: 8137097988916834026}
   m_Layer: 0
   m_Name: Engine
   m_TagString: Untagged
@@ -48,6 +50,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 745dca27a04479445a29de17cd9e322a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mass: 5000
-  RequiredPropellent: {fileID: 5406457557151621466, guid: a2b98fb403df7304b96a1e21e0178e78, type: 3}
+  Propellent: {fileID: 0}
   ExhaustVelocity: 3800
+--- !u!114 &4241717868035740863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755544892678581895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Owner: {fileID: 0}
+  Name: Engine
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
+  Quantity: 1
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}
+--- !u!114 &8137097988916834026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4755544892678581895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MassPerUnit: 1000
+  VolumePerUnit: 10
+  SpecificHeatCapacity: 0
+  DefaultTemperature: 294
+  HeatEnergy: 0

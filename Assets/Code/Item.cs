@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Item : MonoBehaviour
 {
+    public User Owner;
+
     public string Name, Units, ShortName, Qualifier;
 
     [TextArea(15, 20)]

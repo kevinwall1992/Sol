@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 [ExecuteAlways]
-public class ItemContainer : MonoBehaviour, Craft.Part
+public class ItemContainer : Craft.Part
 {
-    public float DryMass;
     public float Volume;
-
-    public float PartMass { get { return DryMass; } }
 
     public float TotalMass { get { return PartMass + ItemMass; } }
 
@@ -49,8 +46,10 @@ public class ItemContainer : MonoBehaviour, Craft.Part
 
     public Craft Craft { get { return GetComponentInParent<Craft>(); } }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         MergeDuplicates();
     }
 
@@ -146,6 +145,28 @@ public class ItemContainer : MonoBehaviour, Craft.Part
         }
 
         return true;
+    }
+
+    //Increase quantity of an object without requiring callers
+    //to create Item GameObjects.
+    //In the future, may be used to cut down on Instantiate() calls. 
+    public float PutInQuantity(Item sample_item, float quantity)
+    {
+        if (!IsStorable(sample_item))
+            return quantity;
+
+        Item item = sample_item.Copy();
+        item.Quantity = quantity;
+
+        if(!PutIn(item))
+        {
+            float overflow = item.Quantity;
+
+            GameObject.Destroy(item);
+            return overflow;
+        }
+
+        return 0;
     }
 
     public Item TakeOut(string name, float quantity = -1)
