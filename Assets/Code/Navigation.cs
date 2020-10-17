@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-[ExecuteAlways]
+
 public class Navigation : Craft.Part
 {
     int transfers_completed = 0;
@@ -53,13 +53,8 @@ public class Navigation : Craft.Part
         
     }
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-
-        if (!Application.isPlaying)
-            return;
-
         if (NextManeuver != null &&
             Scene.The.Clock.Now > NextManeuver.Date)
         {

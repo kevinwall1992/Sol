@@ -169,17 +169,20 @@ public class Market : MonoBehaviour
         return GetSaleValue(item_name, quantity) / quantity;
     }
 
-    public Item Purchase(User buyer, string item_name, float quantity, Storage storage)
+    public bool Purchase(User buyer, string item_name, float quantity, Storage storage)
     {
-        if (quantity > GetQuantity(item_name) || 
+        if (quantity == 0)
+            return true;
+        if(quantity > GetQuantity(item_name) || 
             GetPurchaseCost(item_name, quantity) > buyer.PrimaryBankAccount.Balance)
-            return null;
+            return false;
 
         Item item_purchased = GetSampleItem(item_name).Copy();
+        item_purchased.Owner = buyer;
         item_purchased.Quantity = 0;
 
         if (quantity > storage.GetUnusedVolumeFor(item_purchased))
-            return null;
+            return false;
 
         foreach (SaleOffer offer in GetSortedSaleOffersFor(item_name))
         {
@@ -201,11 +204,14 @@ public class Market : MonoBehaviour
 
         storage.Store(item_purchased);
 
-        return item_purchased;
+        return true;
     }
 
     public Item Sell(User seller, Item item)
     {
+        if (item.Quantity == 0)
+            return item;
+
         foreach (PurchaseOffer offer in GetSortedPurchaseOffersFor(item.Name))
         {
             offer.Transact(seller, item);

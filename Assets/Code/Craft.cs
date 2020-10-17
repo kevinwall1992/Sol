@@ -84,7 +84,7 @@ public class Craft : Item.Script
     public float CurbMass { get { return Mass - Cargo.ItemMass; } }
 
     public Station Station
-    { get { return transform.parent.GetComponentInParent<Station>(); } }
+    { get { return Item.Station(); } }
 
     public bool IsDocked { get { return Station != null; } }
 
@@ -113,17 +113,10 @@ public class Craft : Item.Script
     }
 
 
-    [ExecuteAlways]
     [RequireComponent(typeof(PhysicalItem))]
     public class Part : Item.Script
     {
         public float PartMass { get { return Item.Mass(); } }
-
-        protected virtual void Update()
-        {
-            if (Item.Owner == null && this.Craft() != null)
-                Item.Owner = this.Craft().Item.Owner;
-        }
     }
 }
 
@@ -131,5 +124,5 @@ public class Craft : Item.Script
 public static class CraftPartExtensions
 {
     public static Craft Craft(this Craft.Part part)
-    { return (part as MonoBehaviour).GetComponentInParent<Craft>(); }
+    { return part.Item.Craft(); }
 }

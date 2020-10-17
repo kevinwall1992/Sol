@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+
 [ExecuteAlways]
 public class ItemContainer : Craft.Part
 {
-    public float Volume;
+    public float VolumePerUnit;
+
+    public float Volume { get { return VolumePerUnit * Item.Quantity; } }
 
     public float TotalMass { get { return PartMass + ItemMass; } }
 
@@ -45,12 +48,10 @@ public class ItemContainer : Craft.Part
         }
     }
 
-    public Craft Craft { get { return GetComponentInParent<Craft>(); } }
+    public Craft Craft { get { return Item.Craft(); } }
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-
         MergeDuplicates();
     }
 
@@ -111,6 +112,11 @@ public class ItemContainer : Craft.Part
     public bool Contains(string name)
     {
         return GetQuantity(name) > 0;
+    }
+
+    public bool ContainsSpecificItem(Item item)
+    {
+        return Items.Values.Contains(item);
     }
 
     public bool PutIn(Item item)

@@ -2,6 +2,7 @@
 using System.Collections;
 
 
+[ExecuteAlways]
 public class Item : MonoBehaviour
 {
     public User Owner;
@@ -27,6 +28,10 @@ public class Item : MonoBehaviour
 
     void Update()
     {
+        Craft craft = this.Craft();
+        if (Owner == null && craft != null)
+            Owner = craft.Item.Owner;
+
         if (GetQuantityString == null)
             GetQuantityString = delegate ()
             {
@@ -118,4 +123,10 @@ public static class ItemExtensions
 
     public static bool IsSolid(this Item item)
     { return !item.IsLiquid() && !item.IsGas(); }
+
+    public static Craft Craft(this Item item)
+    { return item.GetComponentInParent<Craft>(); }
+
+    public static Station Station(this Item item)
+    { return item.GetComponentInParent<Station>(); }
 }

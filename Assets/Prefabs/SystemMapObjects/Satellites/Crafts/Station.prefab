@@ -320,6 +320,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3094789290983849979}
     m_Modifications:
+    - target: {fileID: 2517503162571054024, guid: 8822e37cadd28b54e996bfaf3ad8158f, type: 3}
+      propertyPath: Quantity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4561958461666032154, guid: 8822e37cadd28b54e996bfaf3ad8158f, type: 3}
       propertyPath: m_Name
       value: CargoMount
