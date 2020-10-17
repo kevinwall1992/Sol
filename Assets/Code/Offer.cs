@@ -27,10 +27,13 @@ public class SaleOffer
 
         quantity = Mathf.Min(Item.Quantity, quantity);
 
+        Item purchased_item = Item.RemoveQuantity(quantity);
+
         Seller.PrimaryBankAccount.Deposit(
             buyer.PrimaryBankAccount.Withdraw(quantity * CostPerUnit));
+        purchased_item.Owner = buyer;
 
-        return Item.RemoveQuantity(quantity);
+        return purchased_item;
     }
 }
 
@@ -70,6 +73,7 @@ public class PurchaseOffer
 
         seller.PrimaryBankAccount.Deposit(
             Buyer.PrimaryBankAccount.Withdraw(purchased_item.Quantity * ValuePerUnit));
+        purchased_item.Owner = Buyer;
 
         if (Destination != null)
             Destination.Store(purchased_item);
