@@ -65,7 +65,8 @@ public class PurchaseOffer
 
     public Item Transact(User seller, Item item)
     {
-        if (item.Name != ItemName)
+        if (item.Name != ItemName || 
+            item.Quantity == 0)
             return item;
 
         Item purchased_item = item.RemoveQuantity(Quantity);
