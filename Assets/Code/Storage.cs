@@ -85,6 +85,19 @@ public class Storage
         return false;
     }
 
+    public float StoreQuantity(Item sample, float quantity)
+    {
+        foreach (ItemContainer item_container in ItemContainers)
+        {
+            quantity = item_container.PutInQuantity(sample, quantity);
+
+            if (quantity == 0)
+                break;
+        }
+
+        return quantity;
+    }
+
     public float GetQuantity(string name)
     {
         float quantity = 0;
@@ -130,6 +143,28 @@ public class Storage
         }
 
         return retrieved_item;
+    }
+
+    public float RetrieveQuantity(string name, float quantity)
+    {
+        if (quantity == 0)
+            return 0;
+
+        Item retrieved_item = Retrieve(name, quantity);
+        quantity = retrieved_item.Quantity;
+
+        GameObject.Destroy(retrieved_item.gameObject);
+        return quantity;
+    }
+
+    public void TouchItems(System.Action<Item> Touch, System.Func<Item, bool> Predicate = null)
+    {
+        foreach(ItemContainer container in ItemContainers)
+        {
+            foreach (Item item in container.Items.Values)
+                if (Predicate == null || Predicate(item))
+                    Touch(item);
+        }
     }
 
     public Storage GetSubset(System.Func<ItemContainer, bool> predicate)
