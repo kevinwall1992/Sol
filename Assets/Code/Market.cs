@@ -59,14 +59,14 @@ public class Market : MonoBehaviour
             .Sorted(offer => offer.ValuePerUnit).Reversed();
     }
 
-    public IEnumerable<PurchaseOffer> GetPurchaseOffersBy(User user)
+    public IEnumerable<PurchaseOffer> GetPurchaseOffersBy(User buyer)
     {
-        return PurchaseOffers.Where(offer => offer.Buyer == user);
+        return PurchaseOffers.Where(offer => offer.Buyer == buyer);
     }
 
-    public IEnumerable<SaleOffer> GetSaleOffersBy(User user)
+    public IEnumerable<SaleOffer> GetSaleOffersBy(User seller)
     {
-        return SaleOffers.Where(offer => offer.Seller == user);
+        return SaleOffers.Where(offer => offer.Seller == seller);
     }
 
     public Item GetSampleItem(string item_name)
