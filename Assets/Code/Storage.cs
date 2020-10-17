@@ -108,6 +108,11 @@ public class Storage
         return quantity;
     }
 
+    public bool Contains(string name)
+    {
+        return GetQuantity(name) > 0;
+    }
+
     public Item GetSampleItem(string name)
     {
         if (GetQuantity(name) == 0)
