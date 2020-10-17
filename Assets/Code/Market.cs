@@ -76,6 +76,19 @@ public class Market : MonoBehaviour
             .FirstOrDefault(item => item.Name == item_name);
     }
 
+    public IEnumerable<Item> GetSampleItems()
+    {
+        return SaleOffers
+            .Select(offer => offer.Item.Name)
+            .RemoveDuplicates()
+            .Select(item_name => GetSampleItem(item_name));
+    }
+
+    public IEnumerable<T> GetSampleItems<T>() where T : Item.Script
+    {
+        return GetSampleItems().SelectComponents<Item, T>();
+    }
+
     public float GetQuantity(string item_name)
     {
         return SaleOffers.Sum(offer => offer.Item.Quantity);
