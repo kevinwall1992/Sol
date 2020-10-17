@@ -26,7 +26,8 @@ public class ItemContainer : Craft.Part
         {
             MergeDuplicates();
 
-            return GetComponentsInChildren<Item>()
+            return transform.Children()
+                .SelectComponents<Item>()
                 .ToDictionary(item => item.Name, item => item);
         }
     }
