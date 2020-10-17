@@ -126,6 +126,25 @@ public class Market : MonoBehaviour
         return GetPurchaseCost(item_name, quantity) / quantity;
     }
 
+    public float GetPurchaseQuantity(string item_name, float credits)
+    {
+        float total_quantity = 0;
+
+        foreach(SaleOffer sale_offer in GetSortedSaleOffersFor(item_name))
+        {
+            float quantity = Mathf.Min(sale_offer.Item.Quantity, 
+                                       credits / sale_offer.CostPerUnit);
+
+            total_quantity += quantity;
+            credits -= quantity * sale_offer.CostPerUnit;
+
+            if (credits == 0)
+                break;
+        }
+
+        return total_quantity;
+    }
+
     public float GetSaleValue(string item_name, float quantity)
     {
         float sale_value = 0;
