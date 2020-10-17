@@ -42,4 +42,16 @@ public class Station : MonoBehaviour, Visitable
             distance, distance, 
             0, Random.value * 2 * Mathf.PI);
     }
+
+    public IEnumerable<Room> GetRooms(User owner)
+    {
+        return GetComponentsInChildren<Room>()
+            .Where(room => room.Item.Owner == owner);
+    }
+      
+    public Storage GetStorage(User owner)
+    {
+        return new Storage(GetComponentsInChildren<ItemContainer>()
+            .Where(container => container.Item.Owner == owner));
+    }
 }
