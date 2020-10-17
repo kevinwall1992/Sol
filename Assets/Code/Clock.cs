@@ -5,6 +5,8 @@ using System;
 [ExecuteAlways]
 public class Clock : MonoBehaviour
 {
+    System.DateTime then;
+
     public string EpochDateString, LoadDateString;
 
     public float GameSpeed = 1;
@@ -15,9 +17,14 @@ public class Clock : MonoBehaviour
     public double SecondsSinceEpoch
     { get { return DateToSecondsSinceEpoch(Now); } }
 
+    public float DeltaTime
+    { get { return (float)(Now - then).TotalSeconds; } }
+
     void Start()
     {
         ReloadNow();
+
+        then = Now;
     }
 
     void Update()
@@ -28,6 +35,7 @@ public class Clock : MonoBehaviour
             return;
         }
 
+        then = Now;
         Now = Now.AddSeconds(GameSpeed * Time.deltaTime);
     }
 
