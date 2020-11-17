@@ -20,6 +20,12 @@ public class Clock : MonoBehaviour
     public float DeltaTime
     { get { return (float)(Now - then).TotalSeconds; } }
 
+    public float DeltaTimeInDays
+    { get { return DeltaTime / 60 / 60 / 24; } }
+
+    public float DeltaTimeInYears
+    { get { return DeltaTimeInDays / 365; } }
+
     void Start()
     {
         ReloadNow();

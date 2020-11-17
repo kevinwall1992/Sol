@@ -26,6 +26,12 @@ public class Storage
         this.GetItemContainers = () => item_containers;
     }
 
+    public Storage(IEnumerable<ItemContainer.Script> item_containers)
+    {
+        this.GetItemContainers = 
+            () => item_containers.Select(container => container.Container);
+    }
+
     public float GetVolumeOf(string item_name)
     {
         return ItemContainers.Sum(
@@ -66,7 +72,7 @@ public class Storage
 
     public bool CanFit(Item item)
     {
-        return GetUnusedVolumeFor(item) >= item.Quantity;
+        return GetUnusedVolumeFor(item) >= item.Volume();
     }
 
     public bool Store(Item item)

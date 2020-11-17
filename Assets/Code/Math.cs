@@ -417,6 +417,37 @@ public static class MathUtility
 
         return sum * factor;
     }
+
+    public static System.Func<float, float> LookupToFunction_LinearInterpolation(
+        Dictionary<float, float> lookup)
+    {
+        return delegate (float x)
+        {
+            if (lookup.Keys.Count() == 0)
+                return 0;
+
+            List<float> sorted_xs = lookup.Keys.Sorted(x_ => x_);
+
+            if (sorted_xs.First() >= x)
+                return lookup[sorted_xs[0]];
+            if (sorted_xs.Last() <= x)
+                return lookup[sorted_xs.Last()];
+
+            float x0 = 0, x1 = 0;
+            for(int i = 0; i< sorted_xs.Count; i++)
+            {
+                x0 = sorted_xs[i];
+                x1 = sorted_xs[i + 1];
+
+                if (x1 > x)
+                    break;
+            }
+
+            return Mathf.Lerp(lookup[x0], 
+                              lookup[x1], 
+                              (x - x0) / (x1 - x0));
+        };
+    }
 }
 
 public abstract class GenericFunction<T>

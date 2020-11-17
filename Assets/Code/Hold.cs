@@ -6,6 +6,6 @@ public class Hold : ItemContainer.Script, ItemContainer.Filter
 {
     public bool IsStorable(Item item)
     {
-        return !item.IsPerson();
+        return !item.IsPeople();
     }
 }

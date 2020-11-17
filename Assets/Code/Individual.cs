@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(PhysicalItem))]
-[RequireComponent(typeof(PerishableItem))]
-public class Person : Item.Script
+[RequireComponent(typeof(People))]
+public class Individual : Item.Script
 {
     private void Update()
     {

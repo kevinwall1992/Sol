@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-[ExecuteAlways]
 public class ItemContainer : Craft.Part
 {
     public float VolumePerUnit;

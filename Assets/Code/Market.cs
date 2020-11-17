@@ -114,7 +114,7 @@ public class Market : MonoBehaviour
             cost += sale_offer.CostPerUnit * quantity_from_this_offer;
             quantity -= quantity_from_this_offer;
 
-            if (quantity == 0)
+            if (quantity <= 0)
                 break;
         }
 
@@ -138,7 +138,7 @@ public class Market : MonoBehaviour
             total_quantity += quantity;
             credits -= quantity * sale_offer.CostPerUnit;
 
-            if (credits == 0)
+            if (credits <= 0)
                 break;
         }
 
@@ -157,7 +157,7 @@ public class Market : MonoBehaviour
             sale_value += purchase_offer.ValuePerUnit * quantity_from_this_offer;
             quantity -= quantity_from_this_offer;
 
-            if (quantity == 0)
+            if (quantity <= 0)
                 break;
         }
 
@@ -171,18 +171,20 @@ public class Market : MonoBehaviour
 
     public bool Purchase(User buyer, string item_name, float quantity, Storage storage)
     {
-        if (quantity == 0)
+        if (quantity <= 0)
             return true;
         if(quantity > GetQuantity(item_name) || 
             GetPurchaseCost(item_name, quantity) > buyer.PrimaryBankAccount.Balance)
             return false;
 
-        Item item_purchased = GetSampleItem(item_name).Copy();
+        Item sample_item = GetSampleItem(item_name);
+        if (quantity * sample_item.Physical().VolumePerUnit > 
+            storage.GetUnusedVolumeFor(sample_item))
+            return false;
+
+        Item item_purchased = sample_item.Copy();
         item_purchased.Owner = buyer;
         item_purchased.Quantity = 0;
-
-        if (quantity > storage.GetUnusedVolumeFor(item_purchased))
-            return false;
 
         foreach (SaleOffer offer in GetSortedSaleOffersFor(item_name))
         {
@@ -192,13 +194,13 @@ public class Market : MonoBehaviour
             quantity -= transaction_item.Quantity;
             GameObject.Destroy(transaction_item.gameObject);
 
-            if (offer.Item.Quantity == 0)
+            if (offer.Item.Quantity <= 0)
             {
                 GameObject.Destroy(offer.Item.gameObject);
                 SaleOffers.Remove(offer);
             }
 
-            if (quantity == 0)
+            if (quantity <= 0)
                 break;
         }
 
@@ -209,17 +211,17 @@ public class Market : MonoBehaviour
 
     public Item Sell(User seller, Item item)
     {
-        if (item.Quantity == 0)
+        if (item.Quantity <= 0)
             return item;
 
         foreach (PurchaseOffer offer in GetSortedPurchaseOffersFor(item.Name))
         {
             offer.Transact(seller, item);
 
-            if (offer.Quantity == 0)
+            if (offer.Quantity <= 0)
                 PurchaseOffers.Remove(offer);
 
-            if (item.Quantity == 0)
+            if (item.Quantity <= 0)
                 break;
         }
 

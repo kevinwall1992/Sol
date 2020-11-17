@@ -43,8 +43,7 @@ public class Craft : Item.Script
         get
         {
             if (HasCargoMount)
-                return new Storage(CargoMount.CargoContainers
-                    .Select(cargo_container => cargo_container.Container));
+                return new Storage(CargoMount.CargoContainers);
             else
                 return new Storage();
         }

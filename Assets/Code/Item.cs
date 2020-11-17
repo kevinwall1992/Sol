@@ -88,8 +88,8 @@ public static class ItemExtensions
     public static bool IsGas(this Item item) { return item.Gas() != null; }
     public static GasItem Gas(this Item item) { return item.GetComponent<GasItem>(); }
 
-    public static bool IsPerson(this Item item) { return item.Person(); }
-    public static Person Person(this Item item) { return item.GetComponent<Person>(); }
+    public static bool IsPeople(this Item item) { return item.People(); }
+    public static People People(this Item item) { return item.GetComponent<People>(); }
 
     public static float Mass(this Item item)
     { return item.Physical().Mass; }
