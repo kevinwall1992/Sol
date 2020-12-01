@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 557972400408846293}
   - component: {fileID: 7405870351612149881}
   - component: {fileID: 5596175320999246402}
+  - component: {fileID: -6433072152630656207}
   m_Layer: 0
   m_Name: Satellite
   m_TagString: Untagged
@@ -435,3 +436,15 @@ MonoBehaviour:
   SystemMapObject: {fileID: 7405870351612149881}
   Satellite: {fileID: 696116188602862457}
   PositionRealizeSpeed: 16
+--- !u!114 &-6433072152630656207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8934150241507691817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77849e009ef6dd8418c8c6d27174c92e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
