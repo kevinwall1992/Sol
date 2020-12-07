@@ -5,18 +5,6 @@
         _MainTex ("Texture", 2D) = "white" {}
 
 		GeometryTexture("GeometryTexture", 2D) = "white" {}
-
-		OuterRadius("OuterRadius", Float) = 1
-		Thickness("Thickness", Float) = 1
-
-		Linearity("Linearity", Range(0, 0.9999)) = 0
-		Coloration("Coloration", Range(0, 1)) = 0
-		
-		RoomLength("RoomLength", Float) = 1
-		RoomMargin("RoomMargin", Float) = 0.1
-		FloorCount("FloorCount", Int) = 4
-		FloorHeight("FloorHeight", Int) = 4
-		FloorMargin("FloorMargin", Float) = 0.05
     }
     SubShader
     {
@@ -50,19 +38,35 @@
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+
 			sampler2D GeometryTexture;
 
+			sampler2D_float RoomIndices;
+			sampler2D_float RoomPositions;
+			sampler2D_float RoomLengths;
+			sampler2D RoomColors;
+
+			float4 RoomIndices_TexelSize;
+			float4 RoomPositions_TexelSize;
+			float4 RoomColors_TexelSize;
+
+			float FloorIndices[256];
+			float FloorRadii[128];
+			float FloorHeights[128];
+
 			float OuterRadius;
+			float InnerRadius;
 			float Thickness;
 
 			float Linearity;
+			float Rationality;
 			float Coloration;
 
-			float RoomLength;
-			float RoomMargin;
-			int FloorCount;
-			float FloorHeight;
+			float UnitFloorHeight;
 			float FloorMargin;
+
+			float UnitRoomLength;
+			float RoomMargin;
 
 			FragmentData vert(VertexData vertex_data)
 			{
@@ -70,21 +74,18 @@
 					GeometryTexture,
 					float4(vertex_data.texture_coordinates, 0, 0));
 
-				float inner_radius = OuterRadius - FloorCount * FloorHeight;
-				float linearized_outer_radius = OuterRadius / (1 - Linearity);
-				float linearized_inner_radius = inner_radius / (1 - Linearity);
-
 				float radians = geometry_data.r * (2 * PI);
-				float linearized_radians = radians * (1 - Linearity);
-
+				
 				float radius = 
 					geometry_data.g * 
-					(OuterRadius - inner_radius) +
-					inner_radius;
-				float linearized_radius =
-					geometry_data.g * 
-					(linearized_outer_radius - linearized_inner_radius) +
-					linearized_inner_radius;
+					(OuterRadius - InnerRadius) +
+					InnerRadius;
+
+				float linearized_radians = radians * (1 - Linearity);
+
+				float linearized_outer_radius = OuterRadius / (1 - Linearity);
+				float linearized_inner_radius = (linearized_outer_radius - OuterRadius) + InnerRadius;
+				float linearized_radius = (linearized_outer_radius - OuterRadius) + radius;
 
 				float3 position = float3(
 					linearized_radius * sin(linearized_radians),
@@ -111,25 +112,60 @@
 
 				float radius = fragment_data.polar_coordinates[0];
 				float radians = fragment_data.polar_coordinates[1];
-				fixed4 room_color = fixed4(1, 0, 0, 1);
 
-				float floor_index = clamp(floor((OuterRadius - radius) / FloorHeight), 0, FloorCount - 1);
-				float floor_radius = OuterRadius - floor_index * FloorHeight;
+				int floor_slot_index = floor((OuterRadius - radius) / UnitFloorHeight);
+				int floor_index = FloorIndices[floor_slot_index];
+				float is_room = 1;
+				if (floor_index < 0)
+					is_room = 0;
+
+				float floor_radius = FloorRadii[floor_index];
+				float floor_height = FloorHeights[floor_index] * UnitFloorHeight;
 				float floor_length = floor_radius * 2 * PI;
-				float linearized_floor_length = lerp(floor_length, OuterRadius * 2 * PI, Linearity);
+				float meters = floor_length * radians / (2 * PI);
+				float distance_above_floor = floor_radius - radius;
 
-				float room_count = floor_length / RoomLength;
-				float room_pitch = linearized_floor_length / room_count;
+				float linearized_floor_length = lerp(
+					floor_length,
+					OuterRadius * 2 * PI,
+					Linearity * (1 - Rationality));
+				float floor_length_ratio = linearized_floor_length / floor_length;
 
-				float meters = linearized_floor_length * radians / (2 * PI);
+				int room_slot_index = floor(meters / UnitRoomLength);
+				int room_index = round(tex2D(
+					RoomIndices, 
+					float2(room_slot_index / 4.0, floor_index) * 
+					RoomIndices_TexelSize)[(uint)room_slot_index % 4]);
+				
+				if (room_index < 0)
+					is_room = 0;
 
-				float is_room = (1 - floor(meters % room_pitch / (RoomLength - RoomMargin))) *
-								(1 - floor(meters / (floor(room_count) * room_pitch))) *
-								(1 - floor((OuterRadius - radius) * 1.000001 % FloorHeight / (FloorHeight - FloorMargin)));
-				is_room = clamp(is_room, 0, 1);
+				float room_color_index = (room_index) * RoomColors_TexelSize.x;
+				float2 room_coordinates = float2(room_color_index % 1, 
+												 floor(room_color_index) * RoomColors_TexelSize.y);
+				fixed4 room_color = tex2D(RoomColors, room_coordinates);
+
+				float room_position_index = (room_index / 4.0) * RoomPositions_TexelSize.x;
+				room_coordinates = float2(room_position_index % 1, 
+										  floor(room_position_index) * RoomPositions_TexelSize.y);
+				float room_position = tex2D(RoomPositions, room_coordinates)[(uint)room_index % 4];
+				float room_length = tex2D(RoomLengths, room_coordinates)[(uint)room_index % 4] *
+									UnitRoomLength;
+				
+				float room_space = room_length * floor_length_ratio;
+				float initial_empty_length = (room_space - room_length + RoomMargin) / 2;
+				float room_meters = meters - room_position;
+
+				if (room_meters < initial_empty_length / floor_length_ratio ||
+					room_meters > (initial_empty_length + room_length - RoomMargin) / floor_length_ratio)
+					is_room = 0;
+				if (distance_above_floor < FloorMargin / 2 ||
+					distance_above_floor > (floor_height - FloorMargin / 2))
+					is_room = 0;
 
 				return lerp(wireframe_color, 
-							room_color * is_room, Coloration);
+							room_color * is_room, 
+							Coloration);
 			}
             ENDCG
         }
