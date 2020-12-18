@@ -14,6 +14,11 @@ public class Station : MonoBehaviour, Visitable
     string description = "";
     public string PlaceDescription { get { return description; } }
 
+    public IEnumerable<Module> Modules
+    { get { return GetComponentsInChildren<Module>(); } }
+    public IEnumerable<Ring> Rings
+    { get { return Modules.SelectComponents<Module, Ring>(); } }
+
     public Craft Craft { get { return GetComponent<Craft>(); } }
 
     public IEnumerable<Craft> Visitors
@@ -53,5 +58,11 @@ public class Station : MonoBehaviour, Visitable
     {
         return new Storage(GetComponentsInChildren<ItemContainer>()
             .Where(container => container.Item.Owner == owner));
+    }
+
+
+    public class Module : Craft.Part
+    {
+
     }
 }

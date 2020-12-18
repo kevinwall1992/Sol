@@ -5,13 +5,13 @@
         _MainTex ("Texture", 2D) = "white" {}
 
 		GeometryTexture("GeometryTexture", 2D) = "white" {}
+
+		WireFrameColor("WireFrameColor", Color) = (0, 0, 0, 1)
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
-
-		Cull Off
 
         Pass
         {
@@ -32,6 +32,7 @@
 				float4 screen_position : SV_POSITION;
 				float2 texture_coordinates : TEXCOORD0;
 				float2 polar_coordinates : TEXCOORD1;
+				float3 position : TEXCOORD2;
 			};
 
 			#define PI 3.14159 
@@ -41,14 +42,16 @@
 
 			sampler2D GeometryTexture;
 
-			sampler2D_float RoomIndices;
-			sampler2D_float RoomPositions;
-			sampler2D_float RoomLengths;
-			sampler2D RoomColors;
+			fixed4 WireFrameColor;
 
-			float4 RoomIndices_TexelSize;
-			float4 RoomPositions_TexelSize;
-			float4 RoomColors_TexelSize;
+			sampler2D_float WingIndices;
+			sampler2D_float WingPositions;
+			sampler2D_float WingWidths;
+			sampler2D WingColors;
+
+			float4 WingIndices_TexelSize;
+			float4 WingPositions_TexelSize;
+			float4 WingColors_TexelSize;
 
 			float FloorIndices[256];
 			float FloorRadii[128];
@@ -56,17 +59,19 @@
 
 			float OuterRadius;
 			float InnerRadius;
-			float Thickness;
+			float RingDepth;
 
 			float Linearity;
-			float Rationality;
-			float Coloration;
+			float WingVisibility;
+			float ApplyWidthCorrection;
+			float WireframeVisibility;
 
-			float UnitFloorHeight;
-			float FloorMargin;
+			float FloorDivisor;
+			float InterstitialSpaceThickness;
 
-			float UnitRoomLength;
-			float RoomMargin;
+			float WingDivisor;
+			float WallThickness;
+			float WingDepth;
 
 			FragmentData vert(VertexData vertex_data)
 			{
@@ -91,7 +96,7 @@
 					linearized_radius * sin(linearized_radians),
 					linearized_radius * cos(linearized_radians) -
 						(linearized_outer_radius - OuterRadius),
-					geometry_data.b * Thickness);
+					geometry_data.b * RingDepth);
 
 
 				FragmentData fragment_data;
@@ -102,25 +107,33 @@
 					TRANSFORM_TEX(vertex_data.texture_coordinates, _MainTex);
 				fragment_data.polar_coordinates =
 					float2(radius, radians);
+				fragment_data.position =
+					position;
 
 				return fragment_data;
 			}
 
 			fixed4 frag(FragmentData fragment_data) : SV_Target
 			{
-				fixed4 wireframe_color = tex2D(_MainTex, fragment_data.texture_coordinates);
+				fixed4 wireframe_color = round(tex2D(_MainTex, fragment_data.texture_coordinates)) * 
+										 WireFrameColor;
+				if (fragment_data.position.z > 0)
+					return wireframe_color;
+
+				if (WireframeVisibility > 0.5 && fragment_data.position.z < WingDepth)
+					discard;
 
 				float radius = fragment_data.polar_coordinates[0];
 				float radians = fragment_data.polar_coordinates[1];
 
-				int floor_slot_index = floor((OuterRadius - radius) / UnitFloorHeight);
-				int floor_index = FloorIndices[floor_slot_index];
-				float is_room = 1;
+				int floor_slot_index = floor((OuterRadius - radius) / FloorDivisor);
+				int floor_index = round(FloorIndices[floor_slot_index]);
+				float is_wing = 1;
 				if (floor_index < 0)
-					is_room = 0;
+					is_wing = 0;
 
 				float floor_radius = FloorRadii[floor_index];
-				float floor_height = FloorHeights[floor_index] * UnitFloorHeight;
+				float floor_height = FloorHeights[floor_index];
 				float floor_length = floor_radius * 2 * PI;
 				float meters = floor_length * radians / (2 * PI);
 				float distance_above_floor = floor_radius - radius;
@@ -128,44 +141,43 @@
 				float linearized_floor_length = lerp(
 					floor_length,
 					OuterRadius * 2 * PI,
-					Linearity * (1 - Rationality));
+					Linearity * ApplyWidthCorrection);
 				float floor_length_ratio = linearized_floor_length / floor_length;
 
-				int room_slot_index = floor(meters / UnitRoomLength);
-				int room_index = round(tex2D(
-					RoomIndices, 
-					float2(room_slot_index / 4.0, floor_index) * 
-					RoomIndices_TexelSize)[(uint)room_slot_index % 4]);
+				int wing_slot_index = floor(meters / WingDivisor);
+				int wing_index = round(tex2D(
+					WingIndices, 
+					float2(wing_slot_index / 4.0, floor_index) * 
+					WingIndices_TexelSize)[(uint)wing_slot_index % 4]);
 				
-				if (room_index < 0)
-					is_room = 0;
+				if (wing_index < 0)
+					is_wing = 0;
 
-				float room_color_index = (room_index) * RoomColors_TexelSize.x;
-				float2 room_coordinates = float2(room_color_index % 1, 
-												 floor(room_color_index) * RoomColors_TexelSize.y);
-				fixed4 room_color = tex2D(RoomColors, room_coordinates);
+				float wing_color_index = (wing_index) * WingColors_TexelSize.x;
+				float2 wing_coordinates = float2(wing_color_index % 1, 
+												 floor(wing_color_index) * WingColors_TexelSize.y);
+				fixed4 wing_color = tex2D(WingColors, wing_coordinates);
 
-				float room_position_index = (room_index / 4.0) * RoomPositions_TexelSize.x;
-				room_coordinates = float2(room_position_index % 1, 
-										  floor(room_position_index) * RoomPositions_TexelSize.y);
-				float room_position = tex2D(RoomPositions, room_coordinates)[(uint)room_index % 4];
-				float room_length = tex2D(RoomLengths, room_coordinates)[(uint)room_index % 4] *
-									UnitRoomLength;
+				float wing_position_index = (wing_index / 4.0) * WingPositions_TexelSize.x;
+				wing_coordinates = float2(wing_position_index % 1, 
+										  floor(wing_position_index) * WingPositions_TexelSize.y);
+				float wing_position = tex2D(WingPositions, wing_coordinates)[(uint)wing_index % 4];
+				float wing_length = tex2D(WingWidths, wing_coordinates)[(uint)wing_index % 4];
 				
-				float room_space = room_length * floor_length_ratio;
-				float initial_empty_length = (room_space - room_length + RoomMargin) / 2;
-				float room_meters = meters - room_position;
+				float wing_space = wing_length * floor_length_ratio;
+				float initial_empty_length = (wing_space - wing_length + WallThickness) / 2;
+				float wing_meters = meters - wing_position;
 
-				if (room_meters < initial_empty_length / floor_length_ratio ||
-					room_meters > (initial_empty_length + room_length - RoomMargin) / floor_length_ratio)
-					is_room = 0;
-				if (distance_above_floor < FloorMargin / 2 ||
-					distance_above_floor > (floor_height - FloorMargin / 2))
-					is_room = 0;
+				if (wing_meters < initial_empty_length / floor_length_ratio ||
+					wing_meters > (initial_empty_length + wing_length - WallThickness) / floor_length_ratio)
+					is_wing = 0;
+				if (distance_above_floor < InterstitialSpaceThickness / 2 ||
+					distance_above_floor > (floor_height - InterstitialSpaceThickness / 2))
+					is_wing = 0;
 
 				return lerp(wireframe_color, 
-							room_color * is_room, 
-							Coloration);
+							fixed4(wing_color.rgb * is_wing, 1), 
+							WingVisibility);
 			}
             ENDCG
         }

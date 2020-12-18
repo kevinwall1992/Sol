@@ -320,6 +320,11 @@ public static class Utility
         return (T[])System.Enum.GetValues(typeof(T));
     }
 
+    public static int GetEnumSize<T>()
+    {
+        return GetEnumValues<T>().Count();
+    }
+
 
     public static void SaveAsPNG(this RenderTexture render_texture, 
                                  string filepath = "Other/render_texture.png")
