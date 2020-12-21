@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class RingVisualization : MonoBehaviour
 {
+    bool in_linear_transition = false;
+    float start_degrees = 0;
+
     float outer_radius_displayed = 0;
     List<int> wings_displayed_per_floor = new List<int>();
 
@@ -25,6 +28,31 @@ public class RingVisualization : MonoBehaviour
 
     void Update()
     {
+        //Spin
+
+        if (Linearity == 0)
+        {
+            in_linear_transition = false;
+
+            transform.rotation = Quaternion.Euler(0, 0,
+                transform.rotation.eulerAngles.z +
+                Ring.RPM * 360 / 60.0f * Time.deltaTime);
+        }
+        else
+        {
+            if (!in_linear_transition)
+            {
+                start_degrees = transform.rotation.eulerAngles.z;
+                in_linear_transition = true;
+            }
+
+            transform.rotation = Quaternion.Euler(0, 0,
+                Mathf.Lerp(start_degrees, 0, Linearity));
+        }
+
+
+        //Shader 
+
         MaterialPropertyBlock material = new MaterialPropertyBlock();
         MeshRenderer.GetPropertyBlock(material);
 

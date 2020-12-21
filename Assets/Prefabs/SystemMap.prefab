@@ -853,6 +853,7 @@ MonoBehaviour:
   UnitWingWidth: 6
   UnitWingDepth: 10
   WalkwayDepth: 1
+  RPM: 2
   LayerCount: 10
 --- !u!1 &4241658977811335829
 GameObject:

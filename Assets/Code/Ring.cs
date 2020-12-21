@@ -15,6 +15,8 @@ public class Ring : Station.Module
     public float UnitWingDepth = 10;
     public float WalkwayDepth = 1;
 
+    public float RPM = 2;
+
     public int LayerCount;
     public float LayerDepth { get { return UnitWingDepth + WalkwayDepth; } }
     public float Depth { get { return LayerDepth * LayerCount; } }

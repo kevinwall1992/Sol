@@ -138,6 +138,8 @@ public class StationVisualizationCamera : MonoBehaviour
             else
                 FocusedRing.WireframeVisibility = 0;
         }
+        else
+            FocusedRing.Linearity = 0;
     }
 
     public Vector3 EstablishingPosition
