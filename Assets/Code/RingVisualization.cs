@@ -195,7 +195,8 @@ public class RingVisualization : MonoBehaviour
         }
 
         material.SetFloat("FloorDivisor", Ring.Floor.UnitCeilingHeight);
-        material.SetFloat("InterstitialSpaceThickness", Ring.Floor.InterstitialSpaceThickness * 3);
+        material.SetFloat("InterstitialSpaceThickness", 
+            Ring.Floor.InterstitialSpaceThickness * Linearity * 2);
 
         material.SetFloat("OuterRadius", Ring.GroundFloorRadius);
         material.SetFloat("InnerRadius", Ring.RoofRadius);
@@ -209,7 +210,8 @@ public class RingVisualization : MonoBehaviour
         material.SetFloat("WingVisibility", WingVisibility);
         material.SetFloat("WireframeVisibility", WireframeVisibility);
 
-        material.SetFloat("WallThickness", Ring.Floor.Wing.WallThickness * 3);
+        material.SetFloat("WallThickness", 
+            Ring.Floor.Wing.WallThickness * Linearity * 2);
 
         MeshRenderer.SetPropertyBlock(material);
     }
