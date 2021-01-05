@@ -518,6 +518,7 @@ MonoBehaviour:
   CraftInventoryPage: {fileID: 296773736}
   ItemPage: {fileID: 245201179}
   RefuelingPage: {fileID: 806630812}
+  StationViewer: {fileID: 581111139}
   DefaultBank: {fileID: 1224876374}
 --- !u!4 &181630963
 Transform:
@@ -646,7 +647,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Station: {fileID: 881595738}
-  Camera: {fileID: 0}
+  Camera: {fileID: 9657000}
   FocusedRing: {fileID: 1870539856}
   RingVisualizationPrefab: {fileID: 4741091663599714995, guid: 7f1e903ec82e31243b62d01353670d42, type: 3}
 --- !u!4 &567327596
@@ -777,9 +778,24 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7509336946833974982, guid: 1c903f454715e1f4b817bc8e421b1ea4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c903f454715e1f4b817bc8e421b1ea4, type: 3}
---- !u!84 &649834722
+--- !u!114 &581111139 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3371112242855143345, guid: 1c903f454715e1f4b817bc8e421b1ea4, type: 3}
+  m_PrefabInstance: {fileID: 581111138}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243c705e700b70746a189398cc69e8a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!84 &588749548
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1330,7 +1346,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 649834722}
+  m_TargetTexture: {fileID: 588749548}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -4240,6 +4256,7 @@ MonoBehaviour:
   Linearity: 0
   WingVisibility: 0
   WireframeVisibility: 0
+  Color: {r: 0, g: 1, b: 0, a: 1}
   FloorResolution: 256
   MaxFloorCount: 128
   MaxWingCountPerFloor: 1024

@@ -121,6 +121,15 @@ public class Ring : Station.Module
                 }
             }
 
+            public float RadianWidth
+            {
+                get
+                {
+                    return (Width / Floor.ArcLength) *
+                           (2 * Mathf.PI);
+                }
+            }
+
             public Wing(Floor floor_, int size = 1)
             {
                 floor = floor_;

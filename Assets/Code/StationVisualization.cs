@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 [ExecuteAlways]
 public class StationVisualization : MonoBehaviour
@@ -38,9 +39,76 @@ public class StationVisualization : MonoBehaviour
         //Move RingVisualizations into correct positions
 
         int ring_index = 0;
-        foreach (RingVisualization ring_visualization in RingVisualizations)
+        foreach (RingVisualization ring in RingVisualizations)
         {
-            ring_visualization.transform.localPosition = new Vector3(0, 0, ring_index++ * 500);
+            ring.transform.localPosition = new Vector3(0, 0, ring_index++ * 500);
+            ring.Color = Color.green;
+
+            foreach (WingVisualization wing in ring.WingVisualizations)
+                wing.Color = Color.yellow;
+        }
+
+        if (Scene.The.StationViewer.RectTransform.IsPointedAt(true))
+        {
+            Vector2 texture_size = new Vector2(
+                Camera.Camera.activeTexture.width, 
+                Camera.Camera.activeTexture.height);
+
+            Vector2 image_pixel_pointed_at = 
+                Scene.The.StationViewer.Image.rectTransform
+                    .PixelPositionToLocalPosition(Scene.The.Cursor.PixelPointedAt);
+
+            Vector2 normalized_image_position =
+                image_pixel_pointed_at /
+                Scene.The.StationViewer.Image.rectTransform.rect.size;
+
+            Vector2Int texture_pixel_pointed_at = 
+                (texture_size * normalized_image_position).Round();
+
+            Ray ray = Camera.Camera.ScreenPointToRay((Vector2)texture_pixel_pointed_at);
+            ray = transform.InverseTransformRay(ray);
+
+            foreach (RingVisualization ring in RingVisualizations)
+            {
+                if (!ring.Occludes(ray, 0.1f))
+                    continue;
+
+                ring.Color = Color.red;
+
+                Vector2 polar_coordinates = ring.PolarCoordinatesFromRay(ray);
+
+                foreach (WingVisualization wing_visualization in ring.WingVisualizations)
+                {
+                    Ring.Floor.Wing wing = wing_visualization.Wing;
+
+                    if (polar_coordinates.x >= (wing.Radians - wing.RadianWidth / 2) && 
+                        polar_coordinates.x < (wing.Radians + wing.RadianWidth / 2) && 
+                        polar_coordinates.y <= wing.Floor.Radius && 
+                        polar_coordinates.y > (wing.Floor.Radius - wing.Floor.CeilingHeight))
+                    {
+                        wing_visualization.Color = Color.red;
+
+                        if (InputUtility.WasMouseLeftReleased && 
+                            Camera.Shot == StationVisualizationCamera.ShotType.Front)
+                        {
+                            Camera.Shot = StationVisualizationCamera.ShotType.Detail;
+                            Camera.Radians = wing.Radians;
+                        }
+
+                        break;
+                    }
+                }
+
+                if (InputUtility.WasMouseLeftReleased)
+                {
+                    FocusedRing = ring;
+
+                    if (Camera.Shot == StationVisualizationCamera.ShotType.Establishing)
+                        Camera.Shot = StationVisualizationCamera.ShotType.Front;
+                }
+
+                break;
+            }
         }
     }
 

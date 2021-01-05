@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RingVisualization : MonoBehaviour
 {
+    MaterialPropertyBlock material;
+
     bool in_linear_transition = false;
     float start_degrees = 0;
 
@@ -19,42 +21,56 @@ public class RingVisualization : MonoBehaviour
     public float WingVisibility;
     public float WireframeVisibility;
 
+    public Color Color;
+
     public int FloorResolution = 256;
     public int MaxFloorCount = 128;
     public int MaxWingCountPerFloor = 1024;
 
+    public Vector3 Front { get { return new Vector3(0, 0, 1); } }
+    public Vector3 Seam { get { return new Vector3(0, 1, 0); } }
+
     public IEnumerable<WingVisualization> WingVisualizations
     { get { return GetComponentsInChildren<WingVisualization>(); } }
 
+    public StationVisualization StationVisualization
+    { get { return GetComponentInParent<StationVisualization>(); } }
+
     void Update()
     {
-        //Spin
-
-        if (Linearity == 0)
+        if (Application.isPlaying)
         {
-            in_linear_transition = false;
+            //Spin
 
-            transform.rotation = Quaternion.Euler(0, 0,
-                transform.rotation.eulerAngles.z +
-                Ring.RPM * 360 / 60.0f * Time.deltaTime);
-        }
-        else
-        {
-            if (!in_linear_transition)
+            if (Linearity == 0)
             {
-                start_degrees = transform.rotation.eulerAngles.z;
-                in_linear_transition = true;
-            }
+                in_linear_transition = false;
 
-            transform.rotation = Quaternion.Euler(0, 0,
-                Mathf.Lerp(start_degrees, 0, Linearity));
+                transform.rotation = Quaternion.Euler(0, 0,
+                    transform.rotation.eulerAngles.z +
+                    Ring.RPM * 360 / 60.0f * Time.deltaTime);
+            }
+            else
+            {
+                if (!in_linear_transition)
+                {
+                    start_degrees = transform.rotation.eulerAngles.z;
+                    in_linear_transition = true;
+                }
+
+                transform.rotation = Quaternion.Euler(0, 0,
+                    Mathf.Lerp(start_degrees, 0, Linearity));
+            }
         }
 
 
         //Shader 
 
-        MaterialPropertyBlock material = new MaterialPropertyBlock();
-        MeshRenderer.GetPropertyBlock(material);
+        if (material == null)
+        {
+            material = new MaterialPropertyBlock();
+            MeshRenderer.GetPropertyBlock(material);
+        }
 
         bool regenerate = false;
         if (outer_radius_displayed != Ring.GroundFloorRadius)
@@ -67,7 +83,7 @@ public class RingVisualization : MonoBehaviour
                 if (Ring.Floors[i].Wings.Count != wings_displayed_per_floor[i])
                     regenerate = true;
 
-        if (regenerate)
+        if (regenerate && Application.isPlaying)
         {
             //Floor data buffers
 
@@ -89,9 +105,6 @@ public class RingVisualization : MonoBehaviour
             float[] wing_widths = new float[max_wing_count];
 
 
-            Color[] wing_colors = new Color[max_wing_count];
-
-
             //Wing data textures
 
             Texture2D wing_indices_texture = new Texture2D(MaxWingCountPerFloor / 4,
@@ -104,23 +117,17 @@ public class RingVisualization : MonoBehaviour
 
             Texture2D wing_widths_texture = GameObject.Instantiate(wing_indices_texture);
 
-            Texture2D wing_colors_texture = new Texture2D(MaxWingCountPerFloor,
-                                                MaxFloorCount,
-                                                TextureFormat.RGBA32, false);
-            wing_colors_texture.filterMode = FilterMode.Point;
-            wing_colors_texture.wrapMode = TextureWrapMode.Clamp;
-
 
             //Clear WingVisualizations
 
-            foreach (WingVisualization wing_visualization in WingVisualizations)
-                GameObject.DestroyImmediate(wing_visualization.gameObject);
+            foreach (WingVisualization wing in WingVisualizations)
+                GameObject.DestroyImmediate(wing.gameObject);
 
 
             //Generate data
 
-            foreach (WingVisualization wing_visualization in WingVisualizations)
-                GameObject.DestroyImmediate(wing_visualization.gameObject);
+            foreach (WingVisualization wing in WingVisualizations)
+                GameObject.DestroyImmediate(wing.gameObject);
 
             int floor_slot_index = 0;
             int wing_index = 0;
@@ -142,14 +149,13 @@ public class RingVisualization : MonoBehaviour
                 {
                     float wing_position = wing_slot_index * Ring.UnitWingWidth;
                     float wing_width = wing.Width;
-                    Color wing_color = Color.green;
+                    Color wing_color = Color;
 
                     int wing_slot_count = (wing_width / Ring.UnitWingWidth).Round();
                     for (int i = 0; i < wing_slot_count; i++)
                         wing_indices[floor_index * MaxWingCountPerFloor + wing_slot_index++] = wing_index;
                     wing_widths[wing_index] = wing_width;
                     wing_positions[wing_index] = wing_position;
-                    wing_colors[wing_index] = wing_color;
 
                     wing_index++;
 
@@ -158,13 +164,9 @@ public class RingVisualization : MonoBehaviour
                         GameObject.Instantiate(WingVisualizationPrefab);
                     wing_visualization.Wing = wing;
                     wing_visualization.transform.SetParent(transform);
+                    wing_visualization.Color = Color;
                 }
             }
-
-            List<float> foo = wing_indices.ToList().GetRange(0, 1000);
-            List<float> bar = foo;
-            foo = wing_positions.ToList().GetRange(0, 200);
-            foo = wing_widths.ToList().GetRange(0, 200);
 
             material.SetFloatArray("FloorIndices", floor_indices);
             material.SetFloatArray("FloorRadii", floor_radii);
@@ -182,10 +184,6 @@ public class RingVisualization : MonoBehaviour
             wing_widths_texture.Apply();
             material.SetTexture("WingWidths", wing_widths_texture);
 
-            wing_colors_texture.SetPixels(wing_colors);
-            wing_colors_texture.Apply();
-            material.SetTexture("WingColors", wing_colors_texture);
-
 
             outer_radius_displayed = Ring.GroundFloorRadius;
 
@@ -193,6 +191,8 @@ public class RingVisualization : MonoBehaviour
             foreach (Ring.Floor floor in Ring.Floors)
                 wings_displayed_per_floor.Add(floor.Wings.Count());
         }
+
+        UpdateWingColors();
 
         material.SetFloat("FloorDivisor", Ring.Floor.UnitCeilingHeight);
         material.SetFloat("InterstitialSpaceThickness", 
@@ -209,6 +209,7 @@ public class RingVisualization : MonoBehaviour
         material.SetFloat("ApplyWidthCorrection", 1);
         material.SetFloat("WingVisibility", WingVisibility);
         material.SetFloat("WireframeVisibility", WireframeVisibility);
+        material.SetColor("WireFrameColor", Color);
 
         material.SetFloat("WallThickness", 
             Ring.Floor.Wing.WallThickness * Linearity * 2);
@@ -216,6 +217,34 @@ public class RingVisualization : MonoBehaviour
         MeshRenderer.SetPropertyBlock(material);
     }
 
+    void UpdateWingColors()
+    {
+        Color[] wing_colors = new Color[MaxWingCountPerFloor * MaxFloorCount];
+
+        Texture2D wing_colors_texture = new Texture2D(MaxWingCountPerFloor,
+                                                MaxFloorCount,
+                                                TextureFormat.RGBA32, false);
+        wing_colors_texture.filterMode = FilterMode.Point;
+        wing_colors_texture.wrapMode = TextureWrapMode.Clamp;
+
+        foreach (Ring.Floor floor in Ring.Floors)
+        {
+            int floor_index = Ring.Floors.IndexOf(floor);
+
+            foreach (WingVisualization wing in WingVisualizations)
+            {
+                int wing_index = wing.transform.GetSiblingIndex() - 1;
+
+                wing_colors[wing_index] = wing.Color;
+            }
+        }
+
+        wing_colors_texture.SetPixels(wing_colors);
+        wing_colors_texture.Apply();
+        material.SetTexture("WingColors", wing_colors_texture);
+    }
+
+    //Position is in RingVisualization space
     public Vector3 PolarCoordinatesToPosition(float radians, float radius)
     {
         Quaternion rotation;
@@ -236,6 +265,63 @@ public class RingVisualization : MonoBehaviour
         rotation = Quaternion.Euler(0, 0, MathUtility.RadiansToDegrees(-linearized_radians));
 
         return new Vector3(x, y);
+    }
+
+    public Vector2 PositionToPolarCoordinates(Vector3 position)
+    {
+        float linearized_outer_radius = Ring.GroundFloorRadius / (1 - Linearity);
+
+        float linearized_radians = Mathf.Atan2(
+            position.x, 
+            (position.y + linearized_outer_radius - Ring.GroundFloorRadius));
+
+        float radius = position.x / Mathf.Sin(linearized_radians) - 
+                       (linearized_outer_radius - Ring.GroundFloorRadius);
+
+        float radians = linearized_radians / (1 - Linearity);
+        if (radians < 0)
+            radians += 2 * Mathf.PI;
+
+        return new Vector2(radians, radius);
+    }
+
+    //Ray is in StationVisualization space
+    public Vector2 PolarCoordinatesFromRay(Ray ray)
+    {
+        Vector3 intersection = 
+            ray.Intersect(new Plane(new Vector3(0, 0, 1), transform.localPosition));
+
+
+        //Intersection must be in RingVisualization space
+        intersection = StationVisualization.transform.TransformPoint(intersection);
+        intersection = transform.InverseTransformPoint(intersection);
+
+        return PositionToPolarCoordinates(intersection);
+    }
+
+    public bool Occludes(Ray ray, float tolerance)
+    {
+        if (Linearity > 0)
+            return true;
+
+        System.Func<float, bool> Occludes = offset =>
+        {
+            Vector3 position = transform.localPosition + 
+                               new Vector3(0, 0, offset);
+
+            Vector3 polar_coordinates = 
+                MathUtility.PolarCoordinates(Front, position, Seam, ray);
+
+            float meter_tolerance = (Ring.GroundFloorRadius - Ring.RoofRadius) * tolerance;
+
+            return polar_coordinates.y <= Ring.GroundFloorRadius + meter_tolerance && 
+                   polar_coordinates.y > Ring.RoofRadius - meter_tolerance;
+        };
+
+        if (Occludes(0) || Occludes(Ring.Depth))
+            return true;
+
+        return false;
     }
 
     public WingVisualization WingVisualizationPrefab;

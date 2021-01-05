@@ -34,7 +34,7 @@ public static class VectorUtility
         return vector.normalized * (vector.magnitude + magnitude_delta);
     }
 
-    public static float AngleBetween(this Vector3 vector, Vector3 other)
+    public static float RadiansBetween(this Vector3 vector, Vector3 other)
     {
         return MathUtility.DegreesToRadians(Vector3.Angle(vector, other));
     }

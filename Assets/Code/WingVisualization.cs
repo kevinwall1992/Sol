@@ -5,24 +5,28 @@ using System.Collections.Generic;
 [ExecuteAlways]
 public class WingVisualization : MonoBehaviour
 {
+    MaterialPropertyBlock material;
+
     public Ring.Floor.Wing Wing;
 
     public MeshRenderer MeshRenderer;
 
-    public RingVisualization RingController
+    public Color Color;
+
+    public RingVisualization RingVisualization
     { get { return GetComponentInParent<RingVisualization>(); } }
 
     private void Update()
     {
-        MeshRenderer.gameObject.SetActive(RingController.WireframeVisibility >= 1);
+        MeshRenderer.gameObject.SetActive(RingVisualization.WireframeVisibility >= 1);
         if (!MeshRenderer.gameObject.activeSelf)
             return;
 
         Quaternion rotation;
         transform.localPosition = 
-            RingController.PolarCoordinatesToPosition(Wing.Radians, 
-                                                      Wing.Floor.Radius, 
-                                                      out rotation);
+            RingVisualization.PolarCoordinatesToPosition(Wing.Radians, 
+                                                         Wing.Floor.Radius, 
+                                                         out rotation);
 
         transform.rotation = rotation;
 
@@ -30,10 +34,16 @@ public class WingVisualization : MonoBehaviour
             Wing.Width - Ring.Floor.Wing.WallThickness, 
             Wing.Floor.CeilingHeight - Ring.Floor.InterstitialSpaceThickness, 
             Wing.Floor.Ring.UnitWingDepth);
-    }
 
-    public void UpdateScale()
-    {
-        
+
+        if (material == null)
+        {
+            material = new MaterialPropertyBlock();
+            MeshRenderer.GetPropertyBlock(material);
+        }
+
+        material.SetColor("_Color", Color);
+
+        MeshRenderer.SetPropertyBlock(material);
     }
 }

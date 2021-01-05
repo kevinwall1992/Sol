@@ -41,30 +41,29 @@ public class StationVisualizationCamera : MonoBehaviour
     {
         //Input
 
-        if (Input.GetKeyUp(KeyCode.Z))
-            Shot = (ShotType)(((int)Shot + 1) % 3);
-        if (Input.GetKeyUp(KeyCode.X))
-            Shot = (ShotType)(((int)Shot + 2) % 3);
         Zoom = Mathf.Clamp(Zoom + Input.mouseScrollDelta.y * ZoomSpeed, 0, 1);
 
         float camera_speed = Mathf.Lerp(FarPanSpeed, NearPanSpeed, Zoom);
         if (Input.GetKey(KeyCode.W))
-            Radius += camera_speed * Time.deltaTime;
-        if (Input.GetKey(KeyCode.S))
             Radius -= camera_speed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.S))
+            Radius += camera_speed * Time.deltaTime;
         Radius = Mathf.Clamp(
             Radius, 
             StationVisualization.FocusedRing.Ring.RoofRadius, 
             StationVisualization.FocusedRing.Ring.GroundFloorRadius);
 
         if (Input.GetKey(KeyCode.D))
-            Radians += camera_speed * Time.deltaTime / Radius;
-        if (Input.GetKey(KeyCode.A))
             Radians -= camera_speed * Time.deltaTime / Radius;
+        if (Input.GetKey(KeyCode.A))
+            Radians += camera_speed * Time.deltaTime / Radius;
         if (Radians < 0)
             Radians += 2 * Mathf.PI;
         else if (Radians > 2 * Mathf.PI)
             Radians -= 2 * Mathf.PI;
+
+        if (Input.GetKeyUp(KeyCode.Escape) && Shot != ShotType.Establishing)
+            Shot = Shot - 1;
 
 
         //Shot transition
@@ -91,7 +90,7 @@ public class StationVisualizationCamera : MonoBehaviour
         ShotType shot_transition = 
             (ShotType)(shot_transition_position).RoundDown();
         float shot_transition_moment = 
-            shot_transition_position % 1;
+            shot_transition_position % 1 / 0.999f;
 
         Vector3 starting_position = Vector3.zero,
                 ending_position = Vector3.zero;
@@ -131,7 +130,7 @@ public class StationVisualizationCamera : MonoBehaviour
 
         if (shot_transition == ShotType.Front)
         {
-            FocusedRing.Linearity = shot_transition_moment;
+            FocusedRing.Linearity = shot_transition_moment * 0.99995f;
 
             if (Zoom > 0.8f)
                 FocusedRing.WireframeVisibility = 1;
@@ -203,6 +202,7 @@ public class StationVisualizationCamera : MonoBehaviour
                     Radians,
                     Radius,
                     out rotation);
+            rotation = Quaternion.Euler(0, 0, rotation.eulerAngles.z + 180);
 
             return rotation;
         }

@@ -53,9 +53,14 @@ public static class InputUtility
         return rect_transform.IsPixelPositionWithinBounds(Scene.The.Cursor.PixelPosition);
     }
 
-    public static bool IsPointedAt(this RectTransform rect_transform)
+    public static bool IsPointedAt(this RectTransform rect_transform, 
+                                   bool perform_bounds_check = false)
     {
         if (Scene.The.Cursor.CanvasElementsPointedAt == null)
+            return false;
+
+        if (perform_bounds_check &&
+            !rect_transform.IsCursorWithinBounds())
             return false;
 
         foreach (GameObject game_object in Scene.The.Cursor.CanvasElementsPointedAt)

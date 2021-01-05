@@ -21,6 +21,7 @@ public class Scene : MonoBehaviour
     public CraftInventoryPage CraftInventoryPage;
     public ItemPage ItemPage;
     public RefuelingPage RefuelingPage;
+    public StationViewer StationViewer;
 
 
     public Bank DefaultBank;

@@ -5,8 +5,6 @@
         _MainTex ("Texture", 2D) = "white" {}
 
 		GeometryTexture("GeometryTexture", 2D) = "white" {}
-
-		WireFrameColor("WireFrameColor", Color) = (0, 0, 0, 1)
     }
     SubShader
     {

@@ -418,6 +418,35 @@ public static class MathUtility
         return sum * factor;
     }
 
+    public static Vector3 Intersect(this Ray ray, Plane plane)
+    {
+        float distance;
+        plane.Raycast(ray, out distance);
+
+        return ray.GetPoint(distance);
+    }
+
+    public static Vector2 PolarCoordinates(Vector3 normal, Vector3 center, Vector3 zero_spoke, Vector3 point)
+    {
+        Vector3 displacement = point - center;
+        Vector3 spoke = displacement - normal * displacement.Dot(normal);
+
+        float radians = spoke.RadiansBetween(zero_spoke);
+        if (normal.Dot(spoke.Crossed(zero_spoke)) < 0)
+            radians = 2 * Mathf.PI - radians;
+
+        return new Vector2(radians, spoke.magnitude);
+    }
+
+    public static Vector2 PolarCoordinates(Vector3 normal, Vector3 center, Vector3 zero_spoke, Ray ray)
+    {
+        return PolarCoordinates(
+            normal, 
+            center, 
+            zero_spoke, 
+            ray.Intersect(new Plane(normal, center)));
+    }
+
     public static System.Func<float, float> LookupToFunction_LinearInterpolation(
         Dictionary<float, float> lookup)
     {
@@ -447,6 +476,14 @@ public static class MathUtility
                               lookup[x1], 
                               (x - x0) / (x1 - x0));
         };
+    }
+
+    public static Ray InverseTransformRay(this Transform transform, Ray ray)
+    {
+        ray.origin = transform.InverseTransformPoint(ray.origin);
+        ray.direction = transform.InverseTransformDirection(ray.direction).normalized;
+
+        return ray;
     }
 }
 
