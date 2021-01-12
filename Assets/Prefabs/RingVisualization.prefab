@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2228775323908825726}
   - component: {fileID: 4741091663599714995}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RingVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3885973820275634471}
+  - {fileID: 2745529357468060547}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,13 +47,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ring: {fileID: 0}
   MeshRenderer: {fileID: 2713115608376986184}
+  WingVisualizationsContainer: {fileID: 2745529357468060547}
   Linearity: 0
   WingVisibility: 0
   WireframeVisibility: 0
+  Color: {r: 0, g: 0, b: 0, a: 0}
   FloorResolution: 256
   MaxFloorCount: 128
   MaxWingCountPerFloor: 1024
   WingVisualizationPrefab: {fileID: 2076490797053429187, guid: c15d93d784e20f742a34c35f1219a380, type: 3}
+--- !u!1 &1829323521716805733
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2745529357468060547}
+  m_Layer: 9
+  m_Name: Wings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2745529357468060547
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829323521716805733}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2228775323908825726}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3632005647698122444
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111,6 +144,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 9843af7b49a133e4998125c7cae11a27, type: 3}
       propertyPath: m_Name
       value: ring
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9843af7b49a133e4998125c7cae11a27, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9843af7b49a133e4998125c7cae11a27, type: 3}

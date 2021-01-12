@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1922565421592459733}
   - component: {fileID: 3449267095721261324}
   m_Layer: 8
-  m_Name: TaskBarElement
+  m_Name: TaskbarElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be83243abfacd342956968b2560c947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NameLabel: {fileID: 3259939901290799929}
   DefaultWidth: 80
 --- !u!1 &1922565422843519527
 GameObject:
@@ -277,3 +278,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
   m_PrefabInstance: {fileID: 1922565422291692511}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3259939901290799929 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
+  m_PrefabInstance: {fileID: 1922565422291692511}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

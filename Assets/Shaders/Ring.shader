@@ -174,7 +174,7 @@
 					is_wing = 0;
 
 				return lerp(wireframe_color, 
-							fixed4(wing_color.rgb * is_wing, 1), 
+							fixed4(wing_color.rgb * (is_wing+ 0.25), 1),
 							WingVisibility);
 			}
             ENDCG

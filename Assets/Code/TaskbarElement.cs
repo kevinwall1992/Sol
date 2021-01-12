@@ -5,6 +5,8 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class TaskbarElement : UIElement
 {
+    public TMPro.TextMeshProUGUI NameLabel;
+
     public Window Window { get; private set; }
 
     void Start()
@@ -22,10 +24,23 @@ public class TaskbarElement : UIElement
 
 
         if (!Window.IsOpen)
+        {
             GameObject.Destroy(gameObject);
+            return;
+        }
+
+        NameLabel.text = Window.NameLabel.text;
 
         if (InputUtility.WasMouseLeftReleased && this.IsTouched())
-            Window.IsMinimized = !Window.IsMinimized;
+        {
+            if (!Window.IsMinimized && Window.IsTopmost)
+                Window.IsMinimized = true;
+            else
+            {
+                Window.IsMinimized = false;
+                Window.MoveToFront();
+            }
+        }
     }
 
     public static TaskbarElement Create(Window window)

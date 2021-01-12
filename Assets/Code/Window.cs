@@ -7,10 +7,12 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class Window : UIElement
 {
-    Vector2Int natural_size = new Vector2Int(240, 120);
-    Vector2Int natural_position = new Vector2Int(50, 50);
+    public TMPro.TextMeshProUGUI NameLabel;
 
-    bool is_grabbed = false;
+    public Vector2Int natural_size = new Vector2Int(240, 120);
+    public Vector2Int natural_position = new Vector2Int(50, 50);
+
+    public bool IsGrabbed { get; private set; }
     Vector2Int grab_offset;
 
     enum ResizeGrabType { None, Left, BottomLeft, Bottom, BottomRight, Right }
@@ -49,7 +51,27 @@ public class Window : UIElement
         }
     }
 
-    public WindowContainer Windows
+    public bool IsTopmost
+    {
+        get
+        {
+            if (IsSubwindow)
+                return false;
+
+            return transform.GetSiblingIndex() == 
+                   WindowContainer.transform.childCount;
+        }
+    }
+
+    public Window ParentWindow
+    { get { return transform.parent.GetComponentInParent<Window>(); } }
+
+    public bool IsSubwindow { get { return ParentWindow != null; } }
+
+    public IEnumerable<Window> Subwindows
+    { get { return transform.Children().SelectComponents<Window>(); } }
+
+    public WindowContainer WindowContainer
     { get { return Scene.The.WindowContainer; } }
 
     private void Start()
@@ -66,7 +88,7 @@ public class Window : UIElement
         if (!UnityEditor.EditorApplication.isPlaying)
             return;
 
-        if (Windows == null)
+        if (WindowContainer == null)
             Scene.The.WindowContainer.AddWindow(this);
 
         if (!IsOpen)
@@ -74,8 +96,22 @@ public class Window : UIElement
             gameObject.SetActive(false);
             return;
         }
+        else
+        {
+            foreach (Window subwindow in Subwindows)
+                subwindow.IsOpen = true;
+        }
 
-        if (!is_grabbed)
+        if(IsSubwindow)
+        {
+            IsMaximized = false;
+            IsMinimized = ParentWindow.IsMinimized;
+        }
+
+        if(InputUtility.IsMouseLeftPressed && IsTouched)
+            MoveToFront();
+
+        if (!IsGrabbed)
         {
             resize_grab_type = ResizeGrabType.None;
             if (!IsMaximized && IsTouched)
@@ -114,14 +150,14 @@ public class Window : UIElement
         if (InputUtility.WasMouseLeftPressed && IsTouched && 
             (resize_grab_type != ResizeGrabType.None || TitleBar.IsPointedAt()))
         {
-            is_grabbed = true;
+            IsGrabbed = true;
 
             grab_offset = PixelPosition - Scene.The.Cursor.PixelPointedAt;
         }
-        if (is_grabbed && InputUtility.WasMouseLeftReleased)
-            is_grabbed = false;
+        if (IsGrabbed && InputUtility.WasMouseLeftReleased)
+            IsGrabbed = false;
 
-        if (is_grabbed)
+        if (IsGrabbed)
         {
             if (resize_grab_type == ResizeGrabType.None)
             {
@@ -167,7 +203,6 @@ public class Window : UIElement
             }
         }
 
-
         if (IsMaximized)
         {
             RectTransform.sizeDelta =
@@ -197,7 +232,7 @@ public class Window : UIElement
         IsOpen = true;
         gameObject.SetActive(true);
 
-        Windows.MoveToFront(this);
+        MoveToFront();
 
         if (page == null)
             return;
@@ -210,6 +245,11 @@ public class Window : UIElement
         foreach (Page other in Pages)
             if (other != page)
                 other.gameObject.SetActive(false);
+    }
+
+    public void MoveToFront()
+    {
+        transform.SetAsLastSibling();
     }
 
     public void OpenPreviousPage()
@@ -243,6 +283,17 @@ public class Window : UIElement
     {
         foreach(Page page in Pages)
             GameObject.Destroy(page.gameObject);
+    }
+
+    public override bool IsTouched
+    {
+        get
+        {
+            if (!base.IsTouched)
+                return false;
+
+            return IsGrabbed || !WindowContainer.IsAnyWindowGrabbed;
+        }
     }
 
 

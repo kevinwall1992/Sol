@@ -30,7 +30,8 @@ public class StationVisualizationCamera : MonoBehaviour
     public StationVisualization StationVisualization
     { get { return GetComponentInParent<StationVisualization>(); } }
 
-    public RingVisualization FocusedRing { get { return StationVisualization.FocusedRing; } }
+    public RingVisualization SelectedRing
+    { get { return StationVisualization.SelectedRing; } }
     
     private void Start()
     {
@@ -50,8 +51,8 @@ public class StationVisualizationCamera : MonoBehaviour
             Radius += camera_speed * Time.deltaTime;
         Radius = Mathf.Clamp(
             Radius, 
-            StationVisualization.FocusedRing.Ring.RoofRadius, 
-            StationVisualization.FocusedRing.Ring.GroundFloorRadius);
+            StationVisualization.SelectedRing.Ring.RoofRadius, 
+            StationVisualization.SelectedRing.Ring.GroundFloorRadius);
 
         if (Input.GetKey(KeyCode.D))
             Radians -= camera_speed * Time.deltaTime / Radius;
@@ -124,21 +125,24 @@ public class StationVisualizationCamera : MonoBehaviour
         //RingVisualization
 
         if (shot_transition == ShotType.Front || shot_transition_moment > 0.5f)
-            FocusedRing.WingVisibility = 1;
+            SelectedRing.WingVisibility = 1;
         else
-            FocusedRing.WingVisibility = 0;
+            SelectedRing.WingVisibility = 0;
 
         if (shot_transition == ShotType.Front)
         {
-            FocusedRing.Linearity = shot_transition_moment * 0.99995f;
+            SelectedRing.Linearity = shot_transition_moment * 0.99995f;
 
             if (Zoom > 0.8f)
-                FocusedRing.WireframeVisibility = 1;
+                SelectedRing.WireframeVisibility = 1;
             else
-                FocusedRing.WireframeVisibility = 0;
+                SelectedRing.WireframeVisibility = 0;
         }
         else
-            FocusedRing.Linearity = 0;
+        {
+            SelectedRing.WireframeVisibility = 0;
+            SelectedRing.Linearity = 0;
+        }
     }
 
     public Vector3 EstablishingPosition
@@ -149,7 +153,7 @@ public class StationVisualizationCamera : MonoBehaviour
         get
         {
             Vector3 camera_displacement =
-                StationVisualization.FocusedRing.transform.localPosition -
+                StationVisualization.SelectedRing.transform.localPosition -
                 transform.localPosition;
 
             return Quaternion.LookRotation(
@@ -166,7 +170,7 @@ public class StationVisualizationCamera : MonoBehaviour
 
             return new Vector3(0, 0, -1) *
                    Mathf.Cos(fov / 2) *
-                   StationVisualization.FocusedRing.Ring.GroundFloorRadius /
+                   StationVisualization.SelectedRing.Ring.GroundFloorRadius /
                    Mathf.Sin(fov / 2);
         }
     }
@@ -179,7 +183,7 @@ public class StationVisualizationCamera : MonoBehaviour
         get
         {
             Vector3 arc_position =
-                StationVisualization.FocusedRing.PolarCoordinatesToPosition(
+                StationVisualization.SelectedRing.PolarCoordinatesToPosition(
                     Radians,
                     Radius);
 
@@ -198,7 +202,7 @@ public class StationVisualizationCamera : MonoBehaviour
         get
         {
             Quaternion rotation;
-            StationVisualization.FocusedRing.PolarCoordinatesToPosition(
+            StationVisualization.SelectedRing.PolarCoordinatesToPosition(
                     Radians,
                     Radius,
                     out rotation);

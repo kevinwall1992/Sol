@@ -61,6 +61,11 @@ public class Grid : UIElement
         }
     }
 
+    public int RowCount { get { return Elements.Count() / ColumnCount + 1; } }
+
+    public IEnumerable<RectTransform> Elements
+    { get { return transform.Children().Select(child => child as RectTransform); } }
+
     void Update()
     {
         RectTransform.pivot = RectTransform.pivot.Round();
@@ -73,7 +78,7 @@ public class Grid : UIElement
 
         if (UseFirstElementAsStride ||
             Stride.x == 0 || Stride.y == 0)
-            Stride = (transform.GetChild(0).transform as RectTransform).rect.size;
+            Stride = (transform.GetChild(0).transform as RectTransform).rect.size.Round();
 
         Stride.x = (RectTransform.pivot.x == 0 ? 1 : -1) * Mathf.Abs(Stride.x);
         Stride.y = (RectTransform.pivot.y == 0 ? 1 : -1) * Mathf.Abs(Stride.y);
@@ -92,8 +97,11 @@ public class Grid : UIElement
             else
                 stride_factor = new Vector2Int(row, column);
 
-            element.localPosition = 
-                (Vector3)((Stride + Stride.Mapped(value => value < 0 ? -1 : 1) * AdjustedMargin) * stride_factor);
+            element.localPosition = (Vector3)((
+                Stride + 
+                Stride.Mapped(value => value < 0 ? -1 : 1) * 
+                AdjustedMargin) * 
+                stride_factor);
         }
     }
 
@@ -102,10 +110,12 @@ public class Grid : UIElement
         IEnumerable<RectTransform> elements = 
             transform.Children().Select(child => child as RectTransform);
 
-        IEnumerable<ComparableElement> comparable_elements = 
-            elements.Where(element => element.HasComponent<ComparableElement>()).Select(element => element.GetComponent<ComparableElement>());
+        IEnumerable<ComparableElement> comparable_elements = elements
+            .Where(element => element.HasComponent<ComparableElement>())
+            .Select(element => element.GetComponent<ComparableElement>());
 
-        IEnumerable<RectTransform> incomparable_elements = elements.Where(element => !element.HasComponent<ComparableElement>());
+        IEnumerable<RectTransform> incomparable_elements = 
+            elements.Where(element => !element.HasComponent<ComparableElement>());
 
         List<RectTransform> sorted_elements = new List<ComparableElement>(comparable_elements)
             .Sorted(element => element.Comparable)

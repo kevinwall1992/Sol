@@ -12,7 +12,7 @@ public class StationVisualization : MonoBehaviour
     
     public IEnumerable<RingVisualization> RingVisualizations
     { get { return GetComponentsInChildren<RingVisualization>(); } }
-    public RingVisualization FocusedRing;
+    public RingVisualization SelectedRing;
 
     private void Update()
     {
@@ -32,41 +32,25 @@ public class StationVisualization : MonoBehaviour
                 ring_visualization.transform.SetParent(transform);
             }
         }
-        if (FocusedRing == null && RingVisualizations.Count() > 0)
-            FocusedRing = RingVisualizations.First();
+        if (SelectedRing == null && RingVisualizations.Count() > 0)
+            SelectedRing = RingVisualizations.First();
 
 
         //Move RingVisualizations into correct positions
 
-        int ring_index = 0;
         foreach (RingVisualization ring in RingVisualizations)
         {
-            ring.transform.localPosition = new Vector3(0, 0, ring_index++ * 500);
-            ring.Color = Color.green;
+            float z = RingVisualizations
+                .PreviousElements(ring)
+                .Sum(ring_ => ring_.Ring.Depth + 50);
 
-            foreach (WingVisualization wing in ring.WingVisualizations)
-                wing.Color = Color.yellow;
+            ring.transform.localPosition = new Vector3(0, 0, z);
+            ring.Color = Color.green;
         }
 
         if (Scene.The.StationViewer.RectTransform.IsPointedAt(true))
         {
-            Vector2 texture_size = new Vector2(
-                Camera.Camera.activeTexture.width, 
-                Camera.Camera.activeTexture.height);
-
-            Vector2 image_pixel_pointed_at = 
-                Scene.The.StationViewer.Image.rectTransform
-                    .PixelPositionToLocalPosition(Scene.The.Cursor.PixelPointedAt);
-
-            Vector2 normalized_image_position =
-                image_pixel_pointed_at /
-                Scene.The.StationViewer.Image.rectTransform.rect.size;
-
-            Vector2Int texture_pixel_pointed_at = 
-                (texture_size * normalized_image_position).Round();
-
-            Ray ray = Camera.Camera.ScreenPointToRay((Vector2)texture_pixel_pointed_at);
-            ray = transform.InverseTransformRay(ray);
+            Ray ray = Scene.The.StationViewer.GetRayFromCursorPosition();
 
             foreach (RingVisualization ring in RingVisualizations)
             {
@@ -75,36 +59,12 @@ public class StationVisualization : MonoBehaviour
 
                 ring.Color = Color.red;
 
-                Vector2 polar_coordinates = ring.PolarCoordinatesFromRay(ray);
-
-                foreach (WingVisualization wing_visualization in ring.WingVisualizations)
-                {
-                    Ring.Floor.Wing wing = wing_visualization.Wing;
-
-                    if (polar_coordinates.x >= (wing.Radians - wing.RadianWidth / 2) && 
-                        polar_coordinates.x < (wing.Radians + wing.RadianWidth / 2) && 
-                        polar_coordinates.y <= wing.Floor.Radius && 
-                        polar_coordinates.y > (wing.Floor.Radius - wing.Floor.CeilingHeight))
-                    {
-                        wing_visualization.Color = Color.red;
-
-                        if (InputUtility.WasMouseLeftReleased && 
-                            Camera.Shot == StationVisualizationCamera.ShotType.Front)
-                        {
-                            Camera.Shot = StationVisualizationCamera.ShotType.Detail;
-                            Camera.Radians = wing.Radians;
-                        }
-
-                        break;
-                    }
-                }
-
                 if (InputUtility.WasMouseLeftReleased)
                 {
-                    FocusedRing = ring;
+                    SelectedRing = ring;
 
-                    if (Camera.Shot == StationVisualizationCamera.ShotType.Establishing)
-                        Camera.Shot = StationVisualizationCamera.ShotType.Front;
+                    if (Camera.Shot != StationVisualizationCamera.ShotType.Detail)
+                        Camera.Shot =  Camera.Shot + 1;
                 }
 
                 break;

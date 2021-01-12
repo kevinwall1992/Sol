@@ -6,12 +6,11 @@ using System.Collections;
 public class Room : Craft.Part
 {
     public float Area;
-    public float CeilingHeight;
 
-    public float Volume { get { return Area * CeilingHeight; } }
+    public float Volume { get { return Area * Floor.CeilingHeight; } }
 
-    public Ring Ring
-    { get { return GetComponentInParent<Ring>(); } }
+    public Ring.Floor Floor
+    { get { return GetComponentInParent<Ring.Floor>(); } }
 
     public ItemContainer Container
     { get { return GetComponent<ItemContainer>(); } }

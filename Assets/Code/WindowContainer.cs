@@ -1,11 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class WindowContainer : UIElement
 {
     public IEnumerable<Window> Windows
+    { get { return transform.Children().SelectComponents<Window>(); } }
+
+    public IEnumerable<Window> WindowsAndSubwindows
     { get { return GetComponentsInChildren<Window>(); } }
+
+    public bool IsAnyWindowGrabbed
+    {
+        get
+        {
+            return WindowsAndSubwindows
+                .Where(window => window.IsGrabbed).Count() > 0;
+        }
+    }
 
     void Start()
     {
@@ -23,7 +36,7 @@ public class WindowContainer : UIElement
             window = Window.Create();
 
         window.transform.SetParent(transform, false);
-        MoveToFront(window);
+        window.MoveToFront();
 
         return window;
     }
@@ -34,10 +47,5 @@ public class WindowContainer : UIElement
             window.transform.SetParent(null);
 
         return window;
-    }
-
-    public void MoveToFront(Window window)
-    {
-        window.transform.SetAsLastSibling();
     }
 }

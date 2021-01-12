@@ -10,6 +10,9 @@ public class WingVisualization : MonoBehaviour
     public Ring.Floor.Wing Wing;
 
     public MeshRenderer MeshRenderer;
+    public Transform MeshContainer;
+
+    public MeshRenderer SelectionMeshRenderer;
 
     public Color Color;
 
@@ -18,21 +21,24 @@ public class WingVisualization : MonoBehaviour
 
     private void Update()
     {
-        MeshRenderer.gameObject.SetActive(RingVisualization.WireframeVisibility >= 1);
-        if (!MeshRenderer.gameObject.activeSelf)
+        if(RingVisualization.WireframeVisibility < 1)
+        {
+            MeshRenderer.gameObject.SetActive(false);
             return;
+        }
+        MeshRenderer.gameObject.SetActive(true);
 
         Quaternion rotation;
-        transform.localPosition = 
-            RingVisualization.PolarCoordinatesToPosition(Wing.Radians, 
-                                                         Wing.Floor.Radius, 
-                                                         out rotation);
+        transform.localPosition =
+            RingVisualization.PolarCoordinatesToPosition(
+                Wing.RadianCenter,
+                Wing.Floor.Radius,
+                out rotation);
+        transform.localRotation = rotation;
 
-        transform.rotation = rotation;
-
-        MeshRenderer.transform.localScale = new Vector3(
-            Wing.Width - Ring.Floor.Wing.WallThickness, 
-            Wing.Floor.CeilingHeight - Ring.Floor.InterstitialSpaceThickness, 
+        MeshContainer.transform.localScale = new Vector3(
+            Wing.Width - Ring.Floor.Wing.WallThickness,
+            Wing.Floor.CeilingHeight - Ring.Floor.InterstitialSpaceThickness,
             Wing.Floor.Ring.UnitWingDepth);
 
 

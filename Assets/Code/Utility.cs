@@ -227,6 +227,18 @@ public static class Utility
         return enumerable.Sorted(comparable_fetcher).Last();
     }
 
+    public static IEnumerable<T> PreviousElements<T>(this IEnumerable<T> enumerable, T element)
+    {
+        List<T> list = enumerable.ToList();
+
+        return list.GetRange(0, list.IndexOf(element));
+    }
+
+    public static IEnumerable<T> SucceedingElements<T>(this IEnumerable<T> enumerable, T element)
+    {
+        return enumerable.Reverse().PreviousElements(element);
+    }
+
     public static int DuplicateCountOf<T>(this IEnumerable<T> enumerable, T element)
     {
         return enumerable.Sum(other_element => (EqualityComparer<T>.Default.Equals(other_element, element) ? 1 : 0));
@@ -323,6 +335,25 @@ public static class Utility
     public static int GetEnumSize<T>()
     {
         return GetEnumValues<T>().Count();
+    }
+
+
+    public static bool IsInFrustrum(this Camera camera, Vector3 position)
+    {
+        Vector3 viewport_position = camera.WorldToViewportPoint(position);
+
+        return viewport_position.x > 0 && viewport_position.x < 1 &&
+            viewport_position.y > 0 && viewport_position.y < 1 &&
+            viewport_position.z > 0;
+    }
+
+    public static bool IsInFrustrum(this Camera camera, Vector3 position, float radius)
+    {
+        return camera.IsInFrustrum(position) ||
+               camera.IsInFrustrum(position + new Vector3(-radius, 0)) ||
+               camera.IsInFrustrum(position + new Vector3(radius, 0)) ||
+               camera.IsInFrustrum(position + new Vector3(0, -radius)) ||
+               camera.IsInFrustrum(position + new Vector3(0, radius));
     }
 
 

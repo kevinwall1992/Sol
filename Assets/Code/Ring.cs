@@ -7,11 +7,13 @@ using System.Linq;
 public class Ring : Station.Module
 {
     public List<Floor> Floors = new List<Floor>();
-    public float GroundFloorRadius;
+
+    public float GroundFloorRadius
+    { get { return Floors.Count > 0 ? Floors.First().Radius : 0; } }
     public float RoofRadius
     { get { return GroundFloorRadius - Floors.Sum(floor => floor.CeilingHeight); } }
 
-    public float UnitWingWidth = 6;
+    public float UnitWingWidth = 18;
     public float UnitWingDepth = 10;
     public float WalkwayDepth = 1;
 
@@ -23,21 +25,21 @@ public class Ring : Station.Module
 
     private void Update()
     {
-        if (Floors.Count == 0)
-            GenerateSampleStructure(5);
+
     }
 
-    public void GenerateSampleStructure(int floor_count)
+    public void GenerateSampleStructure(float ground_floor_radius, int floor_count)
     {
         Floors.Clear();
 
-        int[] ceiling_sizes = { 5, 10, 15 };
+        int[] ceiling_sizes = { 20 };
 
+        float radius = ground_floor_radius;
         for(int i = 0; i< floor_count; i++)
         {
             int ceiling_size =
                 ceiling_sizes[MathUtility.RandomIndex(ceiling_sizes.Length)];
-            Floor floor = new Floor(this, ceiling_size);
+            Floor floor = new Floor(this, radius, ceiling_size);
             Floors.Add(floor);
 
             float meters = 0;
@@ -49,47 +51,68 @@ public class Ring : Station.Module
                 if (meters + wing_width > floor.ArcLength)
                     break;
 
-                floor.Wings.Add(new Floor.Wing(floor, wing_size));
+                floor.Wings.Add(new Floor.Wing(floor, meters, wing_size));
 
                 meters += wing_width;
             }
+
+            radius -= floor.CeilingHeight;
         }
+    }
+
+    public Floor GetFloor(float Radius)
+    {
+        return Floors.FirstOrDefault(floor => 
+            floor.Radius > Radius && 
+            floor.Radius - floor.CeilingHeight < Radius);
+    }
+
+    public Floor.Wing GetWing(float Radians, float Radius)
+    {
+        Floor floor = GetFloor(Radius);
+        if (floor == null)
+            return null;
+
+        return floor.GetWing(Radians);
     }
 
     public class Floor
     {
-        Ring ring;
-        public Ring Ring { get { return ring; } }
+        public Ring Ring { get; private set; }
 
         public List<Wing> Wings = new List<Wing>();
+
+        public float Radius;
 
         public int CeilingSize;
         public float CeilingHeight
         { get { return CeilingSize * UnitCeilingHeight; } }
 
-        public float Radius
-        {
-            get
-            {
-                float distance_from_ground_floor =
-                    Ring.Floors.GetRange(0, ring.Floors.IndexOf(this))
-                    .Sum(floor => floor.CeilingHeight);
-
-                return ring.GroundFloorRadius - distance_from_ground_floor;
-            }
-        }
-
         public float ArcLength { get { return Radius * 2 * Mathf.PI; } }
 
 
-        public Floor(Ring ring_, int ceiling_size = 5)
+        public Floor(Ring ring, float radius, int ceiling_size = 5)
         {
-            ring = ring_;
+            Ring = ring;
 
+            Radius = radius;
             CeilingSize = ceiling_size;
         }
 
-        
+        public Wing GetWing(float Radians)
+        {
+            return Wings.FirstOrDefault(wing =>
+                wing.StartRadians < Radians &&
+                wing.EndRadians > Radians);
+        }
+
+        public float MetersToRadians(float meters)
+        { return meters / ArcLength * 2 * Mathf.PI; }
+
+        public float RadiansToMeters(float radians)
+        { return radians / (2 * Mathf.PI) * ArcLength;}
+
+
         public static float UnitCeilingHeight = 0.4f;
         public static float InterstitialSpaceThickness = 0.3f;
 
@@ -99,6 +122,7 @@ public class Ring : Station.Module
             Floor floor;
             public Floor Floor { get { return floor; } }
 
+            public float Position;
             public int Size;
 
             public float Width { get { return Size * Floor.Ring.UnitWingWidth; } }
@@ -107,33 +131,23 @@ public class Ring : Station.Module
 
             public float Area { get { return Width * Depth; } }
 
-            public float Radians
-            {
-                get
-                {
-                    int index = Floor.Wings.IndexOf(this);
-                    float distance_along_arc =
-                        Floor.Wings.GetRange(0, index).Sum(wing => wing.Width) +
-                        Width / 2;
+            public float StartRadians
+            { get { return Floor.MetersToRadians(Position); } }
 
-                    return (distance_along_arc / Floor.ArcLength) *
-                           (2 * Mathf.PI);
-                }
-            }
+            public float EndRadians
+            { get { return StartRadians + RadianWidth; } }
+
+            public float RadianCenter
+            { get { return StartRadians + RadianWidth / 2; } }
 
             public float RadianWidth
-            {
-                get
-                {
-                    return (Width / Floor.ArcLength) *
-                           (2 * Mathf.PI);
-                }
-            }
+            { get { return Floor.MetersToRadians(Width); } }
 
-            public Wing(Floor floor_, int size = 1)
+            public Wing(Floor floor_, float position, int size = 1)
             {
                 floor = floor_;
 
+                Position = position;
                 Size = size;
             }
 

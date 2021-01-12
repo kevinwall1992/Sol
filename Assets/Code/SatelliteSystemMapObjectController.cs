@@ -6,6 +6,8 @@ using System.Collections.Generic;
 [ExecuteAlways]
 public class SatelliteSystemMapObjectController : MonoBehaviour
 {
+    Vector3 target_position;
+
     public SystemMapObject SystemMapObject;
     public Satellite Satellite;
 
@@ -33,12 +35,14 @@ public class SatelliteSystemMapObjectController : MonoBehaviour
         else
             SystemMapObject.Parent = Satellite.Primary.GetComponent<SystemMapObject>();
 
-
-        Vector3 physical_position = Satellite.Motion.PositionAtDate(Scene.The.Clock.Now);
+        if (this.IsModulusUpdate(8))
+        {
+            Vector3 physical_position = Satellite.Motion.PositionAtDate(Scene.The.Clock.Now);
+            target_position = SystemMap.PhysicalPositionToWorldPosition(physical_position);
+        }
 
         SystemMapObject.transform.position = SystemMapObject.transform.position
-            .Lerped(SystemMap.PhysicalPositionToWorldPosition(physical_position),
-                    PositionRealizeSpeed * Time.deltaTime);
+                .Lerped(target_position, PositionRealizeSpeed * Time.deltaTime);
     }
 
     float GetVisualSize()

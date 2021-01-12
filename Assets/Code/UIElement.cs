@@ -8,6 +8,6 @@ public class UIElement : MonoBehaviour
 
     public Vector2Int PixelPosition { get { return RectTransform.anchoredPosition.Round(); } }
 
-    public bool IsPointedAt { get { return this.IsPointedAt(); } }
-    public bool IsTouched { get { return this.IsTouched(); } }
+    public virtual bool IsPointedAt { get { return this.IsPointedAt(); } }
+    public virtual bool IsTouched { get { return this.IsTouched(); } }
 }
