@@ -99,8 +99,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -88.1}
-  m_SizeDelta: {x: 300.31934, y: 200.21289}
+  m_AnchoredPosition: {x: 0, y: -60.000008}
+  m_SizeDelta: {x: 108.61798, y: 72.41199}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &7559843676169414886
 CanvasRenderer:
@@ -256,6 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2cff088fde6c4441b541b18c464b3c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: Profile
   ProfilePictureContainer: {fileID: 9012515457038725340}
   DescriptionContainer: {fileID: 234582717312920892}
 --- !u!1 &8847174766404219545
@@ -551,6 +552,10 @@ PrefabInstance:
       propertyPath: Lerpee
       value: 
       objectReference: {fileID: 3015420021056004262}
+    - target: {fileID: 3439842970279206142, guid: d769783558b9d9c4990c39db904a2366, type: 3}
+      propertyPath: LerpFactor
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6762239659495723780, guid: d769783558b9d9c4990c39db904a2366, type: 3}
       propertyPath: m_Name
       value: AdjustableBannerTool

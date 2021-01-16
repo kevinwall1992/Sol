@@ -84,7 +84,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243c705e700b70746a189398cc69e8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: StationView
   Image: {fileID: 5280927228304278957}
+  StationVisualization: {fileID: 0}
 --- !u!1001 &7808523823758740997
 PrefabInstance:
   m_ObjectHideFlags: 0

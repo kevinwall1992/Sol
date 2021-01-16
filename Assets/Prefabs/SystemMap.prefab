@@ -525,6 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5afe019f3e85a4399eb8b20a08f250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: System Map
   ObjectsContainer: {fileID: 3918987214756358497}
   Root: {fileID: 9143879959310848042}
   TransportCraftPanel: {fileID: 804613470421341743}
@@ -849,7 +850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800bca5a83a753469fe71c447e231dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundFloorRadius: 223
   UnitWingWidth: 6
   UnitWingDepth: 10
   WalkwayDepth: 1

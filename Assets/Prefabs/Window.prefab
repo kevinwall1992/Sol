@@ -885,7 +885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9aa7293ec464a45be4f346a04da39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NameLabel: {fileID: 3742188493774004241}
+  TitleText: {fileID: 3742188493774004241}
   natural_size: {x: 240, y: 120}
   natural_position: {x: 50, y: 50}
   CanvasGroup: {fileID: 3104855293044960513}

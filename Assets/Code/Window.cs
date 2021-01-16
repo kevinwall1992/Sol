@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class Window : UIElement
 {
-    public TMPro.TextMeshProUGUI NameLabel;
+    public TMPro.TextMeshProUGUI TitleText;
 
     public Vector2Int natural_size = new Vector2Int(240, 120);
     public Vector2Int natural_position = new Vector2Int(50, 50);
@@ -84,6 +84,8 @@ public class Window : UIElement
     {
         TitleBar.sizeDelta = TitleBar.sizeDelta.YChangedTo(DefaultTitleBarHeight);
         BackgroundImage.color = DefaultBackgroundColor;
+
+        TitleText.text = FrontPage.Title;
 
         if (!UnityEditor.EditorApplication.isPlaying)
             return;

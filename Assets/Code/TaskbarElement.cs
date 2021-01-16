@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class TaskbarElement : UIElement
 {
-    public TMPro.TextMeshProUGUI NameLabel;
+    public TMPro.TextMeshProUGUI TitleText;
 
     public Window Window { get; private set; }
 
@@ -29,7 +29,7 @@ public class TaskbarElement : UIElement
             return;
         }
 
-        NameLabel.text = Window.NameLabel.text;
+        TitleText.text = Window.TitleText.text;
 
         if (InputUtility.WasMouseLeftReleased && this.IsTouched())
         {

@@ -421,6 +421,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8619336530769263769, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
+      propertyPath: IsOpen
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
 --- !u!1 &111824462
@@ -1345,7 +1349,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1998479432}
+  m_TargetTexture: {fileID: 1774231601}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -1507,6 +1511,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6451109147881564469, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
       propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619336530769263769, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
+      propertyPath: IsOpen
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3437,7 +3445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6451109147881564466, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
       propertyPath: m_Name
-      value: Window
+      value: RefuelingWindow
       objectReference: {fileID: 0}
     - target: {fileID: 6451109147881564466, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
       propertyPath: m_IsActive
@@ -3525,6 +3533,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6451109147881564469, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
       propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619336530769263769, guid: f833be9c5e73a2c46b894b1c09cde8ff, type: 3}
+      propertyPath: IsOpen
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4098,6 +4110,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e257fa3bbeba1c4eb8d90d5581c9dc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!84 &1774231601
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 480
+  m_Height: 270
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthFormat: 2
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1780547895
 GameObject:
   m_ObjectHideFlags: 0
@@ -4277,41 +4324,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5afe019f3e85a4399eb8b20a08f250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!84 &1998479432
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 480
-  m_Height: 270
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthFormat: 2
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &2029814188
 GameObject:
   m_ObjectHideFlags: 0

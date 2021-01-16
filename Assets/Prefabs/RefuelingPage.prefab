@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterWidth: 6
+  Margin: 1
 --- !u!114 &8774426253366417811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,6 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc480f60c6e6b1141988d7a6136cc82c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: Refueling
   RefuelBar: {fileID: 8774426253366417811}
   RefuelPayButton: {fileID: 8586461902331571931}
   CostPerUnitText: {fileID: 171051817523637512}
@@ -312,6 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterWidth: 6
+  Margin: 1
 --- !u!1 &6936705778390959698
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be83243abfacd342956968b2560c947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NameLabel: {fileID: 3259939901290799929}
+  TitleText: {fileID: 3259939901290799929}
   DefaultWidth: 80
 --- !u!1 &1922565422843519527
 GameObject:
@@ -197,7 +197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_SizeDelta.x
@@ -205,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_AnchorMin.x
@@ -261,11 +261,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_firstOverflowCharacterIndex
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_VerticalAlignment
       value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
+      propertyPath: m_overflowMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
+      propertyPath: m_enableWordWrapping
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9036402635978805254, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
       propertyPath: m_Name

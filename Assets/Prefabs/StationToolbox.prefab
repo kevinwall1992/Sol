@@ -70,6 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 050d0d11c487b9a498103de30f84507e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Title: Toolbox
   SelectedButton: {fileID: 0}
 --- !u!114 &7057152724391306600
 MonoBehaviour:

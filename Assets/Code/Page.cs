@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Page : UIElement
 {
+    public string Title;
+
     public Window Window
     {
         get
