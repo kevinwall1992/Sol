@@ -55,11 +55,13 @@ public class Window : UIElement
     {
         get
         {
-            if (IsSubwindow)
+            if (!IsOpen || IsMinimized || IsSubwindow)
                 return false;
 
-            return transform.GetSiblingIndex() == 
-                   WindowContainer.transform.childCount;
+            List<Window> visible_windows = 
+                WindowContainer.VisibleWindows.ToList();
+
+            return visible_windows.Last() == this;
         }
     }
 

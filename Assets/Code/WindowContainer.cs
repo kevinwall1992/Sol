@@ -11,6 +11,12 @@ public class WindowContainer : UIElement
     public IEnumerable<Window> WindowsAndSubwindows
     { get { return GetComponentsInChildren<Window>(); } }
 
+    public IEnumerable<Window> OpenWindows
+    { get { return Windows.Where(window => window.IsOpen); } }
+
+    public IEnumerable<Window> VisibleWindows
+    { get { return OpenWindows.Where(window => !window.IsMinimized); } }
+
     public bool IsAnyWindowGrabbed
     {
         get
