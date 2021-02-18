@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class LineInventoryElement : UIElement
+public class ItemCollectionPanelLine : ItemCollectionPanel.Element
 {
     public Image Background;
 
@@ -11,12 +11,19 @@ public class LineInventoryElement : UIElement
     public Color BackgroundColor,
                  BackgroundHighlightColor;
 
-    [HideInInspector]
-    public Item Item;
+    public int ShortNameWidth = 150;
 
-    private void Update()
+    protected override void Update()
     {
-        DescriptionText.text = Item.Name + " - " + Item.Qualifier;
+        base.Update();
+
+        if (RectTransform.rect.width < ShortNameWidth)
+            DescriptionText.text = Item.ShortName;
+        else
+            DescriptionText.text = 
+                Item.Name + 
+                (Item.Qualifier == "" ? "" : " - " + Item.Qualifier);
+
         QuantityText.text = Item.GetQuantityString();
 
         Background.color = IsPointedAt ? BackgroundHighlightColor : 

@@ -34,15 +34,7 @@ public class MassItemQuantityStringController : MonoBehaviour
                 units = "Mt";
             }
 
-            switch (((int)mass).ToString().Length)
-            {
-                case 3: return ((int)mass).ToString() + units;
-                case 2: return mass.ToString("F1") + units;
-                case 1: return mass.ToString("F2") + units;
-                case 0: return mass.ToString("F3") + units;
-
-                default: return mass.ToString("E2");
-            }
+            return mass.ToShortString() + units;
         };
     }
 }

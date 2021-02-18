@@ -22,18 +22,31 @@ public class Scene : MonoBehaviour
     public ItemPage ItemPage;
     public RefuelingPage RefuelingPage;
     public StationViewer StationViewer;
+    public string SessionUsername;
 
 
     public Bank DefaultBank;
 
-    public IEnumerable<Craft> Crafts { get { return FindObjectsOfType<Craft>(); } }
+    public IEnumerable<Craft> Crafts
+    { get { return FindObjectsOfType<Craft>(); } }
 
     public IEnumerable<Station> Stations
     { get { return Crafts.SelectComponents<Craft, Station>(); } }
 
-    public IEnumerable<User> Users { get { return FindObjectsOfType<User>(); } }
+    public IEnumerable<User> Users
+    { get { return FindObjectsOfType<User>(); } }
 
-    public IEnumerable<Bank> Banks { get { return Users.SelectComponents<User, Bank>(); } }
+    public User SessionUser
+    {
+        get
+        {
+            return Users.FirstOrDefault(
+                user => user.Username == SessionUsername);
+        }
+    }
+
+    public IEnumerable<Bank> Banks
+    { get { return Users.SelectComponents<User, Bank>(); } }
 
 
     private void Start()

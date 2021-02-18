@@ -27,6 +27,14 @@ PrefabInstance:
       propertyPath: ShortName
       value: RKTFUL
       objectReference: {fileID: 0}
+    - target: {fileID: 2079497145094896994, guid: 441281136eb68e74797f9760d42b8bed, type: 3}
+      propertyPath: ProfilePicture
+      value: 
+      objectReference: {fileID: 21300000, guid: e5a55e77accec8e4ba4824c636086779, type: 3}
+    - target: {fileID: 2079497145094896994, guid: 441281136eb68e74797f9760d42b8bed, type: 3}
+      propertyPath: Icon
+      value: 
+      objectReference: {fileID: 21300000, guid: fd0ed2d8ef389ef4393be773793534b0, type: 3}
     - target: {fileID: 5581575164184772557, guid: 441281136eb68e74797f9760d42b8bed, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

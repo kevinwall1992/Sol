@@ -293,9 +293,9 @@ public class Engine : Craft.Part
     public bool PurchasePropellent(float propellent_mass, Market market)
     {
         return market.Purchase(Craft.Item.Owner,
+                               PropellentStorage,
                                Propellent.Name,
-                               PropellentMassToUnits(propellent_mass),
-                               PropellentStorage);
+                               PropellentMassToUnits(propellent_mass));
     }
 
     public bool SellPropellent(float propellent_mass, Market market)
@@ -303,11 +303,8 @@ public class Engine : Craft.Part
         if (PropellentMass < propellent_mass)
             propellent_mass = PropellentMass;
 
-        Item propellent = PropellentStorage.Retrieve(
-            Propellent.Name,
-            PropellentMassToUnits(propellent_mass));
-
-        return market.Sell(Craft.Item.Owner, propellent);
+        return market.Sell(Craft.Item.Owner, Craft.Cargo, Propellent.Name,
+               PropellentMassToUnits(propellent_mass));
     }
 
     public bool Refuel(float minimum_fuel_mass, Market market)

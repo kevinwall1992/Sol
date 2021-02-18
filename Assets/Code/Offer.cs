@@ -6,34 +6,45 @@ using System.Linq;
 public class SaleOffer
 {
     public User Seller;
+    public Storage Source;
 
-    public Item Item;
+    public Item Sample;
+
+    public float OfferedSupply;
+    public float AvailableSupply
+    { get { return Mathf.Min(Source.GetQuantity(Sample.Name), OfferedSupply); } }
 
     public float CostPerUnit;
 
-    public SaleOffer(User seller, Item item, float cost_per_unit)
+    public SaleOffer(User seller, Storage source, 
+                     Item sample, float quantity, float cost_per_unit)
     {
         Seller = seller;
-        Item = item;
+        Source = source;
+
+        Sample = sample;
+        OfferedSupply = quantity;
         CostPerUnit = cost_per_unit;
     }
 
     public SaleOffer() { }
 
-    public Item Transact(User buyer, float quantity)
+    public float Transact(User buyer, Storage destination, float quantity)
     {
-        if (quantity == 0)
-            return null;
+        if (quantity > OfferedSupply ||
+            quantity > AvailableSupply)
+            return 0;
 
-        quantity = Mathf.Min(Item.Quantity, quantity);
+        Item item = Source.Retrieve(Sample.Name, quantity);
+        OfferedSupply -= item.Quantity;
 
-        Item purchased_item = Item.RemoveQuantity(quantity);
+        item.Owner = buyer;
+        destination.Store(item);
 
         Seller.PrimaryBankAccount.Deposit(
-            buyer.PrimaryBankAccount.Withdraw(quantity * CostPerUnit));
-        purchased_item.Owner = buyer;
+            buyer.PrimaryBankAccount.Withdraw(item.Quantity * CostPerUnit));
 
-        return purchased_item;
+        return item.Quantity;
     }
 }
 
@@ -43,46 +54,56 @@ public class PurchaseOffer
     public User Buyer;
     public Storage Destination;
 
-    public string ItemName;
-    public float Quantity;
+    public Item Sample;
+
+    public float OfferedDemand;
+    public float AvailableDemand
+    {
+        get
+        {
+            return Mathf.Min(OfferedDemand,
+                             Destination.GetMaximumVolumeOf(Sample));
+        }
+    }
 
     public float ValuePerUnit;
 
-    public PurchaseOffer(User buyer, 
-                         Storage destination, 
-                         string item_name, 
-                         float quantity, 
+    public PurchaseOffer(User buyer,
+                         Storage destination,
+                         Item sample,
+                         float quantity,
                          float cost_per_unit)
     {
         Buyer = buyer;
         Destination = destination;
-        ItemName = item_name;
-        Quantity = quantity;
+        Sample = sample;
+        OfferedDemand = quantity;
         ValuePerUnit = cost_per_unit;
     }
 
     public PurchaseOffer() { }
 
-    public Item Transact(User seller, Item item)
+    public float Transact(User seller, Storage source,
+                         float quantity)
     {
-        if (item.Name != ItemName || 
-            item.Quantity == 0)
-            return item;
+        if (quantity > OfferedDemand ||
+            quantity > AvailableDemand)
+            return 0;
 
-        Item purchased_item = item.RemoveQuantity(Quantity);
-        Quantity -= purchased_item.Quantity;
+        Item item = source.Retrieve(Sample.Name, quantity);
+        item.Owner = Buyer;
 
-        seller.PrimaryBankAccount.Deposit(
-            Buyer.PrimaryBankAccount.Withdraw(purchased_item.Quantity * ValuePerUnit));
-        purchased_item.Owner = Buyer;
-
-        if (Destination != null)
-            Destination.Store(purchased_item);
+        OfferedDemand -= item.Quantity;
 
         //Temporary hack for testing purposes
+        if (Destination != null)
+            Destination.Store(item);
         else if (Buyer.HasComponent<StationManagement>())
-            Buyer.GetComponent<StationManagement>().Stations.First().Craft.Cargo.Store(purchased_item);
+            Buyer.GetComponent<StationManagement>().Stations.First().Craft.Cargo.Store(item);
 
-        return item;
+        seller.PrimaryBankAccount.Deposit(
+            Buyer.PrimaryBankAccount.Withdraw(item.Quantity * ValuePerUnit));
+
+        return item.Quantity;
     }
 }

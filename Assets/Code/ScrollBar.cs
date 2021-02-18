@@ -30,14 +30,14 @@ public class ScrollBar : UIElement
     {
         get
         {
-            return IsVertical ? Bar.localPosition.y * DisplacementToBarLengthRatio : 
+            return IsVertical ? -Bar.localPosition.y * DisplacementToBarLengthRatio : 
                                 Bar.localPosition.x * DisplacementToBarLengthRatio;
         }
 
         set
         {
             Bar.localPosition = 
-                IsVertical ? Bar.localPosition.YChangedTo(value / DisplacementToBarLengthRatio) :
+                IsVertical ? -Bar.localPosition.YChangedTo(value / DisplacementToBarLengthRatio) :
                              Bar.localPosition.XChangedTo(value / DisplacementToBarLengthRatio);
         }
     }

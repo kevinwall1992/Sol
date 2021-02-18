@@ -105,6 +105,12 @@ public static class InputUtility
     }
 
 
+    public static bool IsSelected(this Selectable selectable)
+    {
+        return EventSystem.current.currentSelectedGameObject == selectable.gameObject;
+    }
+
+
     //This should only be called from OnGUI()
     public static bool ConsumeIsKeyUp(KeyCode key_code)
     {

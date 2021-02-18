@@ -57,7 +57,9 @@ public abstract class Button : UIElement
             }
         }
 
-        if(IsTouched && InputUtility.WasMouseLeftReleased)
+        if (gameObject.HasComponent<ClickDetector>() ?
+            WasClicked :
+            IsTouched && InputUtility.WasMouseLeftReleased)
             OnButtonUp();
     }
 

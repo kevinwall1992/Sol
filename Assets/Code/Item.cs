@@ -33,17 +33,7 @@ public class Item : MonoBehaviour
             Owner = craft.Item.Owner;
 
         if (GetQuantityString == null)
-            GetQuantityString = delegate ()
-            {
-                if (Quantity < 10)
-                    return Quantity.ToString("F1");
-
-                string short_quantity_string = ((int)Quantity).ToString("D");
-                int digit_count = short_quantity_string.Length;
-
-                return short_quantity_string.Substring(0, 3) + 
-                       "E" + (digit_count - 3).ToString();
-            };
+            GetQuantityString = () => Quantity.ToShortString() + Units;
     }
 
     public Item RemoveQuantity(float quantity_removed)

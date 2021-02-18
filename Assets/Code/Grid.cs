@@ -16,12 +16,12 @@ public class Grid : UIElement
             if (Justify)
             {
                 if (IsVertical)
-                    adjusted_margin.x = ((RectTransform.rect.width -
+                    adjusted_margin.x = ((RectTransform.rect.width.Round() -
                                         Stride.x * ColumnCount) /
                                         (ColumnCount - 1))
                                         .RoundDown();
                 else
-                    adjusted_margin.y = ((RectTransform.rect.height -
+                    adjusted_margin.y = ((RectTransform.rect.height.Round() -
                                         Stride.y * ColumnCount) /
                                         (ColumnCount - 1))
                                         .RoundDown();
@@ -38,6 +38,8 @@ public class Grid : UIElement
     public bool UseFirstElementAsStride = true;
     public bool Justify = true;
 
+    public System.Func<RectTransform, System.IComparable> GetComparable { get; set; }
+
     public int ColumnCount
     {
         get
@@ -46,12 +48,12 @@ public class Grid : UIElement
             float row_stride;
             if (IsVertical)
             {
-                row_length = RectTransform.rect.width;
+                row_length = RectTransform.rect.width.Round();
                 row_stride = Mathf.Abs(Stride.x);
             }
             else
             {
-                row_length = RectTransform.rect.height;
+                row_length = RectTransform.rect.height.Round();
                 row_stride = Mathf.Abs(Stride.y);
             }
 
@@ -68,6 +70,9 @@ public class Grid : UIElement
 
     void Update()
     {
+        if(GetComparable == null)
+            GetComparable = element => 0;
+
         RectTransform.pivot = RectTransform.pivot.Round();
 
         Margin = Mathf.Abs(Margin);
@@ -107,21 +112,8 @@ public class Grid : UIElement
 
     List<RectTransform> GetSortedElements()
     {
-        IEnumerable<RectTransform> elements = 
-            transform.Children().Select(child => child as RectTransform);
-
-        IEnumerable<ComparableElement> comparable_elements = elements
-            .Where(element => element.HasComponent<ComparableElement>())
-            .Select(element => element.GetComponent<ComparableElement>());
-
-        IEnumerable<RectTransform> incomparable_elements = 
-            elements.Where(element => !element.HasComponent<ComparableElement>());
-
-        List<RectTransform> sorted_elements = new List<ComparableElement>(comparable_elements)
-            .Sorted(element => element.Comparable)
-            .Select(element => element.transform as RectTransform).ToList();
-        sorted_elements.AddRange(incomparable_elements.ToList());
-
-        return sorted_elements;
+        return transform.Children()
+            .SelectComponents<RectTransform>()
+            .Sorted(child => GetComparable(child as RectTransform));
     }
 }

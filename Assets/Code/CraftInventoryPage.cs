@@ -10,7 +10,7 @@ public class CraftInventoryPage : MonoBehaviour
 
     private void Start()
     {
-        InventoryPage.ItemContainers = Craft.Cargo.ItemContainers;
+        InventoryPage.Storage = Craft.Cargo;
     }
 
     private void Update()

@@ -14,9 +14,10 @@ public class Manufacturer : User.Script
     {
         get
         {
-            return Scene.The.Stations.SelectMany(station => station.GetRooms(User))
-                .SelectMany(room => room.Container.Items.Values
-                    .SelectComponents<Item, Machine>());
+            return Scene.The.Stations
+                .Select(station => GetManufacturingStorage(station))
+                .SelectMany(storage => storage.Items)
+                .SelectComponents<Item, Machine>();
         }
     }
 
@@ -40,15 +41,25 @@ public class Manufacturer : User.Script
     {
         foreach (Station station in Scene.The.Stations)
         {
-            Storage room_storage = new Storage(
-                station.GetRooms(User).Select(room => room.Container));
+            Storage storage = GetManufacturingStorage(station);
 
-            IEnumerable<Item> goods = station.GetStorage(User).Items.Where(
+            IEnumerable<Item> goods = storage.Items.Where(
                 item => !item.HasComponent<Machine>());
 
             foreach (Item item in goods)
-                station.OfficialMarket.Sell(User, item);
+            {
+                float quantity = Mathf.Min(
+                    station.OfficialMarket.GetTotalDemand(item.Name),
+                    item.Quantity);
+
+                station.OfficialMarket.Sell(User, storage, item.Name, quantity);
+            }
         }
+    }
+
+    Storage GetManufacturingStorage(Station station)
+    {
+        return new Storage(station.GetRooms(User).Select(room => room.Container));
     }
 
     void SellMachines()
@@ -59,12 +70,11 @@ public class Manufacturer : User.Script
 
             if (GetProfitPerMachinePerDay(machine, machine.Item.Station()) < 0)
             {
-                Storage storage = station.GetStorage(User);
-                Item machines_to_sell = 
-                    storage.Retrieve(machine.name, 
-                                     0.2f * storage.GetQuantity(machine.Item.name));
+                Storage storage = GetManufacturingStorage(station);
 
-                storage.Store(station.OfficialMarket.Sell(User, machines_to_sell));
+                station.OfficialMarket.Sell(
+                    User, storage, 
+                    machine.Item.Name, 0.2f * storage.GetQuantity(machine.Item.Name));
             }
         }
     }
@@ -78,7 +88,7 @@ public class Manufacturer : User.Script
         foreach (Machine machine in sorted_machines)
         {
             Station station = machine.Item.Station();
-            Storage storage = station.GetStorage(User);
+            Storage storage = GetManufacturingStorage(station);
 
             foreach (string input_name in machine.Recipe.Inputs.Keys)
             {
@@ -102,9 +112,9 @@ public class Manufacturer : User.Script
 
                 station.OfficialMarket.Purchase(
                     User,
+                    machine.Storage,
                     input_name,
-                    purchase_quantity,
-                    machine.Storage);
+                    purchase_quantity);
             }
         }
     }
@@ -122,12 +132,11 @@ public class Manufacturer : User.Script
 
             foreach (Station station in Scene.The.Stations)
             {
-                Storage storage = station.GetStorage(User);
                 if (station.GetRooms(User).Count() == 0)
                     continue;
 
-                IEnumerable<Machine> machines_for_sale =
-                    station.OfficialMarket.GetSampleItems<Machine>();
+                IEnumerable<Machine> machines_for_sale = station.OfficialMarket.Wares
+                    .SelectComponents<Item, Machine>();
 
                 foreach (Machine machine in machines_for_sale)
                 {
@@ -156,20 +165,17 @@ public class Manufacturer : User.Script
             float purchase_quantity = best_station.OfficialMarket
                 .GetPurchaseQuantity(best_machine.Item.Name, target_purchase_cost);
 
-            Storage room_storage = new Storage(
-                    best_station.GetRooms(User).Select(room => room.Container));
-
             best_station.OfficialMarket
                 .Purchase(User,
+                          GetManufacturingStorage(best_station),
                           best_machine.Item.Name,
-                          purchase_quantity,
-                          room_storage);
+                          purchase_quantity);
         }
 
-        new Storage(Scene.The.Stations
-            .SelectMany(station => station.GetRooms(User)).Select(room => room.Container))
-            .TouchItems(item => item.GetComponent<Machine>().IsOn = true,
-                        item => item.HasComponent<Machine>());
+        foreach(Station station in Scene.The.Stations)
+            GetManufacturingStorage(station)
+                .TouchItems(item => item.GetComponent<Machine>().IsOn = true,
+                            item => item.HasComponent<Machine>());
     }
 
     float GetProfitPerMachinePerDay(Machine machine, Station station)

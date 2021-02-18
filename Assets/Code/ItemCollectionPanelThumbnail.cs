@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
-public class IconInventoryElement : UIElement
+public class ItemCollectionPanelThumbnail : ItemCollectionPanel.Element
 {
     Color name_label_rest_color;
 
@@ -12,16 +13,15 @@ public class IconInventoryElement : UIElement
 
     public Color LabelHighlightColor;
 
-    [HideInInspector]
-    public Item Item;
-
     private void Start()
     {
         name_label_rest_color = NameLabel.BackgroundColor;
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (Item == null)
             return;
 
@@ -31,7 +31,6 @@ public class IconInventoryElement : UIElement
 
         QuantityLabel.Text.text = Item.GetQuantityString();
 
-        QualifierLabel.gameObject.SetActive(IsPointedAt);
         QualifierLabel.Text.text = Item.Qualifier;
 
         Icon.sprite = Item.Icon;

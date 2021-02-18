@@ -75,6 +75,12 @@ public class Storage
         return GetUnusedVolumeFor(item) >= item.Volume();
     }
 
+    public bool CanFit(Item item, float quantity)
+    {
+        return GetUnusedVolumeFor(item) >= 
+               item.Physical().VolumePerUnit * quantity;
+    }
+
     public bool Store(Item item)
     {
         foreach(ItemContainer item_container in ItemContainers)
@@ -165,6 +171,15 @@ public class Storage
         quantity = retrieved_item.Quantity;
 
         GameObject.Destroy(retrieved_item.gameObject);
+        return quantity;
+    }
+
+    public float SendTo(Storage destination, string name, float quantity)
+    {
+        quantity = Mathf.Min(quantity, GetQuantity(name));
+
+        destination.StoreQuantity(GetSampleItem(name), quantity);
+
         return quantity;
     }
 

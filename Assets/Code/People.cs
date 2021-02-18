@@ -78,10 +78,10 @@ public class People : User.Script
             float quantity = 
                 Market.GetPurchaseQuantity(most_important_need.ItemName, credits);
 
-            Market.Purchase(User, 
+            Market.Purchase(User,
+                            Storage,
                             most_important_need.ItemName, 
-                            quantity, 
-                            Storage);
+                            quantity);
         }
 
         float population_change = GetPopulationChange();

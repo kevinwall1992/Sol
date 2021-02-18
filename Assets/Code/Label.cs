@@ -18,11 +18,12 @@ public class Label : UIElement
         Text.color = TextColor;
         Background.color = BackgroundColor;
 
-        int text_width = Text.text.Length * CharacterWidth;
+        RectTransform background_transform = 
+            Background.transform as RectTransform;
 
-        RectTransform background_transform = Background.transform as RectTransform;
-        background_transform.sizeDelta =  
-            background_transform.sizeDelta.XChangedTo(text_width + 1);
+        background_transform.sizeDelta =
+            background_transform.sizeDelta.XChangedTo(
+                Text.text != "" ? Text.renderedWidth.Round() + 1 : 0);
 
         if (AutomaticWidth)
         {

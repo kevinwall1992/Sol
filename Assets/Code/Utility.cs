@@ -80,14 +80,30 @@ public static class Utility
         return list[list.IndexOf(element) + relative_index];
     }
 
-    public static T PreviousElement<T>(this List<T> list, T element)
+    public static T PreviousElement<T>(this List<T> list, T element) where T : class
     {
+        if (list.First() == element)
+            return null;
+
         return list.ElementAtRelativeIndex(element, -1);
     }
 
-    public static T NextElement<T>(this List<T> list, T element)
+    public static T PreviousElement<T>(this IEnumerable<T> enumerable, T element)
     {
+        return enumerable.ToList().PreviousElement(element);
+    }
+
+    public static T NextElement<T>(this List<T> list, T element) where T : class
+    {
+        if (list.Last() == element)
+            return null;
+
         return list.ElementAtRelativeIndex(element, +1);
+    }
+
+    public static T NextElement<T>(this IEnumerable<T> enumerable, T element)
+    {
+        return enumerable.ToList().NextElement(element);
     }
 
     public static T Take<T>(this List<T> list, T element)
@@ -207,6 +223,11 @@ public static class Utility
                                        Func<T, U> comparable_fetcher) where U : IComparable
     {
         return Sorted(new List<T>(enumerable), comparable_fetcher);
+    }
+
+    public static List<T> Sorted<T>(this IEnumerable<T> enumerable) where T : IComparable
+    {
+        return enumerable.Sorted(element => element);
     }
 
     public static T MinElement<T, U>(this IEnumerable<T> enumerable, 
@@ -335,6 +356,57 @@ public static class Utility
     public static int GetEnumSize<T>()
     {
         return GetEnumValues<T>().Count();
+    }
+
+    //Formats a float to 5 or less characters
+    //and sign symbol (if negative)
+    public static string ToShortString(this float value)
+    {
+        float absolute_value = Mathf.Abs(value);
+
+        if (absolute_value < 100)
+        {
+            if (absolute_value >= 0.3f)
+                return value.ToString("F1");
+            else if (absolute_value >= 0.03f)
+                return value.ToString("F2");
+            else
+                return value.ToString("F3");
+        }
+        else if (absolute_value < 1000)
+            return ((int)value).ToString();
+
+        string short_string = ((int)value).ToString();
+        int digit_count = short_string.Length;
+
+        return short_string.Substring(0, 3) +
+               "E" + (digit_count - 3).ToString();
+    }
+
+    //Formats a float to a currency string with up to 5 characters,
+    //currency symbol, and sign symbol (if negative)
+    public static string ToShortMoneyString(this float value)
+    {
+        if (float.IsNaN(value))
+            return "$???";
+
+        if (Mathf.Abs(value) < 1)
+            return value.ToString("C2");
+
+        List<string> scale_suffixes = Utility.List("", "K", "M", "B", "T");
+
+        int power = Mathf.Log(Mathf.Abs(value), 1000).RoundDown();
+        if (power >= scale_suffixes.Count)
+            return "$" + value.ToShortString();
+
+        float scaled_value = 
+            value / Mathf.Pow(1000, power);
+
+        int decimal_count = 
+            2 - Mathf.Log(Mathf.Abs(scaled_value), 10).RoundDown();
+
+        return scaled_value.ToString("C" + decimal_count.ToString()) + 
+               scale_suffixes[power];
     }
 
 

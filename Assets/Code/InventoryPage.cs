@@ -5,132 +5,25 @@ using System.Linq;
 
 public class InventoryPage : Page
 {
-    public Grid ElementGrid;
-    public Switch IconSwitch;
+    public ItemCollectionPanel ItemPanel;
 
     public TMPro.TextMeshProUGUI AddressLine1, AddressLine2;
 
-    public IEnumerable<ItemContainer> ItemContainers;
+    public Storage Storage;
 
-    public int IconMargin, LineMargin;
-
-    public IEnumerable<IconInventoryElement> IconInventoryElements
-    { get { return ElementGrid.GetComponentsInChildren<IconInventoryElement>(); } }
-
-    public IEnumerable<LineInventoryElement> LineInventoryElements
-    { get { return ElementGrid.GetComponentsInChildren<LineInventoryElement>(); } }
-
-    bool IsDisplayingIcons
-    {
-        get
-        {
-            if (IconInventoryElements.Count() > 0)
-                return true;
-            else if (LineInventoryElements.Count() > 0)
-                return false;
-
-            return IconSwitch.IsOn;
-        }
-    }
-
-    IEnumerable<Item> UnderlyingItems
-    {
-        get
-        {
-            return ItemContainers
-                .SelectMany(item_container => item_container.Items.Values);
-        }
-    }
-
-    IEnumerable<Item> ItemsListed
-    {
-        get
-        {
-            if (IsDisplayingIcons)
-                return IconInventoryElements.Select(element => element.Item);
-            else
-                return LineInventoryElements.Select(element => element.Item);
-        }
-    }
 
     private void Start()
     {
-        ClearElements();
+        ItemPanel.Items = Storage.Items;
     }
 
     private void Update()
     {
-        ValidateElements();
-
-        if (IsDisplayingIcons)
-            ElementGrid.Margin = IconMargin;
-        else
-            ElementGrid.Margin = LineMargin;
-    }
-
-    void ClearElements()
-    {
-        foreach (IconInventoryElement element in IconInventoryElements.ToList())
-            GameObject.Destroy(element.gameObject);
-
-        foreach (LineInventoryElement element in LineInventoryElements.ToList())
-            GameObject.Destroy(element.gameObject);
-    }
-
-    void ValidateElements()
-    {
-        if (IsDisplayingIcons != IconSwitch.IsOn)
-            ClearElements();
-
-        if (IsDisplayingIcons)
+        if(ItemPanel.SelectedItem != null)
         {
-            foreach (IconInventoryElement element in IconInventoryElements.ToList())
-                if (!UnderlyingItems.Contains(element.Item))
-                    GameObject.Destroy(element.gameObject);
+            Scene.The.ItemPage.Item = ItemPanel.SelectedItem;
+            Scene.The.ItemPage.Window.Open();
+            ItemPanel.SelectedItem = null;
         }
-        else
-        {
-            foreach (LineInventoryElement element in LineInventoryElements.ToList())
-                if (!UnderlyingItems.Contains(element.Item))
-                    GameObject.Destroy(element.gameObject);
-        }
-
-        foreach (Item item in UnderlyingItems)
-            if (!ItemsListed.Contains(item))
-            {
-                GameObject element;
-
-                if (IsDisplayingIcons)
-                {
-                    IconInventoryElement icon_inventory_element = 
-                        GameObject.Instantiate(IconInventoryElementPrefab);
-                    icon_inventory_element.Item = item;
-                    element = icon_inventory_element.gameObject;
-                }
-                else
-                {
-                    LineInventoryElement line_inventory_element = 
-                        GameObject.Instantiate(LineInventoryElementPrefab);
-                    line_inventory_element.Item = item;
-                    element = line_inventory_element.gameObject;
-                }
-
-                element.transform.SetParent(ElementGrid.transform, false);
-            }
     }
-
-
-    public static Item GetItemFromInventoryElement(GameObject game_object)
-    {
-        if (game_object.HasComponent<IconInventoryElement>())
-            return game_object.GetComponent<IconInventoryElement>().Item;
-        else if (game_object.HasComponent<LineInventoryElement>())
-            return game_object.GetComponent<LineInventoryElement>().Item;
-        else
-            return null;
-    }
-
-
-    public IconInventoryElement IconInventoryElementPrefab;
-    public LineInventoryElement LineInventoryElementPrefab;
 }

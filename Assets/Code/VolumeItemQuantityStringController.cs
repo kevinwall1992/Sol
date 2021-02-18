@@ -34,15 +34,7 @@ public class VolumeItemQuantityStringController : MonoBehaviour
                 units = "GL";
             }
 
-            switch (((int)volume).ToString().Length)
-            {
-                case 3: return ((int)volume).ToString() + units;
-                case 2: return volume.ToString("F1") + units;
-                case 1: return volume.ToString("F2") + units;
-                case 0: return volume.ToString("F3") + units;
-
-                default: return volume.ToString("E2");
-            }
+            return volume.ToShortString() + units;
         };
     }
 }

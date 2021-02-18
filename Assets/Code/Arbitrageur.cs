@@ -38,9 +38,9 @@ public class Arbitrageur : User.Script
                     if (target_quantity > existing_quantity)
                         purchase_actions.Add(() => 
                             market.Purchase(User,
+                                            craft.Cargo,
                                             item_name,
-                                            target_quantity - existing_quantity,
-                                            craft.Cargo));
+                                            target_quantity - existing_quantity));
 
                     else if (target_quantity < existing_quantity)
                     {
@@ -48,7 +48,11 @@ public class Arbitrageur : User.Script
                             item_name, 
                             existing_quantity - target_quantity);
 
-                        sale_actions.Add(() => craft.Cargo.Store(market.Sell(User, item)));
+                        sale_actions.Add(() => market.Sell(
+                            User, 
+                            craft.Cargo, 
+                            item_name,
+                            existing_quantity - target_quantity));
                     }
                 }
 
@@ -77,23 +81,21 @@ public class Arbitrageur : User.Script
         Dictionary<string, float> available_quantities =
             new Dictionary<string, float>(owned_quantities);
 
-        Dictionary<string, Item> sample_items =
+        Dictionary<string, Item> samples =
             owned_quantities.Keys.ToDictionary(
                 item_name => item_name,
                 item_name => craft.Cargo.GetSampleItem(item_name));
 
-        IEnumerable<string> items_for_sale = 
-            here.SaleOffers.Select(offer => offer.Item.Name).RemoveDuplicates();
-        foreach (string item_name in items_for_sale)
+        foreach (Item sample in here.Wares)
         {
-            if (!owned_quantities.ContainsKey(item_name))
-                owned_quantities[item_name] = 0;
+            if (!owned_quantities.ContainsKey(sample.Name))
+                owned_quantities[sample.Name] = 0;
 
-            if (!available_quantities.ContainsKey(item_name))
-                available_quantities[item_name] = 0;
-            available_quantities[item_name] += here.GetQuantity(item_name);
+            if (!available_quantities.ContainsKey(sample.Name))
+                available_quantities[sample.Name] = 0;
+            available_quantities[sample.Name] += here.GetTotalSupply(sample.Name);
 
-            sample_items[item_name] = here.GetSampleItem(item_name);
+            samples[sample.Name] = sample;
         }
 
         string propellent_name = craft.Engine.Propellent.Name;
@@ -112,7 +114,7 @@ public class Arbitrageur : User.Script
             //Find best Plan for each market
             foreach(Market there in markets)
             {
-                Plan plan = new Plan(there, sample_items.Keys);
+                Plan plan = new Plan(there, samples.Keys);
 
                 float cargo_mass = 0;
 
@@ -195,7 +197,7 @@ public class Arbitrageur : User.Script
                 //Purchase small quantity of most profitable item until full
                 while (cargo_mass + float.Epsilon < target_cargo_mass)
                 {
-                    Item best_item = sample_items.Values
+                    Item best_item = samples.Values
                         .Where(item => available_quantities[item.Name] > float.Epsilon)
                         .Sorted(item => GetMarginalProfit(item))
                         .Reversed()
