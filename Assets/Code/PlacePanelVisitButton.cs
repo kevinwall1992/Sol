@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class PlacePanelVisitButton : Button, PlacePanel.Element
+public class PlacePanelVisitButton : Button.Script, PlacePanel.Element
 {
     public List<Image> Edges;
     public TMPro.TextMeshProUGUI Text, TextShadow;
@@ -18,11 +18,9 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
                  TextDownColor,
                  TextErrorColor;
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
-        Image.color = Image.color.AlphaChangedTo(
+        Button.Image.color = Button.Image.color.AlphaChangedTo(
             IsUserChoosingDestination() && 
             IsCraftWelcome() ? 1 : 0);
 
@@ -55,7 +53,7 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
             SetHighlightColor(TextRestColor);
 
             if (is_flashing)
-                Image.sprite = DownSprite;
+                Button.Image.sprite = Button.DownSprite;
         }
         else
             SetHighlightColor(TextErrorColor);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ViewTripButton : Button, TransportCraftPanel.Element
+public class ViewTripButton : Button.Script, TransportCraftPanel.Element
 {
     public ScheduleElement ScheduleElement
     { get { return GetComponentInParent<ScheduleElement>(); } }

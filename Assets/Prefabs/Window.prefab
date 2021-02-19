@@ -338,6 +338,8 @@ GameObject:
   - component: {fileID: 3507611301565290607}
   - component: {fileID: 5832649361515706976}
   - component: {fileID: 4078623977995734250}
+  - component: {fileID: 7935611427358957364}
+  - component: {fileID: 8687538067869708867}
   m_Layer: 8
   m_Name: MaximizeButton
   m_TagString: Untagged
@@ -420,6 +422,37 @@ MonoBehaviour:
   TouchColor: {r: 1, g: 1, b: 1, a: 1}
   DownColor: {r: 1, g: 1, b: 0, a: 1}
   Window: {fileID: 8619336530769263769}
+--- !u!114 &7935611427358957364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3523581378292491427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8687538067869708867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3523581378292491427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 5832649361515706976}
+  TouchSprite: {fileID: 21300000, guid: f346299e03ae6a844a20ccf52d50a012, type: 3}
+  DownSprite: {fileID: 21300000, guid: f346299e03ae6a844a20ccf52d50a012, type: 3}
+  TouchColor: {r: 1, g: 1, b: 1, a: 1}
+  DownColor: {r: 1, g: 1, b: 0, a: 1}
 --- !u!1 &4336758531941462221
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,6 +756,8 @@ GameObject:
   - component: {fileID: 8056488893046431603}
   - component: {fileID: 8999596883194029589}
   - component: {fileID: 5537434650669974861}
+  - component: {fileID: 8847292311568261429}
+  - component: {fileID: 2844267137122913662}
   m_Layer: 8
   m_Name: MinimizeButton
   m_TagString: Untagged
@@ -805,6 +840,37 @@ MonoBehaviour:
   TouchColor: {r: 1, g: 1, b: 1, a: 1}
   DownColor: {r: 1, g: 1, b: 0, a: 1}
   Window: {fileID: 8619336530769263769}
+--- !u!114 &8847292311568261429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928923520754800973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2844267137122913662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928923520754800973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 8999596883194029589}
+  TouchSprite: {fileID: 21300000, guid: 4beacbffcf549634c9947e2a5202141d, type: 3}
+  DownSprite: {fileID: 21300000, guid: 4beacbffcf549634c9947e2a5202141d, type: 3}
+  TouchColor: {r: 1, g: 1, b: 1, a: 1}
+  DownColor: {r: 1, g: 1, b: 0, a: 1}
 --- !u!1 &6451109147881564466
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,6 +993,8 @@ GameObject:
   - component: {fileID: 1513199397227258524}
   - component: {fileID: 2050227033479620505}
   - component: {fileID: 8210998916642782049}
+  - component: {fileID: 2734628816647746025}
+  - component: {fileID: 5981875776925982645}
   m_Layer: 8
   m_Name: CloseButton
   m_TagString: Untagged
@@ -1009,6 +1077,37 @@ MonoBehaviour:
   TouchColor: {r: 1, g: 0, b: 0, a: 1}
   DownColor: {r: 1, g: 1, b: 0, a: 1}
   Window: {fileID: 8619336530769263769}
+--- !u!114 &2734628816647746025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696073468408334233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5981875776925982645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696073468408334233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 2050227033479620505}
+  TouchSprite: {fileID: 21300000, guid: 2dff2193a8776f849a07f90b08fa2ee1, type: 3}
+  DownSprite: {fileID: 21300000, guid: 2dff2193a8776f849a07f90b08fa2ee1, type: 3}
+  TouchColor: {r: 1, g: 0, b: 0, a: 1}
+  DownColor: {r: 1, g: 1, b: 0, a: 1}
 --- !u!1 &6887476680740023222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,11 +1559,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
---- !u!224 &524203408742099203 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
-  m_PrefabInstance: {fileID: 323447297337616631}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3742188493774004241 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4004809483492149478, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
@@ -1476,3 +1570,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &524203408742099203 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 232856374223127028, guid: 4fcf98da592d365409a9549cb6442bed, type: 3}
+  m_PrefabInstance: {fileID: 323447297337616631}
+  m_PrefabAsset: {fileID: 0}

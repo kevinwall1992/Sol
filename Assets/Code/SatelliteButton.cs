@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SatelliteButton : Button
+public class SatelliteButton : Button.Script
 {
     public Satellite Satellite;
 

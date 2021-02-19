@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ViewInventoryButton : Button, TransportCraftPanel.Element
+public class ViewInventoryButton : Button.Script, TransportCraftPanel.Element
 {
     protected override void OnButtonUp()
     {

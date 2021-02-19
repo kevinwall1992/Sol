@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RefuelAmountButton : Button
+public class RefuelAmountButton : Button.Script
 {
     public float RequiredFuelMass;
 

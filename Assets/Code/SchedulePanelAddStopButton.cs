@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class SchedulePanelAddStopButton : Button, TransportCraftPanel.Element
+public class SchedulePanelAddStopButton : Button.Script, TransportCraftPanel.Element
 {
     public TMPro.TextMeshProUGUI Text;
 
@@ -10,21 +10,19 @@ public class SchedulePanelAddStopButton : Button, TransportCraftPanel.Element
                  ActiveTouchColor,
                  ActiveDownColor;
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         if (this.TransportCraftPanel().SchedulePanel.IsUserChoosingDestination)
         {
             Text.text = "Select Dest.";
             Text.color = Color.black;
 
             if (IsDown)
-                Image.color = ActiveDownColor;
+                Button.Image.color = ActiveDownColor;
             else if (IsTouched)
-                Image.color = ActiveTouchColor;
+                Button.Image.color = ActiveTouchColor;
             else
-                Image.color = ActiveColor;
+                Button.Image.color = ActiveColor;
         }
         else
         {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ViewScheduleButton : Button, TransportCraftPanel.Element
+public class ViewScheduleButton : Button.Script, TransportCraftPanel.Element
 {
     protected override void OnButtonUp()
     {

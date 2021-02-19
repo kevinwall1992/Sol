@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 779163390170565148}
   - component: {fileID: 5613098168569196989}
   - component: {fileID: 1808683879080604427}
+  - component: {fileID: 8127923729822596755}
+  - component: {fileID: 7570151978789502465}
   m_Layer: 0
   m_Name: StationToolboxButton
   m_TagString: Untagged
@@ -98,6 +100,37 @@ MonoBehaviour:
   DownColor: {r: 0.02426231, g: 1, b: 0, a: 1}
   Overlay: {fileID: 19947953619337887}
   SelectionFrame: {fileID: 5651125782481799898}
+--- !u!114 &8127923729822596755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334030942604623931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7570151978789502465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334030942604623931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 5613098168569196989}
+  TouchSprite: {fileID: 0}
+  DownSprite: {fileID: 0}
+  TouchColor: {r: 0.45098042, g: 0.5294118, b: 0.44705886, a: 1}
+  DownColor: {r: 0.023529414, g: 1, b: 0, a: 1}
 --- !u!1 &1855300535125921897
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +278,6 @@ MonoBehaviour:
   StartRadius: 0
   EndRadius: 0
   DegreesPerSample: 5
-  RingVisualization: {fileID: 0}
 --- !u!1 &5494232957132576996
 GameObject:
   m_ObjectHideFlags: 0

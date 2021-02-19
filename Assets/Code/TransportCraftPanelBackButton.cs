@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TransportCraftPanelBackButton : Button, TransportCraftPanel.Element
+[RequireComponent(typeof(CanvasGroup))]
+public class TransportCraftPanelBackButton : Button.Script, 
+                                             TransportCraftPanel.Element
 {
-    public CanvasGroup CanvasGroup;
+    public CanvasGroup CanvasGroup
+    { get { return GetComponent<CanvasGroup>(); } }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         CanvasGroup.alpha = 
             this.TransportCraftPanel().State != TransportCraftPanel.MenuState.Main || 
             this.TransportCraftPanel().IsPointedAt ? 1 : 0;

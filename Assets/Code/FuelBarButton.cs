@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FuelBarButton : Button
+public class FuelBarButton : Button.Script
 {
     public FuelBar FuelBar;
 

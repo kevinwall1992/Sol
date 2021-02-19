@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8868488555558407696}
   - component: {fileID: 3891975795725899861}
   - component: {fileID: 2600167406553109209}
+  - component: {fileID: 4686115347313361998}
+  - component: {fileID: 8604886869371559805}
   m_Layer: 0
   m_Name: NavigationButton
   m_TagString: Untagged
@@ -69,6 +71,37 @@ MonoBehaviour:
   DownSprite: {fileID: 0}
   TouchColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
   DownColor: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
+--- !u!114 &4686115347313361998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976055445862508776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8604886869371559805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976055445862508776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 558462537766488418}
+  TouchSprite: {fileID: 0}
+  DownSprite: {fileID: 0}
+  TouchColor: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
+  DownColor: {r: 0.5372549, g: 0.5372549, b: 0.5372549, a: 1}
 --- !u!1 &1610127566827956876
 GameObject:
   m_ObjectHideFlags: 0

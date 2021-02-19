@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 
-public class MarketPageSelectStorageButton : Button, MarketPage.Element
+public class MarketPageSelectStorageButton : Button.Script, MarketPage.Element
 {
     Craft storage_craft;
 
@@ -23,10 +23,8 @@ public class MarketPageSelectStorageButton : Button, MarketPage.Element
 
     public TMPro.TextMeshProUGUI Text;
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         if (UseWarehouse)
             Text.text = "Warehouse";
         else

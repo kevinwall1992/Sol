@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 
-public class SchedulePanelRemoveStopButton : Button, TransportCraftPanel.Element
+public class SchedulePanelRemoveStopButton : Button.Script, TransportCraftPanel.Element
 {
     public Navigation.Transfer Transfer;
 
@@ -11,10 +11,8 @@ public class SchedulePanelRemoveStopButton : Button, TransportCraftPanel.Element
     public ScheduleElement ScheduleElement
     { get { return GetComponentInParent<ScheduleElement>(); } }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         Navigation navigation = this.TransportCraftPanel().Craft.Navigation;
 
         if (!ScheduleElement.IsTouched || 

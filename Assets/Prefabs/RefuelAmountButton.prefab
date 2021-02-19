@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 8066635298477831302}
   - component: {fileID: 4366077599013563572}
   - component: {fileID: 2806526440476160616}
+  - component: {fileID: 3426255443916791335}
+  - component: {fileID: 6878983492911393989}
   m_Layer: 0
   m_Name: RefuelAmountButton
   m_TagString: Untagged
@@ -80,6 +82,38 @@ MonoBehaviour:
   TouchSprite: {fileID: 0}
   DownSprite: {fileID: 0}
   TouchColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 1}
+  DownColor: {r: 0, g: 0, b: 0, a: 1}
+  RequiredFuelMass: 0
+--- !u!114 &3426255443916791335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4241686442544312844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6878983492911393989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4241686442544312844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 3659364199864989449}
+  TouchSprite: {fileID: 0}
+  DownSprite: {fileID: 0}
+  TouchColor: {r: 0.2627451, g: 0.2627451, b: 0.2627451, a: 1}
   DownColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &4243481135565160339
 GameObject:

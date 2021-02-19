@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MarketPageUnitsButton : Button, MarketPage.Element
+public class MarketPageUnitsButton : Button.Script, MarketPage.Element
 {
     public Label Label;
 
     public TMPro.TextMeshProUGUI Text;
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-
-        Label.BackgroundColor = base.Image.color;
+        Label.BackgroundColor = Button.Image.color;
     }
 
     protected override void OnButtonUp()

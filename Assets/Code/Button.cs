@@ -1,67 +1,97 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-public abstract class Button : UIElement
+public class Button : UIElement
 {
-    protected Sprite rest_sprite;
-    protected Color rest_color;
+    [HideInInspector]
+    public Sprite RestSprite;
+    [HideInInspector]
+    public Color RestColor;
 
     public Image Image;
     public Sprite TouchSprite, DownSprite;
-    public Color TouchColor = Color.white, 
+    public Color TouchColor = Color.white,
                  DownColor = Color.white;
 
     public bool IsDown { get { return IsTouched && InputUtility.IsMouseLeftPressed; } }
 
     bool DontModifyImageSprite { get; set; }
 
-    protected virtual void Start()
+    void Start()
     {
         if (Image == null)
             return;
 
-        rest_sprite = Image.sprite;
-        rest_color = Image.color;
+        RestSprite = Image.sprite;
+        RestColor = Image.color;
 
         DontModifyImageSprite = TouchSprite == null;
 
         if (TouchSprite == null)
-            TouchSprite = rest_sprite;
+            TouchSprite = RestSprite;
 
         if (DownSprite == null)
             DownSprite = TouchSprite;
     }
 
-    protected virtual void Update()
+    void Update()
     {
         if (Image != null)
         {
-            if (IsDown)
-            {
-                if(!DontModifyImageSprite)
-                    Image.sprite = DownSprite;
-                Image.color = DownColor;
-            }
-            else if (IsTouched)
-            {
-                if (!DontModifyImageSprite)
-                    Image.sprite = TouchSprite;
-                Image.color = TouchColor;
-            }
-            else
-            {
-                if (!DontModifyImageSprite)
-                    Image.sprite = rest_sprite;
-                Image.color = rest_color;
-            }
+            if (!DontModifyImageSprite)
+                Image.sprite = GetDesiredSprite();
+
+            Image.color = GetDesiredColor();
         }
 
         if (gameObject.HasComponent<ClickDetector>() ?
             WasClicked :
             IsTouched && InputUtility.WasMouseLeftReleased)
-            OnButtonUp();
+            OnButtonUp.Invoke();
     }
 
-    protected abstract void OnButtonUp();
+    public Color GetDesiredColor()
+    {
+        if (IsDown)
+            return DownColor;
+        else if (IsTouched)
+            return TouchColor;
+        else
+            return RestColor;
+    }
+
+    public Sprite GetDesiredSprite()
+    {
+        if (IsDown)
+            return DownSprite;
+        else if (IsTouched)
+            return TouchSprite;
+        else
+            return RestSprite;
+    }
+
+    public UnityEvent OnButtonUp { get; private set; } = new UnityEvent();
+
+
+    [RequireComponent(typeof(Button))]
+    public abstract class Script : UIElement
+    {
+        public Image Image;
+        public Sprite TouchSprite, DownSprite;
+        public Color TouchColor = Color.white,
+                     DownColor = Color.white;
+
+        public Button Button { get { return GetComponent<Button>(); } }
+
+        public bool IsDown { get { return Button.IsDown; } }
+
+        protected virtual void Start()
+        {
+            Button.OnButtonUp.AddListener(OnButtonUp);
+        }
+
+        protected abstract void OnButtonUp();
+    }
 }

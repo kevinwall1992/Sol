@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ViewRefuelingPageButton : Button, TransportCraftPanel.Element
+public class ViewRefuelingPageButton : Button.Script, TransportCraftPanel.Element
 {
     protected override void OnButtonUp()
     {

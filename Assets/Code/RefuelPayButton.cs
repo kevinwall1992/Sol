@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RefuelPayButton : Button
+public class RefuelPayButton : Button.Script
 {
     public TMPro.TextMeshProUGUI Price;
 
@@ -13,10 +13,8 @@ public class RefuelPayButton : Button
         throw new System.NotImplementedException();
     }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         if (IsTouched)
             Price.text = "Pay?";
         else

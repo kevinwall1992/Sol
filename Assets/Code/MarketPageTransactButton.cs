@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MarketPageTransactButton : Button, MarketPage.Element
+public class MarketPageTransactButton : Button.Script, MarketPage.Element
 {
     bool can_transact;
 
@@ -14,11 +14,9 @@ public class MarketPageTransactButton : Button, MarketPage.Element
 
     public Market Market { get { return this.Market(); } }
 
-    protected override void Update()
+    protected void Update()
     {
-        base.Update();
-
-        base.rest_color = TransactionPanel.IsPurchase ? PurchaseColor : SellColor;
+        Button.RestColor = TransactionPanel.IsPurchase ? PurchaseColor : SellColor;
 
         Text.text = "";
         ErrorText.text = "";
@@ -60,7 +58,7 @@ public class MarketPageTransactButton : Button, MarketPage.Element
         }
 
         if (!can_transact)
-            base.rest_color = ErrorColor;
+            Button.RestColor = ErrorColor;
 
         if (!IsTouched)
         {

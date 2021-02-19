@@ -40,8 +40,9 @@ public class SystemMapObject : MonoBehaviour
         Image.sprite = Icon;
 
         //Necessary to prevent culling bug in Unity...
+        Color color = Image.color;
         Image.color = Color.black;
-        Image.color = Color.white;
+        Image.color = color;
 
         //Size
         RectTransform image_transform = Image.transform as RectTransform;

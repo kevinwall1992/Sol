@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Linq;
 
-public class StationToolboxButton : Button
+public class StationToolboxButton : Button.Script
 {
     public RingVisualizationOverlay Overlay;
 
@@ -17,10 +17,8 @@ public class StationToolboxButton : Button
     public Interactor Interactor_
     { get { return GetComponentInChildren<Interactor>(); } }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         if (Interactor_ != null &&
             IsSelected &&
             The.StationViewer.IsTouched)

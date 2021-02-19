@@ -2,7 +2,7 @@
 using System.Collections;
 
 [ExecuteAlways]
-public class Switch : Button
+public class Switch : Button.Script
 {
     public Sprite OffSprite, OnSprite, OnTouchSprite;
 
@@ -12,19 +12,17 @@ public class Switch : Button
     {
         base.Start();
 
-        rest_sprite = OffSprite;
+        Button.RestSprite = OffSprite;
     }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
-
         if(IsOn && !IsDown)
         {
             if (IsPointedAt)
-                Image.sprite = OnTouchSprite;
+                Button.Image.sprite = OnTouchSprite;
             else
-                Image.sprite = OnSprite;
+                Button.Image.sprite = OnSprite;
         }
     }
 
