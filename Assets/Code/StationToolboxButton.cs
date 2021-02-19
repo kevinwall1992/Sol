@@ -23,7 +23,7 @@ public class StationToolboxButton : Button
 
         if (Interactor_ != null &&
             IsSelected &&
-            Scene.The.StationViewer.IsTouched)
+            The.StationViewer.IsTouched)
             Overlay.gameObject.SetActive(Interactor_.OnInteract());
         else
             Overlay.gameObject.SetActive(false);
@@ -50,7 +50,7 @@ public class StationToolboxButton : Button
         { get { return GetComponent<StationToolboxButton>(); } }
 
         public StationViewer StationViewer
-        { get { return Scene.The.StationViewer; } }
+        { get { return The.StationViewer; } }
 
         public RingVisualization RingVisualization
         { get { return StationViewer.StationVisualization.SelectedRing; } }

@@ -24,13 +24,13 @@ public class SystemMapObject : MonoBehaviour
     public SystemMapObject Parent;
 
     public bool IsFocused
-    { get { return Scene.The.SystemMap.FocusedObject == this; } }
+    { get { return The.SystemMap.FocusedObject == this; } }
 
     public SystemMap SystemMap { get { return GetComponentInParent<SystemMap>(); } }
 
     private void Start()
     {
-        OrbitLine.Destination = Scene.The._3DUIElementsContainer;
+        OrbitLine.Destination = The._3DUIElementsContainer;
 
         
     }
@@ -58,7 +58,7 @@ public class SystemMapObject : MonoBehaviour
 
         material_property_block.SetFloat("PathLength", LineController.Length);
         material_property_block.SetVector("ObjectPosition",
-            Scene.The.Canvas.transform.InverseTransformPoint(transform.position));
+            The.Canvas.transform.InverseTransformPoint(transform.position));
         material_property_block.SetFloat("ObjectSize", VisualSize);
 
         LineController.Line.SetPropertyBlock(material_property_block);

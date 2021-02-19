@@ -28,7 +28,7 @@ public class HohmannTransfer : Navigation.Transfer
                     Mathf.Atan2(departure_position.y, departure_position.x);
 
                 transfer_motion.MeanAnomalyAtEpoch = (float)(2 * Mathf.PI * 
-                    (0 - (Scene.The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
+                    (0 - (The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
                           transfer_motion.Period) % 1));
             }
             else
@@ -40,7 +40,7 @@ public class HohmannTransfer : Navigation.Transfer
                     Mathf.Atan2(-departure_position.y, -departure_position.x);
 
                 transfer_motion.MeanAnomalyAtEpoch = (float)(2 * Mathf.PI * 
-                    (0.5f - (Scene.The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
+                    (0.5f - (The.Clock.DateToSecondsSinceEpoch(DepartureDate) /
                              transfer_motion.Period) % 1));
             }
 

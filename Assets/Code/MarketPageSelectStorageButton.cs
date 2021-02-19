@@ -15,7 +15,7 @@ public class MarketPageSelectStorageButton : Button, MarketPage.Element
         {
             if (UseWarehouse)
                 return this.Market().Station
-                   .GetStorage(Scene.The.SessionUser);
+                   .GetStorage(The.SessionUser);
             else
                 return storage_craft.Cargo;
         }
@@ -36,10 +36,10 @@ public class MarketPageSelectStorageButton : Button, MarketPage.Element
     protected override void OnButtonUp()
     {
         if (UseWarehouse)
-            storage_craft = Scene.The.SessionUser.Crafts.First();
-        else if (storage_craft == Scene.The.SessionUser.Crafts.Last())
+            storage_craft = The.SessionUser.Crafts.First();
+        else if (storage_craft == The.SessionUser.Crafts.Last())
             storage_craft = null;
         else
-            storage_craft = Scene.The.SessionUser.Crafts.NextElement(storage_craft);
+            storage_craft = The.SessionUser.Crafts.NextElement(storage_craft);
     }
 }

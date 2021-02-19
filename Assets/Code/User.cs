@@ -13,14 +13,14 @@ public class User : MonoBehaviour
     {
         get
         {
-            return Scene.The.Banks
+            return The.Banks
                 .SelectMany(bank => bank.BankAccounts
                 .Where(account => account.User == this));
         }
     }
 
     public IEnumerable<Craft> Crafts
-    { get { return Scene.The.Crafts.Where(craft => craft.Item.Owner == this); } }
+    { get { return The.Crafts.Where(craft => craft.Item.Owner == this); } }
 
     private void Start()
     {
@@ -28,7 +28,7 @@ public class User : MonoBehaviour
             PrimaryBankAccount = BankAccounts.First();
         else
             PrimaryBankAccount =
-                Scene.The.DefaultBank.OpenBankAccount(this);
+                The.DefaultBank.OpenBankAccount(this);
     }
 
     private void Update()

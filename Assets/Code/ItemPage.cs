@@ -24,7 +24,7 @@ public class ItemPage : Page
 
     public static ItemPage Create(Item item)
     {
-        ItemPage item_page = GameObject.Instantiate(Scene.The.Prefabs.ItemPage);
+        ItemPage item_page = GameObject.Instantiate(The.Prefabs.ItemPage);
         item_page.Item = item;
 
         return item_page;

@@ -37,7 +37,7 @@ public class SatelliteMotion : Motion
     { get { return SemimajorAxis * (1 + Mathf.Pow(Eccentricity, 2) / 2); } }
 
     public float MeanAnomaly
-    { get { return MeanAnomalyAtDate(Scene.The.Clock.Now); } }
+    { get { return MeanAnomalyAtDate(The.Clock.Now); } }
 
     public float EccentricAnomaly
     { get { return EccentricAnomalyGivenMeanAnomaly(MeanAnomaly); } }
@@ -54,13 +54,13 @@ public class SatelliteMotion : Motion
 
     //Velocity with respect to top level primary
     public Vector3 Velocity
-    { get { return VelocityAtDate(Scene.The.Clock.Now); } }
+    { get { return VelocityAtDate(The.Clock.Now); } }
 
     public float PathLength
     { get { return MathUtility.EllipseCircumference(SemimajorAxis, Eccentricity); } }
 
     public Vector3 Position
-    { get { return PositionAtDate(Scene.The.Clock.Now); } }
+    { get { return PositionAtDate(The.Clock.Now); } }
 
     public List<SatelliteMotion> Hierarchy
     {
@@ -99,7 +99,7 @@ public class SatelliteMotion : Motion
     public float MeanAnomalyAtDate(System.DateTime date)
     {
         return (float)(2 * Mathf.PI *
-               ((Scene.The.Clock.DateToSecondsSinceEpoch(date) / Period) % 1) +
+               ((The.Clock.DateToSecondsSinceEpoch(date) / Period) % 1) +
                MeanAnomalyAtEpoch);
     }
 

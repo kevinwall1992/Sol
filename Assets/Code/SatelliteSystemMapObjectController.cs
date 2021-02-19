@@ -13,16 +13,16 @@ public class SatelliteSystemMapObjectController : MonoBehaviour
 
     public float PositionRealizeSpeed = 16;
 
-    public SystemMap SystemMap { get { return Scene.The.SystemMap; } }
+    public SystemMap SystemMap { get { return The.SystemMap; } }
 
     void Start()
     {
         if(Satellite.Primary != null)
             SystemMapObject.LineController.SamplingFunction = sample =>
-               Scene.The.SystemMap.PhysicalPositionToWorldPosition(
+               The.SystemMap.PhysicalPositionToWorldPosition(
                    Satellite.Primary.Position +
                    Satellite.Motion.LocalPositionGivenTrueAnomaly(sample * 2 * Mathf.PI))
-               .ZChangedTo(Scene.The.Canvas.transform.position.z - 1);
+               .ZChangedTo(The.Canvas.transform.position.z - 1);
     }
 
     void Update()
@@ -37,7 +37,7 @@ public class SatelliteSystemMapObjectController : MonoBehaviour
 
         if (this.IsModulusUpdate(8))
         {
-            Vector3 physical_position = Satellite.Motion.PositionAtDate(Scene.The.Clock.Now);
+            Vector3 physical_position = Satellite.Motion.PositionAtDate(The.Clock.Now);
             target_position = SystemMap.PhysicalPositionToWorldPosition(physical_position);
         }
 
@@ -72,12 +72,12 @@ public class SatelliteSystemMapObjectController : MonoBehaviour
             float smallest_normalized_size;
             if (Satellite.IsNaturalSatellite())
                 smallest_normalized_size =
-                    Scene.The.SystemMap.SmallestNaturalSatelliteVisualSize /
-                    Scene.The.SystemMap.LargestNaturalSatelliteVisualSize;
+                    The.SystemMap.SmallestNaturalSatelliteVisualSize /
+                    The.SystemMap.LargestNaturalSatelliteVisualSize;
             else
                 smallest_normalized_size =
-                    Scene.The.SystemMap.SmallestArtificialSatelliteVisualSize /
-                    Scene.The.SystemMap.LargestArtificialSatelliteVisualSize;
+                    The.SystemMap.SmallestArtificialSatelliteVisualSize /
+                    The.SystemMap.LargestArtificialSatelliteVisualSize;
 
             relative_size =
                 (smallest_normalized_size - 1) *
@@ -88,7 +88,7 @@ public class SatelliteSystemMapObjectController : MonoBehaviour
 
         return relative_size *
                (Satellite.IsNaturalSatellite() ?
-                Scene.The.SystemMap.LargestNaturalSatelliteVisualSize :
-                Scene.The.SystemMap.LargestArtificialSatelliteVisualSize);
+                The.SystemMap.LargestNaturalSatelliteVisualSize :
+                The.SystemMap.LargestArtificialSatelliteVisualSize);
     }
 }

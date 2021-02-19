@@ -80,7 +80,7 @@ public class RingVisualization : MonoBehaviour
 
         if(IsSelected)
         {
-            Ray ray = Scene.The.StationViewer.GetRayFromCursorPosition();
+            Ray ray = The.StationViewer.GetRayFromCursorPosition();
             Vector2 polar_coordinates = PolarCoordinatesFromRay(ray);
 
             Ring.Floor.Wing wing_pointed_at = 

@@ -48,9 +48,9 @@ public class StationVisualization : MonoBehaviour
             ring.Color = Color.green;
         }
 
-        if (Scene.The.StationViewer.RectTransform.IsPointedAt(true))
+        if (The.StationViewer.RectTransform.IsPointedAt(true))
         {
-            Ray ray = Scene.The.StationViewer.GetRayFromCursorPosition();
+            Ray ray = The.StationViewer.GetRayFromCursorPosition();
 
             foreach (RingVisualization ring in RingVisualizations)
             {

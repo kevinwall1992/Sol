@@ -26,18 +26,18 @@ public static class InputUtility
                                                     Vector2Int pixel_position)
     {
         return rect_transform.InverseTransformPoint(
-            Scene.The.Canvas.transform.TransformPoint(
+            The.Canvas.transform.TransformPoint(
                 new Vector3(pixel_position.x, pixel_position.y)));
     }
 
     public static bool IsPixelPositionWithinBounds(this RectTransform rect_transform, 
                                                    Vector2Int pixel_position)
     {
-        Vector2 min = Scene.The.Canvas.transform
+        Vector2 min = The.Canvas.transform
             .InverseTransformPoint(rect_transform
                 .TransformPoint(rect_transform.rect.min));
 
-        Vector2 max = Scene.The.Canvas.transform
+        Vector2 max = The.Canvas.transform
             .InverseTransformPoint(rect_transform
                 .TransformPoint(rect_transform.rect.max));
 
@@ -50,20 +50,20 @@ public static class InputUtility
 
     public static bool IsCursorWithinBounds(this RectTransform rect_transform)
     {
-        return rect_transform.IsPixelPositionWithinBounds(Scene.The.Cursor.PixelPosition);
+        return rect_transform.IsPixelPositionWithinBounds(The.Cursor.PixelPosition);
     }
 
     public static bool IsPointedAt(this RectTransform rect_transform, 
                                    bool perform_bounds_check = false)
     {
-        if (Scene.The.Cursor.CanvasElementsPointedAt == null)
+        if (The.Cursor.CanvasElementsPointedAt == null)
             return false;
 
         if (perform_bounds_check &&
             !rect_transform.IsCursorWithinBounds())
             return false;
 
-        foreach (GameObject game_object in Scene.The.Cursor.CanvasElementsPointedAt)
+        foreach (GameObject game_object in The.Cursor.CanvasElementsPointedAt)
             if (game_object.IsChildOf(rect_transform))
                 return true;
 
@@ -88,10 +88,10 @@ public static class InputUtility
         if (!game_object.IsPointedAt())
             return false;
 
-        if (Scene.The.Cursor.CanvasElementTouched == null)
+        if (The.Cursor.CanvasElementTouched == null)
             return false;
 
-        return Scene.The.Cursor.CanvasElementTouched.IsChildOf(game_object);
+        return The.Cursor.CanvasElementTouched.IsChildOf(game_object);
     }
 
     public static bool IsTouched(this MonoBehaviour mono_behaviour)

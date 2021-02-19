@@ -48,10 +48,10 @@ public class People : User.Script
     private void Update()
     {
         float days_since_last_meeting =
-            (float)(Scene.The.Clock.Now - last_purchase_date).TotalDays;
+            (float)(The.Clock.Now - last_purchase_date).TotalDays;
         if (days_since_last_meeting < DaysBetweenMeetings)
             return;
-        last_purchase_date = Scene.The.Clock.Now;
+        last_purchase_date = The.Clock.Now;
 
 
         //Get paid

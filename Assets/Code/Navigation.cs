@@ -56,7 +56,7 @@ public class Navigation : Craft.Part
     protected void Update()
     {
         if (NextManeuver != null &&
-            Scene.The.Clock.Now > NextManeuver.Date)
+            The.Clock.Now > NextManeuver.Date)
         {
             if (maneuvers_completed_in_transfer == 0)
             {

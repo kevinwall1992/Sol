@@ -31,7 +31,7 @@ public class MarketPageTransactButton : Button, MarketPage.Element
         }
         else if (TransactionPanel.IsPurchase)
         {
-            if (Scene.The.SessionUser.PrimaryBankAccount.Balance <
+            if (The.SessionUser.PrimaryBankAccount.Balance <
                 TransactionPanel.TransactionCreditValue)
                 ErrorText.text = "Insufficient Credits";
             else if (!TransactionPanel.Storage.CanFit(TransactionPanel.Item,
@@ -79,7 +79,7 @@ public class MarketPageTransactButton : Button, MarketPage.Element
         {
             if (TransactionPanel.IsPurchase)
                 this.Market().PostOffer(new PurchaseOffer(
-                    Scene.The.SessionUser,
+                    The.SessionUser,
                     TransactionPanel.Storage,
                     TransactionPanel.Item,
                     TransactionPanel.Quantity,
@@ -87,7 +87,7 @@ public class MarketPageTransactButton : Button, MarketPage.Element
             else
             {
                 this.Market().PostOffer(new SaleOffer(
-                    Scene.The.SessionUser,
+                    The.SessionUser,
                     TransactionPanel.Storage,
                     TransactionPanel.Item,
                     TransactionPanel.Quantity,
@@ -98,14 +98,14 @@ public class MarketPageTransactButton : Button, MarketPage.Element
         {
             if (TransactionPanel.IsPurchase)
                 this.Market().Purchase(
-                    Scene.The.SessionUser,
+                    The.SessionUser,
                     TransactionPanel.Storage,
                     TransactionPanel.Item.Name,
                     TransactionPanel.Quantity);
             else
             {
                 this.Market().Sell(
-                    Scene.The.SessionUser, 
+                    The.SessionUser, 
                     TransactionPanel.Storage, 
                     TransactionPanel.Item.Name, 
                     TransactionPanel.Quantity);

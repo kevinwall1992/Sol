@@ -32,7 +32,7 @@ public class PostProcess : MonoBehaviour
 
     void Start()
     {
-        input = new RenderTexture(Scene.The.Style.MonitorResolution.x, Scene.The.Style.MonitorResolution.y, 24);
+        input = new RenderTexture(The.Style.MonitorResolution.x, The.Style.MonitorResolution.y, 24);
         diverged = new RenderTexture(input);
 
         scanline_blurred = new RenderTexture(input);
@@ -85,8 +85,8 @@ public class PostProcess : MonoBehaviour
 
 
         //Slow pixels
-        Pixelize.SetInt("MonitorResolutionX", Scene.The.Style.MonitorResolution.x);
-        Pixelize.SetInt("MonitorResolutionY", Scene.The.Style.MonitorResolution.y);
+        Pixelize.SetInt("MonitorResolutionX", The.Style.MonitorResolution.x);
+        Pixelize.SetInt("MonitorResolutionY", The.Style.MonitorResolution.y);
         if (UnityEditor.EditorApplication.isPlaying)
         {
             RenderTexture previous_response = response1;
@@ -125,8 +125,8 @@ public class PostProcess : MonoBehaviour
 
         //Add it all together
         //(Also handles effect of light reflecting off screen substrate)
-        Synthesize.SetInt("MonitorResolutionX", Scene.The.Style.MonitorResolution.x);
-        Synthesize.SetInt("MonitorResolutionY", Scene.The.Style.MonitorResolution.y);
+        Synthesize.SetInt("MonitorResolutionX", The.Style.MonitorResolution.x);
+        Synthesize.SetInt("MonitorResolutionY", The.Style.MonitorResolution.y);
         Synthesize.SetFloat("relative_image_size", 
                             Pixelize.GetFloat("RelativeImageSize"));
 

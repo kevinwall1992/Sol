@@ -23,7 +23,7 @@ public class Taskbar : UIElement
         IEnumerable<Window> windows_with_taskbar_elements = 
             TaskbarElements.Select(taskbar_element => taskbar_element.Window);
 
-        foreach (Window window in Scene.The.WindowContainer.Windows)
+        foreach (Window window in The.WindowContainer.Windows)
             if (window.IsOpen && !windows_with_taskbar_elements.Contains(window))
                 TaskbarElement.Create(window).transform.SetParent(TaskbarElementsContainer, false);
 

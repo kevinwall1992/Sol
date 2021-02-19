@@ -44,7 +44,7 @@ public class SchedulePanel : MonoBehaviour, TransportCraftPanel.Element
             if (i < navigation.Transfers.Count)
                 transfer = navigation.Transfers[i];
 
-            if (transfer != null && transfer.ArrivalDate < Scene.The.Clock.Now)
+            if (transfer != null && transfer.ArrivalDate < The.Clock.Now)
                 continue;
 
             ScheduleElement element = GameObject.Instantiate(ScheduleElementPrefab);

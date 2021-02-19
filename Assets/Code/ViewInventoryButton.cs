@@ -5,7 +5,7 @@ public class ViewInventoryButton : Button, TransportCraftPanel.Element
 {
     protected override void OnButtonUp()
     {
-        Scene.The.CraftInventoryPage.Craft = this.TransportCraftPanel().Craft;
-        Scene.The.CraftInventoryPage.InventoryPage.Window.Open();
+        The.CraftInventoryPage.Craft = this.TransportCraftPanel().Craft;
+        The.CraftInventoryPage.InventoryPage.Window.Open();
     }
 }

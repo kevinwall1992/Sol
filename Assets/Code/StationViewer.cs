@@ -30,12 +30,12 @@ public class StationViewer : Page
                 StationVisualization.Camera.Camera.targetTexture.height);
 
         Vector2 image_pixel_pointed_at =
-            Scene.The.StationViewer.Image.rectTransform
-                .PixelPositionToLocalPosition(Scene.The.Cursor.PixelPointedAt);
+            The.StationViewer.Image.rectTransform
+                .PixelPositionToLocalPosition(The.Cursor.PixelPointedAt);
 
         Vector2 normalized_image_position =
             image_pixel_pointed_at /
-            Scene.The.StationViewer.Image.rectTransform.rect.size;
+            The.StationViewer.Image.rectTransform.rect.size;
 
         Vector2Int texture_pixel_pointed_at =
             (texture_size * normalized_image_position).Round();

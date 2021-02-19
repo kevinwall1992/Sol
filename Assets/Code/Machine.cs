@@ -30,7 +30,7 @@ public class Machine : Item.Script
 
         float cycles = Item.Quantity *
                        CyclesPerSecond *
-                       Scene.The.Clock.DeltaTime;
+                       The.Clock.DeltaTime;
 
         cycles = Mathf.Min(cycles, 
             Recipe.Inputs.Min(pair => Storage.GetQuantity(pair.Key) /

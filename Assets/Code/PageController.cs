@@ -27,15 +27,15 @@ public class PageController : MonoBehaviour
 
         if(AutomaticPreviewSize)
             Preview.sizeDelta =
-                Scene.The.Style.MonitorResolution -
-                new Vector2Int(HalfWindowPreview ? Scene.The.Style.MonitorResolution.x / 2 : 0, 0) -
-                new Vector2Int(2, 1) * Scene.The.Style.StandardEdgeThickness -
-                new Vector2Int(0, Scene.The.Prefabs.Window.DefaultTitleBarHeight) -
-                new Vector2Int(0, Scene.The.Taskbar.Height);
+                The.Style.MonitorResolution -
+                new Vector2Int(HalfWindowPreview ? The.Style.MonitorResolution.x / 2 : 0, 0) -
+                new Vector2Int(2, 1) * The.Style.StandardEdgeThickness -
+                new Vector2Int(0, The.Prefabs.Window.DefaultTitleBarHeight) -
+                new Vector2Int(0, The.Taskbar.Height);
 
         PreviewBackground.color = 
             UnityEditor.EditorApplication.isPlaying ? 
             Color.clear : 
-            Scene.The.Prefabs.Window.DefaultBackgroundColor;
+            The.Prefabs.Window.DefaultBackgroundColor;
     }
 }

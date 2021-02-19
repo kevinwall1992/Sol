@@ -95,7 +95,7 @@ public class RefuelBar : UIElement
             TargetFuelMass = 
                 ProgressBar.MaximumValue *
                 RectTransform.PixelPositionToLocalPosition(
-                    Scene.The.Cursor.PixelPointedAt).x / 
+                    The.Cursor.PixelPointedAt).x / 
                 RectTransform.rect.width;
         }
     }

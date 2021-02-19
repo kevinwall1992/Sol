@@ -21,8 +21,8 @@ public class InventoryPage : Page
     {
         if(ItemPanel.SelectedItem != null)
         {
-            Scene.The.ItemPage.Item = ItemPanel.SelectedItem;
-            Scene.The.ItemPage.Window.Open();
+            The.ItemPage.Item = ItemPanel.SelectedItem;
+            The.ItemPage.Window.Open();
             ItemPanel.SelectedItem = null;
         }
     }

@@ -82,7 +82,7 @@ public class SystemMap : Page
             last_focused_object = Root;
 
 
-        RectTransform canvas_transform = Scene.The.Canvas.transform as RectTransform;
+        RectTransform canvas_transform = The.Canvas.transform as RectTransform;
         Vector2 screen_space_min = canvas_transform
             .InverseTransformPoint(RectTransform
             .TransformPoint(RectTransform.rect.min)).XY();

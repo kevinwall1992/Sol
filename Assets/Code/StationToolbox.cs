@@ -27,7 +27,7 @@ public class StationToolbox : Page
                                (Mathf.Abs(Grid.Stride.y) + Grid.Margin) + 
                                Grid.Margin;
 
-        int edge_thickness = Scene.The.Style.StandardEdgeThickness;
+        int edge_thickness = The.Style.StandardEdgeThickness;
 
         Window.natural_size =
             new Vector2Int(edge_thickness * 2,

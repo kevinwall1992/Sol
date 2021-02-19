@@ -14,10 +14,10 @@ public class Dragger : UIElement
             InputUtility.WasMouseLeftReleased)
         {
             IsBeingDragged = true;
-            grab_offset = Scene.The.Canvas.transform.InverseTransformPoint(transform.position) - Scene.The.Cursor.transform.position;
+            grab_offset = The.Canvas.transform.InverseTransformPoint(transform.position) - The.Cursor.transform.position;
         }
 
         if (IsBeingDragged)
-            transform.position = Scene.The.Cursor.PixelPointedAt + grab_offset;
+            transform.position = The.Cursor.PixelPointedAt + grab_offset;
     }
 }

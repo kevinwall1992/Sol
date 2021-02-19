@@ -74,7 +74,7 @@ public class Window : UIElement
     { get { return transform.Children().SelectComponents<Window>(); } }
 
     public WindowContainer WindowContainer
-    { get { return Scene.The.WindowContainer; } }
+    { get { return The.WindowContainer; } }
 
     private void Start()
     {
@@ -93,7 +93,7 @@ public class Window : UIElement
             return;
 
         if (WindowContainer == null)
-            Scene.The.WindowContainer.AddWindow(this);
+            The.WindowContainer.AddWindow(this);
 
         if (!IsOpen)
         {
@@ -135,19 +135,19 @@ public class Window : UIElement
         switch (resize_grab_type)
         {
             case ResizeGrabType.Left:
-                Scene.The.Cursor.ChangeCursorImage(Scene.The.Cursor.LeftHorizontalResizeImage);
+                The.Cursor.ChangeCursorImage(The.Cursor.LeftHorizontalResizeImage);
                 break;
             case ResizeGrabType.Right:
-                Scene.The.Cursor.ChangeCursorImage(Scene.The.Cursor.RightHorizontalResizeImage);
+                The.Cursor.ChangeCursorImage(The.Cursor.RightHorizontalResizeImage);
                 break;
             case ResizeGrabType.BottomLeft:
-                Scene.The.Cursor.ChangeCursorImage(Scene.The.Cursor.PositiveDiagonalResizeImage);
+                The.Cursor.ChangeCursorImage(The.Cursor.PositiveDiagonalResizeImage);
                 break;
             case ResizeGrabType.BottomRight:
-                Scene.The.Cursor.ChangeCursorImage(Scene.The.Cursor.NegativeDiagonalResizeImage);
+                The.Cursor.ChangeCursorImage(The.Cursor.NegativeDiagonalResizeImage);
                 break;
             case ResizeGrabType.Bottom:
-                Scene.The.Cursor.ChangeCursorImage(Scene.The.Cursor.VerticalResizeImage);
+                The.Cursor.ChangeCursorImage(The.Cursor.VerticalResizeImage);
                 break;
         }
 
@@ -156,7 +156,7 @@ public class Window : UIElement
         {
             IsGrabbed = true;
 
-            grab_offset = PixelPosition - Scene.The.Cursor.PixelPointedAt;
+            grab_offset = PixelPosition - The.Cursor.PixelPointedAt;
         }
         if (IsGrabbed && InputUtility.WasMouseLeftReleased)
             IsGrabbed = false;
@@ -165,7 +165,7 @@ public class Window : UIElement
         {
             if (resize_grab_type == ResizeGrabType.None)
             {
-                Vector2Int new_position = Scene.The.Cursor.PixelPointedAt + grab_offset;
+                Vector2Int new_position = The.Cursor.PixelPointedAt + grab_offset;
                 if (new_position != PixelPosition)
                     IsMaximized = false;
 
@@ -178,7 +178,7 @@ public class Window : UIElement
 
                 int top_edge_height = natural_position.y + natural_size.y;
 
-                Vector2Int displaced_position = Scene.The.Cursor.PixelPointedAt;
+                Vector2Int displaced_position = The.Cursor.PixelPointedAt;
                 Vector2Int displacement = displaced_position - natural_position;
 
                 if ((resize_grab_type == ResizeGrabType.Left || 
@@ -210,10 +210,10 @@ public class Window : UIElement
         if (IsMaximized)
         {
             RectTransform.sizeDelta =
-                new Vector2(Scene.The.Style.MonitorResolution.x,
-                            Scene.The.Style.MonitorResolution.y - Scene.The.Taskbar.Height);
+                new Vector2(The.Style.MonitorResolution.x,
+                            The.Style.MonitorResolution.y - The.Taskbar.Height);
 
-            RectTransform.anchoredPosition = new Vector2(0, Scene.The.Taskbar.Height);
+            RectTransform.anchoredPosition = new Vector2(0, The.Taskbar.Height);
         }
         else
         {
@@ -306,8 +306,8 @@ public class Window : UIElement
 
     public static Window Create()
     {
-        Window window = GameObject.Instantiate(Scene.The.Prefabs.Window);
-        Scene.The.WindowContainer.AddWindow(window);
+        Window window = GameObject.Instantiate(The.Prefabs.Window);
+        The.WindowContainer.AddWindow(window);
 
         return window;
     }

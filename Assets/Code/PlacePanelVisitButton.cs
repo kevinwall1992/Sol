@@ -64,7 +64,7 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
     protected override void OnButtonUp()
     {
         if (IsUserChoosingDestination())
-            Scene.The.SystemMap.TransportCraftPanel.SchedulePanel
+            The.SystemMap.TransportCraftPanel.SchedulePanel
                 .AddStop(this.PlacePanel().Place);
     }
 
@@ -84,7 +84,7 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
 
     bool IsUserChoosingDestination()
     {
-        return Scene.The.SystemMap.TransportCraftPanel.SchedulePanel
+        return The.SystemMap.TransportCraftPanel.SchedulePanel
             .IsUserChoosingDestination;
     }
 
@@ -94,6 +94,6 @@ public class PlacePanelVisitButton : Button, PlacePanel.Element
             return false;
 
         return this.PlacePanel().Place
-            .IsWelcome(Scene.The.SystemMap.TransportCraftPanel.Craft);
+            .IsWelcome(The.SystemMap.TransportCraftPanel.Craft);
     }
 }

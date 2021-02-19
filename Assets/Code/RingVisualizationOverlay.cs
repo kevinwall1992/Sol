@@ -10,7 +10,7 @@ public class RingVisualizationOverlay : MonoBehaviour
     public float DegreesPerSample = 5;
 
     public RingVisualization RingVisualization
-    { get { return Scene.The.StationViewer.StationVisualization.SelectedRing; } }
+    { get { return The.StationViewer.StationVisualization.SelectedRing; } }
 
     public LineRenderer LineRenderer
     { get { return GetComponent<LineRenderer>(); } }

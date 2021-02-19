@@ -34,24 +34,24 @@ public class Cursor : UIElement
 
         ChangeCursorImage(DefaultImage);
 
-        RectTransform.anchoredPosition = Scene.The.Style.MonitorResolution * 
+        RectTransform.anchoredPosition = The.Style.MonitorResolution * 
                                          Input.mousePosition.XY() / 
                                          new Vector2(Screen.width, Screen.height);
 
         RectTransform.anchoredPosition = 
             new Vector2(Mathf.Min(Mathf.Max(RectTransform.anchoredPosition.x, 0), 
-                                  Scene.The.Style.MonitorResolution.x), 
+                                  The.Style.MonitorResolution.x), 
                         Mathf.Min(Mathf.Max(RectTransform.anchoredPosition.y, 0), 
-                                  Scene.The.Style.MonitorResolution.y));
+                                  The.Style.MonitorResolution.y));
 
         CanvasGroup.alpha = IsVisible ? 1 : 0;
 
 
 
-        CanvasElementsPointedAt = Scene.The.Canvas.GetComponentsInChildren<RectTransform>()
+        CanvasElementsPointedAt = The.Canvas.GetComponentsInChildren<RectTransform>()
             .Where(rect_transform => rect_transform.Contains(
                 PixelPointedAt + new Vector2(0.5f, -0.5f),
-                Scene.The.UICamera))
+                The.UICamera))
             .Select(rect_transform => rect_transform.gameObject).ToList();
                
         
@@ -59,7 +59,7 @@ public class Cursor : UIElement
         pointer_event_data.position = PixelPointedAt + new Vector2(0.5f, -0.5f);
 
         List<RaycastResult> raycast_results = new List<RaycastResult>();
-        Scene.The.GraphicRaycaster.Raycast(pointer_event_data, raycast_results);
+        The.GraphicRaycaster.Raycast(pointer_event_data, raycast_results);
 
         if (raycast_results.Count == 0)
             CanvasElementTouched = null;

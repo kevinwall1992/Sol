@@ -37,7 +37,7 @@ public class ScheduleElement : UIElement, TransportCraftPanel.Element
     {
         get
         {
-            System.DateTime arrival_date = Scene.The.Clock.Now;
+            System.DateTime arrival_date = The.Clock.Now;
 
             if (ArrivalTransfer != null && ArrivalTransfer.ArrivalDate > arrival_date)
                 arrival_date = ArrivalTransfer.ArrivalDate;
@@ -51,7 +51,7 @@ public class ScheduleElement : UIElement, TransportCraftPanel.Element
         get
         {
             if (IsInTransit)
-                return Scene.The.Clock.Now;
+                return The.Clock.Now;
 
             return DepartureTransfer.DepartureDate;
         }
@@ -93,7 +93,7 @@ public class ScheduleElement : UIElement, TransportCraftPanel.Element
         get
         {
             return DepartureTransfer != null && 
-                   DepartureTransfer.DepartureDate < Scene.The.Clock.Now;
+                   DepartureTransfer.DepartureDate < The.Clock.Now;
         }
     }
 

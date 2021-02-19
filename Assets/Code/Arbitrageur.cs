@@ -69,7 +69,7 @@ public class Arbitrageur : User.Script
     Plan GetPlan(Craft craft, Market here)
     {
         IEnumerable<Market> markets =
-            Scene.The.Stations.Select(station => station.OfficialMarket)
+            The.Stations.Select(station => station.OfficialMarket)
             .Where(market => market != here);
 
         Dictionary<string, float> owned_quantities = craft.Cargo.Items
@@ -238,7 +238,7 @@ public class Arbitrageur : User.Script
     {
         return new InterplanetaryTransfer(craft.Motion,
                                           market.Station.GetVisitingMotion(craft),
-                                          Scene.The.Clock.Now);
+                                          The.Clock.Now);
     }
 
 

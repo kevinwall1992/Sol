@@ -14,7 +14,7 @@ public class Manufacturer : User.Script
     {
         get
         {
-            return Scene.The.Stations
+            return The.Stations
                 .Select(station => GetManufacturingStorage(station))
                 .SelectMany(storage => storage.Items)
                 .SelectComponents<Item, Machine>();
@@ -24,10 +24,10 @@ public class Manufacturer : User.Script
     private void Update()
     {
         float days_since_last_meeting = 
-            (float)(Scene.The.Clock.Now - last_purchase_date).TotalDays;
+            (float)(The.Clock.Now - last_purchase_date).TotalDays;
         if (days_since_last_meeting < DaysBetweenMeetings)
             return;
-        last_purchase_date = Scene.The.Clock.Now;
+        last_purchase_date = The.Clock.Now;
 
         SellGoods();
         SellMachines();
@@ -39,7 +39,7 @@ public class Manufacturer : User.Script
 
     void SellGoods()
     {
-        foreach (Station station in Scene.The.Stations)
+        foreach (Station station in The.Stations)
         {
             Storage storage = GetManufacturingStorage(station);
 
@@ -130,7 +130,7 @@ public class Manufacturer : User.Script
             Machine best_machine = null;
             float best_roi_per_day = 0;
 
-            foreach (Station station in Scene.The.Stations)
+            foreach (Station station in The.Stations)
             {
                 if (station.GetRooms(User).Count() == 0)
                     continue;
@@ -172,7 +172,7 @@ public class Manufacturer : User.Script
                           purchase_quantity);
         }
 
-        foreach(Station station in Scene.The.Stations)
+        foreach(Station station in The.Stations)
             GetManufacturingStorage(station)
                 .TouchItems(item => item.GetComponent<Machine>().IsOn = true,
                             item => item.HasComponent<Machine>());
