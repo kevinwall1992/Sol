@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-public class PostProcess : MonoBehaviour
+public class ScreenPostProcess : MonoBehaviour
 {
     RenderTexture input, 
                   diverged, 

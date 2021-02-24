@@ -73,7 +73,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - AmbientWeight: 0.08
-    - BlankScreenWeight: 0.06
+    - BlankScreenWeight: 0.02
     - DiffusedWeight: 0.28
     - PixelizedWeight: 1
     - _BumpScale: 1
