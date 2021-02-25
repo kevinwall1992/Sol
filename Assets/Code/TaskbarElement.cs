@@ -3,16 +3,11 @@ using System.Collections;
 using UnityEngine.UI;
 
 [ExecuteAlways]
-public class TaskbarElement : UIElement
+public class TaskbarElement : Button.Script
 {
     public TMPro.TextMeshProUGUI TitleText;
 
     public Window Window { get; private set; }
-
-    void Start()
-    {
-
-    }
 
     void Update()
     {
@@ -30,16 +25,16 @@ public class TaskbarElement : UIElement
         }
 
         TitleText.text = Window.TitleText.text;
+    }
 
-        if (InputUtility.WasMouseLeftReleased && this.IsTouched())
+    protected override void OnButtonUp()
+    {
+        if (!Window.IsMinimized && Window.IsTopmost)
+            Window.IsMinimized = true;
+        else
         {
-            if (!Window.IsMinimized && Window.IsTopmost)
-                Window.IsMinimized = true;
-            else
-            {
-                Window.IsMinimized = false;
-                Window.MoveToFront();
-            }
+            Window.IsMinimized = false;
+            Window.MoveToFront();
         }
     }
 

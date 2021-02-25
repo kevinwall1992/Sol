@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1922565421592459733}
   - component: {fileID: 3449267095721261324}
+  - component: {fileID: 8072977720163333893}
+  - component: {fileID: 8538551160193259500}
   m_Layer: 8
   m_Name: TaskbarElement
   m_TagString: Untagged
@@ -52,6 +54,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TitleText: {fileID: 3259939901290799929}
   DefaultWidth: 80
+--- !u!114 &8072977720163333893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922565421592459732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c079174705b7b9447b6b63d6b1ca43e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8538551160193259500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922565421592459732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14b050b393e79fa4da0cf84d4710c76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RestSprite: {fileID: 0}
+  RestColor: {r: 0, g: 0, b: 0, a: 0}
+  Image: {fileID: 1922565422843519521}
+  TouchSprite: {fileID: 0}
+  DownSprite: {fileID: 0}
+  TouchColor: {r: 0.8301887, g: 0.7399723, b: 0, a: 1}
+  DownColor: {r: 0.6037736, g: 0.5466123, b: 0.0768957, a: 1}
 --- !u!1 &1922565422843519527
 GameObject:
   m_ObjectHideFlags: 0
