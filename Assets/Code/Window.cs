@@ -89,7 +89,7 @@ public class Window : UIElement
 
         TitleText.text = FrontPage.Title;
 
-        if (!UnityEditor.EditorApplication.isPlaying)
+        if (!Application.isPlaying)
             return;
 
         if (WindowContainer == null)

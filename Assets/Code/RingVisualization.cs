@@ -251,7 +251,7 @@ public class RingVisualization : MonoBehaviour
 
     void UpdateWingColors()
     {
-        if (!UnityEditor.EditorApplication.isPlaying)
+        if (!Application.isPlaying)
             return;
 
         if (wing_colors_texture == null || 

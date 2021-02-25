@@ -14,7 +14,7 @@ public class MaintainAnchoredPosition : UIElement
 
     private void Update()
     {
-        if (UnityEditor.EditorApplication.isPlaying)
+        if (Application.isPlaying)
             Modifiable = false;
 
         if (Modifiable)

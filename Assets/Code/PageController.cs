@@ -16,11 +16,11 @@ public class PageController : MonoBehaviour
     void Update()
     {
         Tools.gameObject.SetActive(
-            !UnityEditor.EditorApplication.isPlaying &&
+            !Application.isPlaying &&
             !HideTools);
 
         Wrapper.transform.SetParent(
-            UnityEditor.EditorApplication.isPlaying ?
+            Application.isPlaying ?
             transform :
             Preview,
             false);
@@ -34,7 +34,7 @@ public class PageController : MonoBehaviour
                 new Vector2Int(0, The.Taskbar.Height);
 
         PreviewBackground.color = 
-            UnityEditor.EditorApplication.isPlaying ? 
+            Application.isPlaying ? 
             Color.clear : 
             The.Prefabs.Window.DefaultBackgroundColor;
     }

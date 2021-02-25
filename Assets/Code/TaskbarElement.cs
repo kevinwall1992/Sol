@@ -19,7 +19,7 @@ public class TaskbarElement : UIElement
         RectTransform.sizeDelta = new Vector2(DefaultWidth, 
                                               The.Taskbar.Height - 4);
 
-        if (!UnityEditor.EditorApplication.isPlaying)
+        if (!Application.isPlaying)
             return;
 
 

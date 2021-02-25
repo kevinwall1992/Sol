@@ -87,7 +87,7 @@ public class ScreenPostProcess : MonoBehaviour
         //Slow pixels
         Pixelize.SetInt("MonitorResolutionX", The.Style.MonitorResolution.x);
         Pixelize.SetInt("MonitorResolutionY", The.Style.MonitorResolution.y);
-        if (UnityEditor.EditorApplication.isPlaying)
+        if (Application.isPlaying)
         {
             RenderTexture previous_response = response1;
             RenderTexture response = response0;

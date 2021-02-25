@@ -62,7 +62,7 @@ public class ItemCollectionPanel : MonoBehaviour
 
     private void Start()
     {
-        if (!UnityEditor.EditorApplication.isPlaying)
+        if (!Application.isPlaying)
             return;
 
         ClearElements();
@@ -84,7 +84,7 @@ public class ItemCollectionPanel : MonoBehaviour
         else
             Grid.Margin = LineMargin;
 
-        if (!UnityEditor.EditorApplication.isPlaying)
+        if (!Application.isPlaying)
             return;
 
         ValidateElements(); 
