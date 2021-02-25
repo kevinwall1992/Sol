@@ -115,7 +115,7 @@
 					//Saturation
 
 					float sample_intensity = GetIntensity(sample_color);
-					sample_color = lerp(sample_color / sample_intensity,
+					sample_color = lerp(sample_color / (sample_intensity + 0.001),
 										float4(1, 1, 1, 1), 
 										1 - Saturation) * 
 								   sample_intensity;
@@ -188,7 +188,7 @@
 				float adjusted_intensity = min(intensity, max_intensity);
 
 				return float4((
-					total_light / intensity * 
+					total_light / (intensity + 0.001) * 
 					adjusted_intensity * 
 					Brightness).rgb, 1);
 			}
