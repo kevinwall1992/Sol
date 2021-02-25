@@ -87,7 +87,8 @@ public class ItemCollectionPanel : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
-        ValidateElements(); 
+        if(Items != null)
+            ValidateElements(); 
     }
 
     void ClearElements()

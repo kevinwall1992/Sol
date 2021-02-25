@@ -14,12 +14,15 @@ public class InventoryPage : Page
 
     private void Start()
     {
-        ItemPanel.Items = Storage.Items;
+        
     }
 
     private void Update()
     {
-        if(ItemPanel.SelectedItem != null)
+        if(ItemPanel.Items == null)
+            ItemPanel.Items = Storage.Items;
+
+        if (ItemPanel.SelectedItem != null)
         {
             The.ItemPage.Item = ItemPanel.SelectedItem;
             The.ItemPage.Window.Open();
