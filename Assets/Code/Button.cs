@@ -78,11 +78,6 @@ public class Button : UIElement
     [RequireComponent(typeof(Button))]
     public abstract class Script : UIElement
     {
-        public Image Image;
-        public Sprite TouchSprite, DownSprite;
-        public Color TouchColor = Color.white,
-                     DownColor = Color.white;
-
         public Button Button { get { return GetComponent<Button>(); } }
 
         public bool IsDown { get { return Button.IsDown; } }
