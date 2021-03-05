@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3700422094337225897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4778131961139859881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecbb895d96dc7d3459040da587b0e4db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SessionsPerYear: 24
 --- !u!114 &3235853077249315939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28,7 +41,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AverageIncomePerYear: 40000
-  MeetingsPerYear: 52
   ItemNeeds:
   - ItemName: Food
     MinimumConsumption: 1
@@ -42,6 +54,7 @@ MonoBehaviour:
     MaximumConsumption: 3
     MaximumDeathRate: 0.99
     MaximumGrowthRate: 0.005
+  ShoppingTrip: {fileID: -3700422094337225897}
 --- !u!114 &9127679759269588967
 MonoBehaviour:
   m_ObjectHideFlags: 0

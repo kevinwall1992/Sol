@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Arbitrageur : User.Script
+public class Arbitrageur : Division
 {
     public IEnumerable<Craft> TransportCrafts
     { get { return User.Crafts.Where(craft => craft.HasNavigation); } }

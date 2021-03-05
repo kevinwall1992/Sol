@@ -6,16 +6,14 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(PhysicalItem))]
 [RequireComponent(typeof(PerishableItem))]
+
 public class People : User.Script
 {
-    System.DateTime last_purchase_date = System.DateTime.MinValue;
-
     public float AverageIncomePerYear;
 
-    public float MeetingsPerYear;
-    public float DaysBetweenMeetings { get { return 365 / MeetingsPerYear; } }
-
     public List<ItemNeed> ItemNeeds = new List<ItemNeed>();
+
+    public Meeting ShoppingTrip;
 
     public float Population
     {
@@ -42,21 +40,19 @@ public class People : User.Script
 
     private void Start()
     {
-        
+        ShoppingTrip.AddTask(Live);
     }
 
     private void Update()
     {
-        float days_since_last_meeting =
-            (float)(The.Clock.Now - last_purchase_date).TotalDays;
-        if (days_since_last_meeting < DaysBetweenMeetings)
-            return;
-        last_purchase_date = The.Clock.Now;
+        
+    }
 
-
+    void Live()
+    {
         //Get paid
 
-        User.PrimaryBankAccount.Deposit((DaysBetweenMeetings / 365) * 
+        User.PrimaryBankAccount.Deposit((ShoppingTrip.DaysBetweenSessions / 365) * 
                                         AverageIncomePerYear * 
                                         Population);
 
@@ -135,10 +131,10 @@ public class People : User.Script
 
         float growth_rate_per_meeting = 
             Mathf.Pow(1 + growth_rate * growth_rate_modifier, 
-                      1.0f / MeetingsPerYear) - 1;
+                      1.0f / ShoppingTrip.SessionsPerYear) - 1;
 
         float death_rate_per_meeting = 
-            1 - Mathf.Pow(1 - death_rate, 1.0f / MeetingsPerYear);
+            1 - Mathf.Pow(1 - death_rate, 1.0f / ShoppingTrip.SessionsPerYear);
 
         return Population *
                (growth_rate_per_meeting  - death_rate_per_meeting);
@@ -184,13 +180,13 @@ public class People : User.Script
         {
             GetFulfillment = 
                 people => people.Storage.GetQuantity(ItemName) / 
-                          (people.Population * people.DaysBetweenMeetings);
+                          (people.Population * people.ShoppingTrip.DaysBetweenSessions);
 
             GetMarginalFulfillment = 
                 (people, credits) => 
                 people.Item.Station().OfficialMarket
                     .GetPurchaseQuantity(ItemName, credits) /
-                    (people.Population * people.DaysBetweenMeetings);
+                    (people.Population * people.ShoppingTrip.DaysBetweenSessions);
 
             FulfillmentToGrowthRateModifier = 
             delegate (float quantity)

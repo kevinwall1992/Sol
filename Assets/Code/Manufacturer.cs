@@ -3,13 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Manufacturer : User.Script
+public class Manufacturer : Division
 {
-    System.DateTime last_purchase_date = System.DateTime.MinValue;
-
-    public float MeetingsPerYear;
-    public float DaysBetweenMeetings { get { return 365 / MeetingsPerYear; } }
-
     public IEnumerable<Machine> Machines
     {
         get
@@ -21,14 +16,8 @@ public class Manufacturer : User.Script
         }
     }
 
-    private void Update()
+    protected override void ConductBusiness()
     {
-        float days_since_last_meeting = 
-            (float)(The.Clock.Now - last_purchase_date).TotalDays;
-        if (days_since_last_meeting < DaysBetweenMeetings)
-            return;
-        last_purchase_date = The.Clock.Now;
-
         SellGoods();
         SellMachines();
 
@@ -97,7 +86,7 @@ public class Manufacturer : User.Script
                 float target_quantity = machine.Recipe.Inputs[input_name] *
                                     machine.CyclesPerDay *
                                     storage.GetQuantity(machine.Item.Name) * 
-                                    DaysBetweenMeetings;
+                                    Meeting.DaysBetweenSessions;
 
                 float purchase_quantity = target_quantity - quantity;
 
@@ -187,8 +176,9 @@ public class Manufacturer : User.Script
                                      machine.CyclesPerDay;
 
             input_costs_per_day += station.OfficialMarket
-                .GetPurchaseCost(input_name, quantity_per_day * DaysBetweenMeetings) / 
-                DaysBetweenMeetings;
+                .GetPurchaseCost(input_name, quantity_per_day * 
+                                             Meeting.DaysBetweenSessions) / 
+                Meeting.DaysBetweenSessions;
         }
 
         float electricity_costs_per_day = 0;
