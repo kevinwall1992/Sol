@@ -90,6 +90,9 @@ public static class ItemExtensions
     public static Item RemoveMass(this Item item, float mass_removed)
     { return item.RemoveQuantity(mass_removed / item.Physical().MassPerUnit); }
 
+    public static float GetMassPerUnit(this Item item)
+    { return item.Physical().MassPerUnit; }
+
     public static float Volume(this Item item)
     { return item.Physical().Volume; }
 
@@ -98,6 +101,9 @@ public static class ItemExtensions
 
     public static float SetVolume(this Item item, float volume)
     { return item.Physical().Volume = volume; }
+
+    public static float GetVolumePerUnit(this Item item)
+    { return item.Physical().VolumePerUnit; }
 
     public static float Temperature(this Item item)
     { return item.Physical().Temperature; }

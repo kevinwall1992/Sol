@@ -19,7 +19,7 @@ public static class Utility
         List<T> list = new List<T>();
 
         T next = first;
-        while(next != null)
+        while (next != null)
         {
             list.Add(next);
 
@@ -53,6 +53,11 @@ public static class Utility
         }
 
         return dictionary;
+    }
+
+    public static Dictionary<T, U> ToDictionary<T, U>(this IEnumerable<Tuple<T, U>> tuples)
+    {
+        return tuples.ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
     }
 
     public static List<T> CreateNullList<T>(int size) where T : class
@@ -128,7 +133,7 @@ public static class Utility
         return element;
     }
 
-    public static List<T> GetRange_NoExcuses<T>(this List<T> list, int index, int count = -1)
+    public static List<T> GetRangeOrGetClose<T>(this List<T> list, int index, int count = -1)
     {
         if (index < 0)
             index = 0;
@@ -187,14 +192,6 @@ public static class Utility
         return merged;
     }
 
-    public static IEnumerable<T> DuplicatesRemoved<T>(this IEnumerable<T> enumerable)
-    {
-        List<T> duplicates_removed = new List<T>(enumerable);
-        duplicates_removed.RemoveDuplicates();
-
-        return duplicates_removed;
-    }
-
     public static Dictionary<T, U> Inverted<T, U>(this Dictionary<U, T> dictionary)
     {
         Dictionary<T, U> inverted = new Dictionary<T, U>();
@@ -210,11 +207,18 @@ public static class Utility
         return string_.Substring(0, string_.Length - trim_count);
     }
 
+    public static List<T> Sort<T, U>(this List<T> list, 
+                                     Func<T, U> comparable_fetcher) where U : IComparable
+    {
+        list.Sort((a, b) => (comparable_fetcher(a).CompareTo(comparable_fetcher(b))));
+        return list;
+    }
+
     public static List<T> Sorted<T, U>(this List<T> list, 
                                        Func<T, U> comparable_fetcher) where U : IComparable
     {
         List<T> sorted = new List<T>(list);
-        sorted.Sort((a, b) => (comparable_fetcher(a).CompareTo(comparable_fetcher(b))));
+        sorted.Sort(comparable_fetcher);
 
         return sorted;
     }
@@ -230,8 +234,9 @@ public static class Utility
         return enumerable.Sorted(element => element);
     }
 
-    public static T MinElement<T, U>(this IEnumerable<T> enumerable, 
-                                     Func<T, U> comparable_fetcher) where U : IComparable
+    public static T MinElement<T, U>(
+        this IEnumerable<T> enumerable, 
+        Func<T, U> comparable_fetcher) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
@@ -239,8 +244,9 @@ public static class Utility
         return enumerable.Sorted(comparable_fetcher).First();
     }
 
-    public static T MaxElement<T, U>(this IEnumerable<T> enumerable, 
-                                     Func<T, U> comparable_fetcher) where U : IComparable
+    public static T MaxElement<T, U>(
+        this IEnumerable<T> enumerable, 
+        Func<T, U> comparable_fetcher) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
@@ -265,15 +271,15 @@ public static class Utility
         return enumerable.Sum(other_element => (EqualityComparer<T>.Default.Equals(other_element, element) ? 1 : 0));
     }
 
-    public static List<T> RemoveDuplicates<T>(this IEnumerable<T> enumerable)
+    public static IEnumerable<T> Distinct<T, U>(this IEnumerable<T> enumerable, 
+                                                Func<T, U> comparable_fetcher) where U : IComparable
     {
-        List<T> without_duplicates = new List<T>();
+        return enumerable.GroupBy(comparable_fetcher).Select(group => group.First());
+    }
 
-        foreach (T element in enumerable)
-            if (!without_duplicates.Contains(element))
-                without_duplicates.Add(element);
-
-        return without_duplicates;
+    public static IEnumerable<T> Union<T, U>(this IEnumerable<T> a, IEnumerable<T> b, Func<T, U> comparable_fetcher) where U : IComparable
+    {
+        return a.Concat(b).Distinct(comparable_fetcher);
     }
 
     public static System.Func<T, U> CreateLookup<T, U>(this System.Func<T, U> Function, IEnumerable<T> domain)
@@ -331,6 +337,32 @@ public static class Utility
         return true;
     }
 
+    public static float SumDictionary<T, U>(this Dictionary<T, U> dictionary, Func<T, U, float> GetValue)
+    {
+        return dictionary.Sum(pair => GetValue(pair.Key, pair.Value));
+    }
+
+    public static IEnumerable<V> Select<T, U, V>(
+        this Dictionary<T, U> dictionary, 
+        Func<T, U, V> selector)
+    {
+        return dictionary.Select(pair => selector(pair.Key, pair.Value));
+    }
+
+    public static IEnumerable<V> Select<T, U, V>(
+       this IEnumerable<ValueTuple<T, U>> pairs,
+       Func<T, U, V> selector)
+    {
+        return pairs.Select(pair => selector(pair.Item1, pair.Item2));
+    }
+
+    public static IEnumerable<W> Select<T, U, V, W>(
+        this IEnumerable<ValueTuple<T, U, V>> tuples,
+        Func<T, U, V, W> selector)
+    {
+        return tuples.Select(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
     public static IEnumerable<U> SelectComponents<T, U>(this IEnumerable<T> enumerable)
         where T : Component
         where U : Component
@@ -343,6 +375,16 @@ public static class Utility
         where U : Component
     {
         return transforms.SelectComponents<Transform, U>();
+    }
+
+    public static V Select<T, U, V>(this ValueTuple<T, U> tuple, Func<T, U, V> GetValue_)
+    {
+        return GetValue_(tuple.Item1, tuple.Item2);
+    }
+
+    public static W Select<T, U, V, W>(this ValueTuple<T, U, V> tuple, Func<T, U, V, W> GetValue_)
+    {
+        return GetValue_(tuple.Item1, tuple.Item2, tuple.Item3);
     }
 
     public static IEnumerable<T> GetEnumValues<T>()

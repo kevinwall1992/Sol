@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+
 
 public class Arbitrageur : Division
 {
@@ -21,217 +23,173 @@ public class Arbitrageur : Division
                 if (craft.Station == null)
                     continue;
 
-                Market market = craft.Station.OfficialMarket;
+                Market here = craft.Station.OfficialMarket;
 
-                Plan plan = GetPlan(craft, market);
-                if (plan == null)
+                (Manifest shopping_list, Market there) = 
+                    MakeShoppingList(craft, here);
+                if (shopping_list == null)
                     continue;
 
-                List<System.Action> sale_actions = new List<System.Action>();
-                List<System.Action> purchase_actions = new List<System.Action>();
+                List<Action> sale_actions = new List<Action>();
+                List<Action> purchase_actions = new List<Action>();
 
-                foreach (string item_name in plan.Requisition.Keys)
+                foreach (Item item in shopping_list.Items)
                 {
-                    float target_quantity = plan.Requisition[item_name];
-                    float existing_quantity = craft.Cargo.GetQuantity(item_name);
+                    float target_quantity = shopping_list.GetQuantity(item);
+                    float existing_quantity = craft.Cargo.GetQuantity(item.Name);
 
                     if (target_quantity > existing_quantity)
                         purchase_actions.Add(() => 
-                            market.Purchase(User,
+                            here.Purchase(User,
                                             craft.Cargo,
-                                            item_name,
+                                            item.Name,
                                             target_quantity - existing_quantity));
 
                     else if (target_quantity < existing_quantity)
-                    {
-                        Item item = craft.Cargo.Retrieve(
-                            item_name, 
-                            existing_quantity - target_quantity);
-
-                        sale_actions.Add(() => market.Sell(
+                        sale_actions.Add(() => here.Sell(
                             User, 
-                            craft.Cargo, 
-                            item_name,
+                            craft.Cargo,
+                            item.Name,
                             existing_quantity - target_quantity));
-                    }
                 }
 
-                foreach (System.Action sale_action in sale_actions)
+                foreach (Action sale_action in sale_actions)
                     sale_action();
-                foreach (System.Action purchase_action in purchase_actions)
+                foreach (Action purchase_action in purchase_actions)
                     purchase_action();
 
-                craft.Navigation.AddTransfer(GetTransfer(craft, plan.SaleMarket));
+                craft.Navigation.AddTransfer(GetTransfer(craft, there));
             }
         }
     }
 
-    Plan GetPlan(Craft craft, Market here)
+    (Manifest, Market) MakeShoppingList(Craft craft, Market here)
     {
         IEnumerable<Market> markets =
             The.Stations.Select(station => station.OfficialMarket)
             .Where(market => market != here);
 
-        Dictionary<string, float> owned_quantities = craft.Cargo.Items
-            .Select(item => item.Name)
-            .RemoveDuplicates()
-            .ToDictionary(item_name => item_name, 
-                          item_name => craft.Cargo.GetQuantity(item_name));
+        IEnumerable<Item> products = craft.Cargo.GetSampleItems()
+            .Union(here.Wares, item => item.Name);
 
-        Dictionary<string, float> available_quantities =
-            new Dictionary<string, float>(owned_quantities);
+        Dictionary<string, float> owned_quantities = products
+            .ToDictionary(item => item.Name,
+                          item => craft.Cargo.GetQuantity(item.Name));
 
-        Dictionary<string, Item> samples =
-            owned_quantities.Keys.ToDictionary(
-                item_name => item_name,
-                item_name => craft.Cargo.GetSampleItem(item_name));
+        float propellent_available =
+            here.GetTotalSupply(craft.Engine.Propellent.Name);
 
-        foreach (Item sample in here.Wares)
+        float maximum_cost =
+            0.9f *
+            User.PrimaryBankAccount.Balance /
+            User.Crafts.Count();
+
+
+        var best_shopping_lists =
+            The.Stations.Where(station => station.OfficialMarket != here)
+            .Select(station =>
         {
-            if (!owned_quantities.ContainsKey(sample.Name))
-                owned_quantities[sample.Name] = 0;
+            Market there = station.OfficialMarket;
 
-            if (!available_quantities.ContainsKey(sample.Name))
-                available_quantities[sample.Name] = 0;
-            available_quantities[sample.Name] += here.GetTotalSupply(sample.Name);
+            Navigation.Transfer transfer = GetTransfer(craft, there);
 
-            samples[sample.Name] = sample;
-        }
-
-        string propellent_name = craft.Engine.Propellent.Name;
-
-        List<float> target_cargo_masses = new List<float>();
-        for (int i = 0; i < 20; i++)
-            target_cargo_masses.Add(0.1f * craft.CurbMass * Mathf.Pow(1.6f, i));
+            List<float> cargo_masses = new List<float>();
+            for (int i = 0; i < 20; i++)
+                cargo_masses.Add(0.1f * craft.CurbMass * Mathf.Pow(1.6f, i));
 
 
-        Plan best_plan = null;
-        float best_profit = 0;
+            //For each destination Market, create an Arbitrage describing the cost
+            //to purchase goods here and the value of selling goods there.
 
-        //Find best Plan for each payload size
-        foreach (float target_cargo_mass in target_cargo_masses)
-        {
-            //Find best Plan for each market
-            foreach(Market there in markets)
+            Arbitrage arbitrage = new Arbitrage(
+                (item, quantity) =>
+                {
+                    float opportunity_cost = 0;
+                    if (owned_quantities[item.Name] > 0)
+                    {
+                        float withheld_quantity =
+                            Mathf.Min(owned_quantities[item.Name], quantity);
+
+                        opportunity_cost +=
+                            here.GetSaleValue(item.Name, withheld_quantity);
+
+                        quantity -= withheld_quantity;
+                    }
+
+                    float purchase_cost =
+                        here.GetPurchaseCost(item.Name, quantity);
+
+                    return opportunity_cost + purchase_cost;
+                },
+                (item, quantity) => there.GetSaleValue(item.Name, quantity));
+
+
+            //For each arbitrage, create shopping lists for each combination of 
+            //journey hyperparameters
+
+            IEnumerable<(Manifest ShoppingList,
+                         Market There,
+                         float ROI)> shopping_lists =
+            cargo_masses.Select(cargo_mass =>
             {
-                Plan plan = new Plan(there, samples.Keys);
-
-                float cargo_mass = 0;
-
-
-                //Compute propellent requirements to reach target market
-                float propellent_mass_required = 
+                float propellent_mass_required =
                     craft.Engine.GetPropellentMassRequired(
-                        GetTransfer(craft, there),
-                        craft.CurbMass + target_cargo_mass);
-                float propellent_quantity_required =
+                        transfer,
+                        craft.CurbMass + cargo_mass);
+                float propellent_required =
                     craft.Engine.PropellentMassToUnits(propellent_mass_required);
-                plan.Requisition[propellent_name] += propellent_quantity_required;
+                if (propellent_required > propellent_available)
+                    return (null, null, float.NegativeInfinity);
 
-                System.Func<Item, float> GetMarginalQuantity = delegate (Item item)
-                {
-                    float mass_fraction = 
-                        Mathf.Min(target_cargo_mass / 10, target_cargo_mass - cargo_mass) /
-                        item.Physical().MassPerUnit;
+                //Equipment are items needed on board that are _not_ consumed
+                Manifest equipment = new Manifest();
 
-                    float supply_fraction = available_quantities[item.Name] / 10;
+                //Provisions are items needed on board that _are_ consumed
+                Manifest provisions = new Manifest();
+                provisions.Add(craft.Engine.Propellent, 
+                                       propellent_required);
+                float fixed_costs = provisions.Items
+                    .Sum(item => arbitrage.GetPurchaseCost(item, provisions[item]));
 
-                    return Mathf.Min(mass_fraction, supply_fraction);
-                };
+                Func<Item, float, float> GetTransportCosts = 
+                    arbitrage.CreateTransportCostFunction(provisions);
 
-                System.Func<string, float, float> GetProfit = 
-                delegate (string item_name, float quantity)
-                {
-                    float owned_quantity = owned_quantities[item_name];
-                    float sell_here_quantity = 0;
-                    float sell_there_quantity = quantity;
+                Manifest shopping_list = arbitrage.MakeShoppingList(
+                    products,
+                    GetTransportCosts,
+                    craft.Cargo, equipment.Collated(provisions),
+                    here, maximum_cost - fixed_costs,
+                    new Arbitrage.LinearSpace(
+                        cargo_mass, product => product.GetMassPerUnit()),
+                    fixed_costs);
 
-                    if (item_name == propellent_name)
-                        sell_there_quantity -= propellent_quantity_required;
+                float roi = arbitrage.GetROIPerYear(
+                    shopping_list, 
+                    fixed_costs, 
+                    (float)(transfer.ArrivalDate - The.Clock.Now).TotalDays / 365,
+                    GetTransportCosts);
+                if(roi < 0)
+                    return (null, null, float.NegativeInfinity);
 
-                    if (owned_quantity > quantity)
-                        sell_here_quantity = owned_quantity - quantity;
+                shopping_list.Add(provisions);
 
-
-                    float sale_value =
-                        here.GetSaleValue(item_name, sell_here_quantity) +
-                        there.GetSaleValue(item_name, sell_there_quantity);
-
-                    float purchase_cost = 0;
-                    if (quantity > owned_quantity)
-                        purchase_cost = 
-                            here.GetPurchaseCost(item_name, quantity - owned_quantity);
-
-                    return sale_value - purchase_cost;
-                };
-
-                System.Func<string, float, float> GetTransactionBalance =
-                delegate (string item_name, float quantity)
-                {
-                    float owned_quantity = owned_quantities[item_name];
-
-                    if (quantity > owned_quantity)
-                        return -here
-                            .GetPurchaseCost(item_name, quantity - owned_quantity);
-
-                    else if (quantity < owned_quantity)
-                        return here
-                            .GetSaleValue(item_name, owned_quantity - quantity);
-
-                    return 0;
-                };
-
-                System.Func<Item, float> GetMarginalProfit = delegate (Item item)
-                {
-                    float planned_quantity = plan.Requisition[item.Name];
-                    float marginal_quantity = GetMarginalQuantity(item);
-
-                    float planned_profit = GetProfit(item.Name, planned_quantity);
-                    float prospective_profit = GetProfit(item.Name, planned_quantity + 
-                                                         marginal_quantity);
-
-                    return prospective_profit - planned_profit;
-                };
+                return (shopping_list, there, roi);
+            });
 
 
-                //Purchase small quantity of most profitable item until full
-                while (cargo_mass + float.Epsilon < target_cargo_mass)
-                {
-                    Item best_item = samples.Values
-                        .Where(item => available_quantities[item.Name] > float.Epsilon)
-                        .Sorted(item => GetMarginalProfit(item))
-                        .Reversed()
-                        .FirstOrDefault();
+            //Select best shopping list for each arbitrage by computing its ROI
+            //per year. 
 
-                    if (best_item == null)
-                        break;
+            return shopping_lists.MaxElement(t => t.ROI);
+        });
 
-                    float marginal_quantity = GetMarginalQuantity(best_item);
 
-                    plan.Requisition[best_item.Name] += marginal_quantity;
-                    cargo_mass += marginal_quantity * best_item.Physical().MassPerUnit;
-                }
-                if (cargo_mass + float.Epsilon < target_cargo_mass)
-                    continue;
+        //Finally, select best overall shopping list and destination market. 
 
-                float transaction_balance = plan.Requisition
-                    .Sum(pair => GetTransactionBalance(pair.Key, pair.Value));
-
-                if (-transaction_balance > User.PrimaryBankAccount.Balance)
-                    continue;
-
-                float profit = plan.Requisition
-                    .Sum(pair => GetProfit(pair.Key, pair.Value));
-
-                if (profit > best_profit)
-                {
-                    best_plan = plan;
-                    best_profit = profit;
-                }
-            }
-        }
-
-        return best_plan;
+        return best_shopping_lists
+            .MaxElement(t => t.ROI)
+            .Select((shopping_list, market, roi) => 
+                    (shopping_list, market));
     }
 
     Navigation.Transfer GetTransfer(Craft craft, Market market)
@@ -239,23 +197,5 @@ public class Arbitrageur : Division
         return new InterplanetaryTransfer(craft.Motion,
                                           market.Station.GetVisitingMotion(craft),
                                           The.Clock.Now);
-    }
-
-
-    class Plan
-    {
-        public Market SaleMarket;
-
-        public Dictionary<string, float> Requisition = 
-            new Dictionary<string, float>();
-
-        public Plan(Market target_market, IEnumerable<string> available_items)
-        {
-            SaleMarket = target_market;
-
-            Requisition = available_items.ToDictionary(
-                item_name => item_name, 
-                item_name => 0.0f);
-        }
     }
 }

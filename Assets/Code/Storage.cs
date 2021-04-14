@@ -135,6 +135,11 @@ public class Storage
             .GetItem(name);
     }
 
+    public IEnumerable<Item> GetSampleItems()
+    {
+        return Items.Distinct(item => item.Name);
+    }
+
     public Item Retrieve(string name, float quantity = -1)
     {
         float quantity_available = GetQuantity(name);

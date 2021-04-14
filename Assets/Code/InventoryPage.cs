@@ -19,8 +19,8 @@ public class InventoryPage : Page
 
     private void Update()
     {
-        if(ItemPanel.Items == null)
-            ItemPanel.Items = Storage.Items;
+        if (ItemPanel.Items == null)
+            ItemPanel.Items = Storage.GetSampleItems();
 
         if (ItemPanel.SelectedItem != null)
         {
