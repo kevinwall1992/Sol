@@ -190,25 +190,25 @@ public static class Utility
     }
 
     public static List<T> Sort<T, U>(this List<T> list, 
-                                     Func<T, U> comparable_fetcher) where U : IComparable
+                                     Func<T, U> GetComparable) where U : IComparable
     {
-        list.Sort((a, b) => (comparable_fetcher(a).CompareTo(comparable_fetcher(b))));
+        list.Sort((a, b) => (GetComparable(a).CompareTo(GetComparable(b))));
         return list;
     }
 
     public static List<T> Sorted<T, U>(this List<T> list, 
-                                       Func<T, U> comparable_fetcher) where U : IComparable
+                                       Func<T, U> GetComparable) where U : IComparable
     {
         List<T> sorted = new List<T>(list);
-        sorted.Sort(comparable_fetcher);
+        sorted.Sort(GetComparable);
 
         return sorted;
     }
 
     public static List<T> Sorted<T, U>(this IEnumerable<T> enumerable, 
-                                       Func<T, U> comparable_fetcher) where U : IComparable
+                                       Func<T, U> GetComparable) where U : IComparable
     {
-        return Sorted(new List<T>(enumerable), comparable_fetcher);
+        return Sorted(new List<T>(enumerable), GetComparable);
     }
 
     public static List<T> Sorted<T>(this IEnumerable<T> enumerable) where T : IComparable
@@ -218,22 +218,22 @@ public static class Utility
 
     public static T MinElement<T, U>(
         this IEnumerable<T> enumerable, 
-        Func<T, U> comparable_fetcher) where U : IComparable
+        Func<T, U> GetComparable) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
 
-        return enumerable.Sorted(comparable_fetcher).First();
+        return enumerable.Sorted(GetComparable).First();
     }
 
     public static T MaxElement<T, U>(
         this IEnumerable<T> enumerable, 
-        Func<T, U> comparable_fetcher) where U : IComparable
+        Func<T, U> GetComparable) where U : IComparable
     {
         if (enumerable.Count() == 0)
             return default(T);
 
-        return enumerable.Sorted(comparable_fetcher).Last();
+        return enumerable.Sorted(GetComparable).Last();
     }
 
     public static IEnumerable<T> PreviousElements<T>(this IEnumerable<T> enumerable, T element)
@@ -254,14 +254,14 @@ public static class Utility
     }
 
     public static IEnumerable<T> Distinct<T, U>(this IEnumerable<T> enumerable, 
-                                                Func<T, U> comparable_fetcher) where U : IComparable
+                                                Func<T, U> GetComparable) where U : IComparable
     {
-        return enumerable.GroupBy(comparable_fetcher).Select(group => group.First());
+        return enumerable.GroupBy(GetComparable).Select(group => group.First());
     }
 
-    public static IEnumerable<T> Union<T, U>(this IEnumerable<T> a, IEnumerable<T> b, Func<T, U> comparable_fetcher) where U : IComparable
+    public static IEnumerable<T> Union<T, U>(this IEnumerable<T> a, IEnumerable<T> b, Func<T, U> GetComparable) where U : IComparable
     {
-        return a.Concat(b).Distinct(comparable_fetcher);
+        return a.Concat(b).Distinct(GetComparable);
     }
 
     public static System.Func<T, U> CreateLookup<T, U>(this System.Func<T, U> Function, IEnumerable<T> domain)
@@ -301,19 +301,19 @@ public static class Utility
         b = t;
     }
 
-    public static bool AnyTrue<T>(this IEnumerable<T> enumerable, System.Func<T, bool> predicate)
+    public static bool AnyTrue<T>(this IEnumerable<T> enumerable, System.Func<T, bool> Predicate)
     {
         foreach (T element in enumerable)
-            if (predicate(element))
+            if (Predicate(element))
                 return true;
 
         return false;
     }
 
-    public static bool AllTrue<T>(this IEnumerable<T> enumerable, System.Func<T, bool> predicate)
+    public static bool AllTrue<T>(this IEnumerable<T> enumerable, System.Func<T, bool> Predicate)
     {
         foreach (T element in enumerable)
-            if (!predicate(element))
+            if (!Predicate(element))
                 return false;
 
         return true;
@@ -326,30 +326,30 @@ public static class Utility
 
     public static IEnumerable<V> Select<T, U, V>(
         this Dictionary<T, U> dictionary, 
-        Func<T, U, V> selector)
+        Func<T, U, V> Selector)
     {
-        return dictionary.Select(pair => selector(pair.Key, pair.Value));
+        return dictionary.Select(pair => Selector(pair.Key, pair.Value));
     }
 
     public static IEnumerable<V> Select<T, U, V>(
         this SerializableDictionaryBase<T, U> dictionary,
-        Func<T, U, V> selector)
+        Func<T, U, V> Selector)
     {
-        return dictionary.Select(pair => selector(pair.Key, pair.Value));
+        return dictionary.Select(pair => Selector(pair.Key, pair.Value));
     }
 
     public static IEnumerable<V> Select<T, U, V>(
        this IEnumerable<ValueTuple<T, U>> pairs,
-       Func<T, U, V> selector)
+       Func<T, U, V> Selector)
     {
-        return pairs.Select(pair => selector(pair.Item1, pair.Item2));
+        return pairs.Select(pair => Selector(pair.Item1, pair.Item2));
     }
 
     public static IEnumerable<W> Select<T, U, V, W>(
         this IEnumerable<ValueTuple<T, U, V>> tuples,
-        Func<T, U, V, W> selector)
+        Func<T, U, V, W> Selector)
     {
-        return tuples.Select(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+        return tuples.Select(tuple => Selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
 
     public static IEnumerable<U> SelectComponents<T, U>(this IEnumerable<T> enumerable)
