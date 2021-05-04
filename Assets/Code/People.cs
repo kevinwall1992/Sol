@@ -72,7 +72,7 @@ public class People : User.Script
                 break;
 
             float quantity = 
-                Market.GetPurchaseQuantity(most_important_need.Sample, credits);
+                Market.GetPurchasableQuantity(most_important_need.Sample, credits);
 
             Market.Purchase(User,
                             Storage,
@@ -189,7 +189,7 @@ public class People : User.Script
             {
                 Market market = people.Item.Station().OfficialMarket;
 
-                return market.GetPurchaseQuantity(Sample, credits) /
+                return market.GetPurchasableQuantity(Sample, credits) /
                        (people.Population * people.ShoppingTrip.DaysBetweenSessions);
             };
 

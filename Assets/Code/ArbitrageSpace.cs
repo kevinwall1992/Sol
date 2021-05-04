@@ -23,7 +23,7 @@ public partial class Arbitrage
         return new BudgetSpace(
             budget,
             GetVariableCosts,
-            (item, credits) => market.GetPurchaseQuantity(item, credits));
+            (item, credits) => market.GetPurchasableQuantity(item, credits));
 
     }
     public static CompoundSpace CreateStorageSpace(

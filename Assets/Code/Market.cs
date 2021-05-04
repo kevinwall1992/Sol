@@ -152,7 +152,7 @@ public class Market : MonoBehaviour
         return GetPurchaseCost(example, quantity) / quantity;
     }
 
-    public float GetPurchaseQuantity(Item example, float credits)
+    public float GetPurchasableQuantity(Item example, float credits)
     {
         if (example == null)
             return 0;

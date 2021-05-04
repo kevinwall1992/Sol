@@ -94,7 +94,7 @@ public class Manufacturer : Division
                     continue;
 
                 float maximum_purchase_quantity = station.OfficialMarket
-                    .GetPurchaseQuantity(input, User.PrimaryBankAccount.Balance);
+                    .GetPurchasableQuantity(input, User.PrimaryBankAccount.Balance);
                 purchase_quantity =
                     Mathf.Min(purchase_quantity,
                                 maximum_purchase_quantity);
@@ -132,7 +132,7 @@ public class Manufacturer : Division
                     float profit_per_day = GetProfitPerMachinePerDay(machine, station);
 
                     float purchase_quantity_ = station.OfficialMarket
-                        .GetPurchaseQuantity(machine.Item, target_purchase_cost);
+                        .GetPurchasableQuantity(machine.Item, target_purchase_cost);
                     float quantity_per_credit = purchase_quantity_ /
                                                 target_purchase_cost;
 
@@ -152,7 +152,7 @@ public class Manufacturer : Division
                 break;
 
             float purchase_quantity = best_station.OfficialMarket
-                .GetPurchaseQuantity(best_machine.Item, target_purchase_cost);
+                .GetPurchasableQuantity(best_machine.Item, target_purchase_cost);
 
             best_station.OfficialMarket
                 .Purchase(User,
