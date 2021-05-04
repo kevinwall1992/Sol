@@ -26,7 +26,7 @@ public class ItemContainer : Craft.Part
     public IEnumerable<Packer> Packers { get { return GetComponents<Packer>(); } }
 
     public IEnumerable<Item> Items
-    { get { return GetComponentsInChildren<Item>(); } }
+    { get { return transform.Children().SelectComponents<Item>(); } }
 
     public Manifest Manifest { get { return Items.ToManifest(); } }
 
