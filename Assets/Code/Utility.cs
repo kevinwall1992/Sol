@@ -174,37 +174,6 @@ public static class Utility
             action(element);
     }
 
-    public static IEnumerable<T> Merged<T>(this IEnumerable<T> enumerable, IEnumerable<T> other)
-    {
-        List<T> merged = new List<T>(enumerable);
-        merged.AddRange(other);
-
-        return merged;
-    }
-
-    public static List<T> Merged<T>(this List<T> list, IEnumerable<T> other)
-    {
-        return (list as IEnumerable<T>).Merged(other) as List<T>;
-    }
-
-    public static Dictionary<T, U> Merge<T, U>(this Dictionary<T, U> a, Dictionary<T, U> b)
-    {
-        foreach (T key in b.Keys)
-            a[key] = b[key];
-
-        return a;
-    }
-
-    public static Dictionary<T, U> Merged<T, U>(this Dictionary<T, U> a, Dictionary<T, U> b)
-    {
-        Dictionary<T, U> merged = new Dictionary<T, U>(a);
-
-        foreach (T key in b.Keys)
-            merged[key] = b[key];
-
-        return merged;
-    }
-
     public static Dictionary<T, U> Inverted<T, U>(this Dictionary<U, T> dictionary)
     {
         Dictionary<T, U> inverted = new Dictionary<T, U>();
