@@ -14,7 +14,9 @@ public class Storage
     public float TotalMass { get { return DryMass + ItemMass; } }
 
     public IEnumerable<Item> Items
-    { get { return ItemContainers.SelectMany(container => container.Items.Values); } }
+    { get { return ItemContainers.SelectMany(container => container.Items); } }
+
+    public Manifest Manifest { get { return Items.ToManifest(); } }
 
     public Storage(System.Func<IEnumerable<ItemContainer>> GetItemContainers = null)
     {
@@ -32,20 +34,23 @@ public class Storage
             () => item_containers.Select(container => container.Container);
     }
 
-    public float GetVolumeOf(string item_name)
+    public float GetVolumeOf(Item example)
     {
+        if (example == null)
+            return 0;
+
         return ItemContainers.Sum(
-            container => container.Contains(item_name) ? 
-                         container.GetItem(item_name).Volume() : 
+            container => container.Contains(example) ? 
+                         container.GetItem(example).Volume() : 
                          0);
     }
 
-    public float GetUnusedVolumeFor(Item item)
+    public float GetUnusedVolumeFor(Item example)
     {
         float available_volume = 0;
 
         foreach(ItemContainer item_container in ItemContainers)
-            if (item_container.IsStorable(item))
+            if (item_container.IsStorable(example))
                 available_volume += item_container.AvailableVolume;
 
         return available_volume;
@@ -53,32 +58,32 @@ public class Storage
 
     //Maximum volume without removing other items that are 
     //competing for space
-    public float GetMaximumVolumeOf(Item item)
+    public float GetMaximumVolumeOf(Item example)
     {
-        return GetVolumeOf(item.Name) + GetUnusedVolumeFor(item);
+        return GetVolumeOf(example) + GetUnusedVolumeFor(example);
     }
 
     //Maximum volume if allowed to remove competing items
-    public float GetIdealMaximumVolumeOf(Item item)
+    public float GetIdealMaximumVolumeOf(Item example)
     {
         float ideal_volume = 0;
 
         foreach (ItemContainer item_container in ItemContainers)
-            if (item_container.IsStorable(item))
+            if (item_container.IsStorable(example))
                 ideal_volume += item_container.Volume;
 
         return ideal_volume;
     }
 
-    public bool CanFit(Item item)
+    public bool CanFit(Item example)
     {
-        return GetUnusedVolumeFor(item) >= item.Volume();
+        return GetUnusedVolumeFor(example) >= example.Volume();
     }
 
-    public bool CanFit(Item item, float quantity)
+    public bool CanFit(Item example, float quantity)
     {
-        return GetUnusedVolumeFor(item) >= 
-               item.Physical().VolumePerUnit * quantity;
+        return GetUnusedVolumeFor(example) >= 
+               example.Physical().VolumePerUnit * quantity;
     }
 
     public bool Store(Item item)
@@ -97,11 +102,11 @@ public class Storage
         return false;
     }
 
-    public float StoreQuantity(Item sample, float quantity)
+    public float StoreQuantity(Item example, float quantity)
     {
         foreach (ItemContainer item_container in ItemContainers)
         {
-            quantity = item_container.PutInQuantity(sample, quantity);
+            quantity = item_container.PutInQuantity(example, quantity);
 
             if (quantity == 0)
                 break;
@@ -110,39 +115,24 @@ public class Storage
         return quantity;
     }
 
-    public float GetQuantity(string name)
+    public float GetQuantity(Item example)
     {
         float quantity = 0;
 
         foreach (ItemContainer item_container in ItemContainers)
-            quantity += item_container.GetQuantity(name);
+            quantity += item_container.GetQuantity(example);
 
         return quantity;
     }
 
-    public bool Contains(string name)
+    public bool Contains(Item example)
     {
-        return GetQuantity(name) > 0;
+        return GetQuantity(example) > 0;
     }
 
-    public Item GetSampleItem(string name)
+    public Item Retrieve(Item example, float quantity = -1)
     {
-        if (GetQuantity(name) == 0)
-            return null;
-
-        return ItemContainers
-            .FirstOrDefault(container => container.Contains(name))
-            .GetItem(name);
-    }
-
-    public IEnumerable<Item> GetSampleItems()
-    {
-        return Items.Distinct(item => item.Name);
-    }
-
-    public Item Retrieve(string name, float quantity = -1)
-    {
-        float quantity_available = GetQuantity(name);
+        float quantity_available = GetQuantity(example);
 
         if (quantity < 0 || quantity > quantity_available)
             quantity = quantity_available;
@@ -151,13 +141,13 @@ public class Storage
 
         foreach (ItemContainer item_container in ItemContainers)
         {
-            if(item_container.Contains(name))
+            if(item_container.Contains(example))
             {
                 if (retrieved_item == null)
-                    retrieved_item = item_container.TakeOut(name, quantity);
+                    retrieved_item = item_container.TakeOut(example, quantity);
                 else
                     retrieved_item.Quantity += 
-                        item_container.TakeOutQuantity(name, quantity);
+                        item_container.TakeOutQuantity(example, quantity);
 
                 if (retrieved_item.Quantity >= quantity)
                     break;
@@ -167,23 +157,23 @@ public class Storage
         return retrieved_item;
     }
 
-    public float RetrieveQuantity(string name, float quantity)
+    public float RetrieveQuantity(Item example, float quantity)
     {
         if (quantity == 0)
             return 0;
 
-        Item retrieved_item = Retrieve(name, quantity);
+        Item retrieved_item = Retrieve(example, quantity);
         quantity = retrieved_item.Quantity;
 
         GameObject.Destroy(retrieved_item.gameObject);
         return quantity;
     }
 
-    public float SendTo(Storage destination, string name, float quantity)
+    public float SendTo(Item example, float quantity, Storage destination)
     {
-        quantity = Mathf.Min(quantity, GetQuantity(name));
+        quantity = Mathf.Min(quantity, GetQuantity(example));
 
-        destination.StoreQuantity(GetSampleItem(name), quantity);
+        destination.StoreQuantity(example, quantity);
 
         return quantity;
     }
@@ -192,7 +182,7 @@ public class Storage
     {
         foreach(ItemContainer container in ItemContainers)
         {
-            foreach (Item item in container.Items.Values)
+            foreach (Item item in container.Items)
                 if (Predicate == null || Predicate(item))
                     Touch(item);
         }

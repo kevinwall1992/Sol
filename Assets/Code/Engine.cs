@@ -70,7 +70,7 @@ public class Engine : Craft.Part
             return;
 
         Item propellent = PropellentStorage.Retrieve(
-            Propellent.Name,
+            Propellent,
             propellent_mass / Propellent.Physical().MassPerUnit);
         GameObject.Destroy(propellent.gameObject);
 
@@ -259,7 +259,7 @@ public class Engine : Craft.Part
     public float GetPropellentPurchaseCost(float propellent_mass, Market market)
     {
         return market.GetPurchaseCost(
-            Propellent.Name,
+            Propellent,
             PropellentMassToUnits(propellent_mass));
     }
 
@@ -271,7 +271,7 @@ public class Engine : Craft.Part
     public float GetPropellentSaleValue(float propellent_mass, Market market)
     {
         return market.GetSaleValue(
-            Propellent.Name,
+            Propellent,
             PropellentMassToUnits(propellent_mass));
     }
 
@@ -292,9 +292,9 @@ public class Engine : Craft.Part
 
     public bool PurchasePropellent(float propellent_mass, Market market)
     {
-        return market.Purchase(Craft.Item.Owner,
+        return market.Purchase(Craft.Owner,
                                PropellentStorage,
-                               Propellent.Name,
+                               Propellent,
                                PropellentMassToUnits(propellent_mass));
     }
 
@@ -303,7 +303,7 @@ public class Engine : Craft.Part
         if (PropellentMass < propellent_mass)
             propellent_mass = PropellentMass;
 
-        return market.Sell(Craft.Item.Owner, Craft.Cargo, Propellent.Name,
+        return market.Sell(Craft.Owner, Craft.Cargo, Propellent,
                PropellentMassToUnits(propellent_mass));
     }
 

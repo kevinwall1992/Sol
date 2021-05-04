@@ -16,14 +16,14 @@ public partial class Arbitrage
 
         Func<Item, float, float> GetVariableCosts = (item, quantity) =>
         {
-            return market.GetPurchaseCost(item.Name, quantity) +
+            return market.GetPurchaseCost(item, quantity) +
                    GetTransportCosts(item, quantity);
         };
 
         return new BudgetSpace(
             budget,
             GetVariableCosts,
-            (item, credits) => market.GetPurchaseQuantity(item.Name, credits));
+            (item, credits) => market.GetPurchaseQuantity(item, credits));
 
     }
     public static CompoundSpace CreateStorageSpace(
@@ -38,7 +38,7 @@ public partial class Arbitrage
                                 item_container.IsStorable)));
 
         if(items != null)
-            foreach (Item item in items.Items)
+            foreach (Item item in items.Samples)
                 space.Pack(item, items[item]);
 
         return space;

@@ -11,17 +11,18 @@ public class Market : MonoBehaviour
     public List<SaleOffer> SaleOffers = new List<SaleOffer>();
 
     public IEnumerable<Item> Wares
+    { get { return SaleOffers.Select(offer => offer.Sample).Distinct(); } }
+
+    public Manifest Manifest
     {
         get
         {
-            return SaleOffers
-                .Where(offer => offer.AvailableSupply > 0)
-                .GroupBy(offer => offer.Sample.Name)
-                .Select(group => group.First().Sample);
+            return new Manifest(
+                Wares.Select(sample => (sample, GetTotalSupply(sample))));
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         //This a hack until we get rid of in-editor offers
         foreach (PurchaseOffer offer in PurchaseOffers)
@@ -35,7 +36,7 @@ public class Market : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
 
     public PurchaseOffer PostOffer(PurchaseOffer purchase_offer)
@@ -68,17 +69,17 @@ public class Market : MonoBehaviour
         return sale_offer;
     }
 
-    public List<SaleOffer> GetSortedSaleOffersFor(string item_name)
+    public List<SaleOffer> GetSortedSaleOffersFor(Item example)
     {
         return SaleOffers
-            .Where(offer => offer.Sample.Name == item_name)
+            .Where(offer => offer.Sample.IsEquivalent(example))
             .Sorted(offer => offer.CostPerUnit);
     }
 
-    public List<PurchaseOffer> GetSortedPurchaseOffersFor(string item_name)
+    public List<PurchaseOffer> GetSortedPurchaseOffersFor(Item example)
     {
         return PurchaseOffers
-            .Where(offer => offer.Sample.Name == item_name)
+            .Where(offer => offer.Sample.IsEquivalent(example))
             .Sorted(offer => offer.ValuePerUnit).Reversed();
     }
 
@@ -87,33 +88,48 @@ public class Market : MonoBehaviour
         return PurchaseOffers.Where(offer => offer.Buyer == buyer);
     }
 
+    public IEnumerable<PurchaseOffer> GetPurchaseOffersBy(User buyer, Item example)
+    {
+        return PurchaseOffers.Where(offer => offer.Buyer == buyer &&
+                                    offer.Sample.IsEquivalent(example));
+    }
+
     public IEnumerable<SaleOffer> GetSaleOffersBy(User seller)
     {
         return SaleOffers.Where(offer => offer.Seller == seller);
     }
 
-    public float GetTotalSupply(string item_name)
+    public IEnumerable<SaleOffer> GetSaleOffersBy(User seller, Item example)
     {
+        return SaleOffers.Where(offer => offer.Seller == seller &&
+                                offer.Sample.IsEquivalent(example));
+    }
+
+    public float GetTotalSupply(Item example)
+    {
+        if (example == null)
+            return 0;
+
         return SaleOffers
-            .Where(offer => offer.Sample.Name == item_name)
+            .Where(offer => offer.Sample.IsEquivalent(example))
             .Sum(offer => offer.AvailableSupply);
     }
 
-    public bool IsAvailable(string item_name)
+    public bool IsAvailable(Item example)
     {
-        return GetTotalSupply(item_name) > 0;
+        return GetTotalSupply(example) > 0;
     }
 
-    public float GetPurchaseCost(string item_name, float quantity)
+    public float GetPurchaseCost(Item example, float quantity)
     {
-        if (GetTotalSupply(item_name) < quantity)
+        if (GetTotalSupply(example) < quantity)
             return float.MaxValue;
 
         float cost = 0;
 
-        foreach (SaleOffer sale_offer in GetSortedSaleOffersFor(item_name))
+        foreach (SaleOffer sale_offer in GetSortedSaleOffersFor(example))
         {
-            float quantity_from_this_offer = 
+            float quantity_from_this_offer =
                 Mathf.Min(quantity, sale_offer.AvailableSupply);
 
             cost += sale_offer.CostPerUnit * quantity_from_this_offer;
@@ -126,18 +142,26 @@ public class Market : MonoBehaviour
         return cost;
     }
 
-    public float GetPurchaseCostPerUnit(string item_name, float quantity)
+    public float GetGoingPrice(Item example)
     {
-        return GetPurchaseCost(item_name, quantity) / quantity;
+        return GetPurchaseCost(example, 0.001f) / 0.001f;
     }
 
-    public float GetPurchaseQuantity(string item_name, float credits)
+    public float GetPurchaseCostPerUnit(Item example, float quantity)
     {
+        return GetPurchaseCost(example, quantity) / quantity;
+    }
+
+    public float GetPurchaseQuantity(Item example, float credits)
+    {
+        if (example == null)
+            return 0;
+
         float total_quantity = 0;
 
-        foreach(SaleOffer sale_offer in GetSortedSaleOffersFor(item_name))
+        foreach (SaleOffer sale_offer in GetSortedSaleOffersFor(example))
         {
-            float quantity = Mathf.Min(sale_offer.AvailableSupply, 
+            float quantity = Mathf.Min(sale_offer.AvailableSupply,
                                        credits / sale_offer.CostPerUnit);
 
             total_quantity += quantity;
@@ -150,14 +174,14 @@ public class Market : MonoBehaviour
         return total_quantity;
     }
 
-    public float GetSaleValue(string item_name, float quantity)
+    public float GetSaleValue(Item example, float quantity)
     {
         float sale_value = 0;
 
-        foreach (PurchaseOffer purchase_offer in GetSortedPurchaseOffersFor(item_name))
+        foreach (PurchaseOffer purchase_offer in GetSortedPurchaseOffersFor(example))
         {
             float quantity_from_this_offer = Mathf.Min(
-                quantity, 
+                quantity,
                 purchase_offer.AvailableDemand);
 
             sale_value += purchase_offer.ValuePerUnit * quantity_from_this_offer;
@@ -170,34 +194,34 @@ public class Market : MonoBehaviour
         return sale_value;
     }
 
-    public float GetSaleValuePerUnit(string item_name, float quantity)
+    public float GetSaleValuePerUnit(Item example, float quantity)
     {
-        return GetSaleValue(item_name, quantity) / quantity;
+        return GetSaleValue(example, quantity) / quantity;
     }
 
-    public float GetTotalDemand(string item_name)
+    public float GetTotalDemand(Item example)
     {
+        if (example == null)
+            return 0;
+
         return PurchaseOffers
-            .Where(offer => offer.Sample.Name == item_name)
+            .Where(offer => offer.Sample.IsEquivalent(example))
             .Sum(offer => offer.AvailableDemand);
     }
 
     //The following two methods are all-or-nothing. 
-    public bool Purchase(User buyer, Storage destination, 
-                         string item_name, float quantity)
+    public bool Purchase(User buyer, Storage destination,
+                         Item example, float quantity)
     {
-        if (quantity > GetTotalSupply(item_name) || 
-            quantity > GetTotalSupply(item_name))
+        if (quantity > GetTotalSupply(example) ||
+            quantity > GetTotalSupply(example))
             return false;
 
-        Item sample_item = 
-            SaleOffers.First(offer => offer.Sample.Name == item_name).Sample;
-
-        if (quantity * sample_item.Physical().VolumePerUnit > 
-            destination.GetUnusedVolumeFor(sample_item))
+        if (quantity * example.GetVolumePerUnit() >
+            destination.GetUnusedVolumeFor(example))
             return false;
 
-        foreach (SaleOffer offer in GetSortedSaleOffersFor(item_name))
+        foreach (SaleOffer offer in GetSortedSaleOffersFor(example))
         {
             if (quantity <= 0)
                 break;
@@ -208,15 +232,15 @@ public class Market : MonoBehaviour
         return true;
     }
 
-    public bool Sell(User seller, Storage source, 
-                     string item_name, float quantity)
+    public bool Sell(User seller, Storage source,
+                     Item example, float quantity)
     {
-        if (quantity > source.GetQuantity(item_name))
+        if (quantity > source.GetQuantity(example))
             return false;
-        if (quantity > GetTotalDemand(item_name))
+        if (quantity > GetTotalDemand(example))
             return false;
 
-        foreach (PurchaseOffer offer in GetSortedPurchaseOffersFor(item_name))
+        foreach (PurchaseOffer offer in GetSortedPurchaseOffersFor(example))
         {
             if (quantity <= 0)
                 break;

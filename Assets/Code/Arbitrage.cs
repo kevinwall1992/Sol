@@ -50,7 +50,7 @@ public partial class Arbitrage
         float total_costs = fixed_costs;
         float sale_value = 0;
 
-        foreach (Item item in shopping_list.Items)
+        foreach (Item item in shopping_list.Samples)
         {
             float quantity = shopping_list.GetQuantity(item);
 

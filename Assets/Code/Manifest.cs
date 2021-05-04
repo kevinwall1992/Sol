@@ -3,30 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-
 public class Manifest
 {
-    Dictionary<string, float> quantities = 
-        new Dictionary<string, float>();
-    Dictionary<string, Item> items = 
-        new Dictionary<string, Item>();
+    Dictionary<Item, float> quantities =
+        new Dictionary<Item, float>(Item.EquivalencyComparer);
 
-    public IEnumerable<Item> Items
-    { get { return items.Values; } }
+    public IEnumerable<Item> Samples
+    { get { return quantities.Keys; } }
 
     public float this[Item item]
     {
         get { return GetQuantity(item); }
         set { Add(item, value); }
     }
-    public float this[string item_name]
-    { get { return GetQuantity(item_name); } }
 
-
-    public Manifest(Dictionary<Item, float> quantities)
+    public Manifest(Dictionary<Item, float> quantities_)
     {
-        foreach (Item item in quantities.Keys)
-            Add(item, quantities[item]);
+        foreach (Item item in quantities_.Keys)
+            Add(item, quantities_[item]);
+    }
+
+    public Manifest(IEnumerable<(Item Item, float Quantity)> items)
+    {
+        foreach (var pair in items)
+            Add(pair.Item, pair.Quantity);
+    }
+
+    public Manifest(IEnumerable<Item> items)
+    {
+        foreach (Item item in items)
+            Add(item);
     }
 
     public Manifest()
@@ -36,48 +42,52 @@ public class Manifest
 
     public void Add(Item item, float quantity)
     {
-        if (!items.ContainsKey(item.Name))
-            items[item.Name] = item;
+        if (!quantities.Keys.Contains(item))
+            quantities[item.TakeSample()] = 0;
 
-        if (!quantities.Keys.Contains(item.Name))
-            quantities[item.Name] = 0;
+        quantities[item] += quantity;
+    }
 
-        quantities[item.Name] += quantity;
+    public void Add(Item item)
+    {
+        Add(item, item.Quantity);
     }
 
     public void Add(Manifest other)
     {
-        foreach (Item item in other.Items)
+        foreach (Item item in other.Samples)
             Add(item, other.GetQuantity(item));
+    }
+
+    public float Remove(Item item, float quantity = -1)
+    {
+        if (quantity < 0)
+            quantity = GetQuantity(item);
+        else if (GetQuantity(item) < quantity)
+            return 0;
+
+        quantities[item] -= quantity;
+
+        return quantity;
     }
 
     public bool Contains(Item item)
     {
-        return Contains(item.Name);
-    }
-
-    public bool Contains(string item_name)
-    {
-        return GetQuantity(item_name) > 0;
+        return GetQuantity(item) > 0;
     }
 
     public float GetQuantity(Item item)
     {
-        return GetQuantity(item.Name);
-    }
-
-    public float GetQuantity(string item_name)
-    {
-        if (!quantities.ContainsKey(item_name))
+        if (!quantities.ContainsKey(item))
             return 0;
 
-        return quantities[item_name];
+        return quantities[item];
     }
 
     public void Scale(float scalar)
     {
-        foreach (string item_name in quantities.Keys.ToList())
-            quantities[item_name] *= scalar;
+        foreach (Item item in quantities.Keys.ToList())
+            quantities[item] *= scalar;
     }
 
     public Manifest Collated(Manifest other)
@@ -87,5 +97,14 @@ public class Manifest
         combined.Add(other);
 
         return combined;
+    }
+}
+
+
+public static class ManifestExtensions
+{
+    public static Manifest ToManifest(this IEnumerable<Item> items)
+    {
+        return new Manifest(items);
     }
 }

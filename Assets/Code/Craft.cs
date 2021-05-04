@@ -8,6 +8,8 @@ using System.Linq;
 [RequireComponent(typeof(Item))]
 public class Craft : Item.Script
 {
+    public User Owner;
+
     public RectTransform PartsContainer;
 
     public Satellite Satellite

@@ -30,8 +30,7 @@ public partial class Arbitrage
     //the performance characteristics of the craft. 
     
     public Manifest MakeShoppingList(
-        IEnumerable<Item> products,
-        Func<Item, float> GetSupply,
+        Manifest products,
         Func<Item, float, float> GetTransportCosts = null,
         Space fill_space = null,
         float fixed_costs = 0,
@@ -39,8 +38,6 @@ public partial class Arbitrage
         Func<Item, bool> IsProductLegal = null)
     {
         //Input sanitizing
-
-        products = products.Distinct(product => product.Name);
 
         if (GetTransportCosts == null)
             GetTransportCosts = (product, quantity) => 0;
@@ -78,7 +75,7 @@ public partial class Arbitrage
 
         Func<Item, float> CalculateMarginalQuantity = product =>
         {
-            float marginal_quantity = GetSupply(product) -
+            float marginal_quantity = products[product] -
                                       shopping_list[product];
 
             if (fill_space != null)
@@ -98,8 +95,8 @@ public partial class Arbitrage
         Action BakeMarginalQuantities = () =>
         {
             marginal_quantities = 
-                products.ToDictionary(product => product, 
-                                      CalculateMarginalQuantity);
+                products.Samples.ToDictionary(product => product, 
+                                            CalculateMarginalQuantity);
         };
         BakeMarginalQuantities();
 
@@ -187,12 +184,12 @@ public partial class Arbitrage
         Action<Manifest> MarginalizePackage = package =>
         {
             Dictionary<Item, float> fractions = 
-                package.Items.ToDictionary(
+                package.Samples.ToDictionary(
                     product => product, 
                     product => GetMarginalQuantity(product) /
                                package[product]);
 
-            Item most_marginal_product = package.Items
+            Item most_marginal_product = package.Samples
                 .MinElement(product => fractions[product]);
         };
 
@@ -201,7 +198,7 @@ public partial class Arbitrage
             float variable_costs = 0;
             float sale_value = 0;
 
-            foreach (Item product in package.Items)
+            foreach (Item product in package.Samples)
             {
                 float quantity = package[product];
                 float existing_quantity = shopping_list[product];
@@ -221,7 +218,7 @@ public partial class Arbitrage
 
         Func<List<Item>> GetLegalProducts = () =>
         {
-            return products
+            return products.Samples
                 .Where(IsProductLegal)
                 .Where(product => GetMarginalQuantity(product) > 0.000001f)
                 .Where(IsProductProfitable)
@@ -334,7 +331,7 @@ public partial class Arbitrage
                 AddToShoppingList(best_product,
                                   GetMarginalQuantity(best_product));
             else
-                foreach (Item product in package.Items)
+                foreach (Item product in package.Samples)
                     AddToShoppingList(product, package[product]);
 
 
@@ -352,8 +349,7 @@ public partial class Arbitrage
     //on board and thus reduce available space. 
 
     public Manifest MakeShoppingList(
-            IEnumerable<Item> products,
-            Func<Item, float> GetSupply,
+            Manifest products,
             Func<Item, float, float> GetTransportCosts,
             Storage storage, Manifest junk,
             LinearSpace fill_space = null,
@@ -368,7 +364,7 @@ public partial class Arbitrage
 
         return MakeShoppingList(
             products,
-            GetSupply, GetTransportCosts,
+            GetTransportCosts,
             fill_space, fixed_costs,
             constraint_spaces,
             CanTrade);
@@ -379,14 +375,13 @@ public partial class Arbitrage
     //total cost of all products must not exist a given budget. 
 
     public Manifest MakeShoppingList(
-        IEnumerable<Item> products,
+        Manifest products,
         Func<Item, float, float> GetTransportCosts,
         Market market, float budget,
         LinearSpace fill_space = null,
         float fixed_costs = 0,
         IEnumerable<Space> constraint_spaces = null,
-        Func<Item, bool> CanTrade = null,
-        Func<Item, float> GetSupply = null)
+        Func<Item, bool> CanTrade = null)
     {
         if (constraint_spaces == null)
             constraint_spaces = Enumerable.Empty<Space>();
@@ -395,12 +390,9 @@ public partial class Arbitrage
             market,
             (product, quantity) => GetTransportCosts(product, quantity)));
 
-        if (GetSupply == null)
-            GetSupply = product => market.GetTotalSupply(product.Name);
-
         return MakeShoppingList(
             products,
-            GetSupply, GetTransportCosts,
+            GetTransportCosts,
             fill_space, fixed_costs,
             constraint_spaces,
             CanTrade);
@@ -410,15 +402,14 @@ public partial class Arbitrage
     //This combines the features of the above two methods.
 
     public Manifest MakeShoppingList(
-        IEnumerable<Item> products,
+        Manifest products,
         Func<Item, float, float> GetTransportCosts,
         Storage storage, Manifest junk,
         Market market, float budget,
         LinearSpace fill_space = null,
         float fixed_costs = 0,
         IEnumerable<Space> constraint_spaces = null,
-        Func<Item, bool> CanTrade = null,
-        Func<Item, float> GetSupply = null)
+        Func<Item, bool> CanTrade = null)
     {
         if (constraint_spaces == null)
             constraint_spaces = Enumerable.Empty<Space>();
@@ -431,8 +422,7 @@ public partial class Arbitrage
             market, budget,
             fill_space, fixed_costs,
             constraint_spaces,
-            CanTrade, 
-            GetSupply);
+            CanTrade);
     }
 
 

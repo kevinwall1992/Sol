@@ -21,7 +21,7 @@ public class Machine : Item.Script
     { get { return Recipe.OutputQuantity * CyclesPerSecond; } }
 
     public Storage Storage
-    { get { return Item.Station().GetStorage(Item.Owner); } }
+    { get { return Item.Station().GetStorage(Item.Container.Owner); } }
 
     private void Update()
     {
@@ -33,14 +33,14 @@ public class Machine : Item.Script
                        The.Clock.DeltaTime;
 
         cycles = Mathf.Min(cycles, 
-            Recipe.Inputs.Min(pair => Storage.GetQuantity(pair.Key) /
-                                      pair.Value));
+            Recipe.Inputs.Samples.Min(sample => Storage.GetQuantity(sample) /
+                                                Recipe.Inputs[sample]));
 
-        foreach (string input_name in Recipe.Inputs.Keys)
+        foreach (Item sample in Recipe.Inputs.Samples)
         {
-            float quantity = Recipe.Inputs[input_name] * cycles;
+            float quantity = Recipe.Inputs[sample] * cycles;
 
-            Storage.RetrieveQuantity(input_name, quantity);
+            Storage.RetrieveQuantity(sample, quantity);
         }
 
         Storage.StoreQuantity(Recipe.Output, cycles * Recipe.OutputQuantity);

@@ -36,7 +36,7 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
                                                      TransactionPanel.Quantity))
                 ErrorText.text = "Insufficient Space";
             else if (TransactionPanel.Quantity >
-                    Market.GetTotalSupply(TransactionPanel.Item.Name))
+                    Market.GetTotalSupply(TransactionPanel.Item))
                 ErrorText.text = "Insufficient Supply";
             else
             {
@@ -48,7 +48,7 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
         else
         {
             if (TransactionPanel.Quantity >
-                Market.GetTotalDemand(TransactionPanel.Item.Name))
+                Market.GetTotalDemand(TransactionPanel.Item))
                 ErrorText.text = "Insufficent Demand";
             else
             {
@@ -98,14 +98,14 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
                 this.Market().Purchase(
                     The.SessionUser,
                     TransactionPanel.Storage,
-                    TransactionPanel.Item.Name,
+                    TransactionPanel.Item,
                     TransactionPanel.Quantity);
             else
             {
                 this.Market().Sell(
                     The.SessionUser, 
                     TransactionPanel.Storage, 
-                    TransactionPanel.Item.Name, 
+                    TransactionPanel.Item, 
                     TransactionPanel.Quantity);
             }
         }

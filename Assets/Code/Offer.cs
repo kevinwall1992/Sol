@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SaleOffer
@@ -12,17 +13,18 @@ public class SaleOffer
 
     public float OfferedSupply;
     public float AvailableSupply
-    { get { return Mathf.Min(Source.GetQuantity(Sample.Name), OfferedSupply); } }
+    { get { return Mathf.Min(Source.GetQuantity(Sample), OfferedSupply); } }
 
     public float CostPerUnit;
 
-    public SaleOffer(User seller, Storage source, 
-                     Item sample, float quantity, float cost_per_unit)
+
+    public SaleOffer(User seller, Storage source,
+                     Item example, float quantity, float cost_per_unit)
     {
         Seller = seller;
         Source = source;
 
-        Sample = sample;
+        Sample = example.TakeSample();
         OfferedSupply = quantity;
         CostPerUnit = cost_per_unit;
     }
@@ -35,10 +37,9 @@ public class SaleOffer
             quantity > AvailableSupply)
             return 0;
 
-        Item item = Source.Retrieve(Sample.Name, quantity);
+        Item item = Source.Retrieve(Sample, quantity);
         OfferedSupply -= item.Quantity;
 
-        item.Owner = buyer;
         destination.Store(item);
 
         Seller.PrimaryBankAccount.Deposit(
@@ -70,13 +71,13 @@ public class PurchaseOffer
 
     public PurchaseOffer(User buyer,
                          Storage destination,
-                         Item sample,
+                         Item example,
                          float quantity,
                          float cost_per_unit)
     {
         Buyer = buyer;
         Destination = destination;
-        Sample = sample;
+        Sample = example.TakeSample();
         OfferedDemand = quantity;
         ValuePerUnit = cost_per_unit;
     }
@@ -90,8 +91,7 @@ public class PurchaseOffer
             quantity > AvailableDemand)
             return 0;
 
-        Item item = source.Retrieve(Sample.Name, quantity);
-        item.Owner = Buyer;
+        Item item = source.Retrieve(Sample, quantity);
 
         OfferedDemand -= item.Quantity;
 

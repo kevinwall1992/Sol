@@ -33,23 +33,23 @@ public class Arbitrageur : Division
                 List<Action> sale_actions = new List<Action>();
                 List<Action> purchase_actions = new List<Action>();
 
-                foreach (Item item in shopping_list.Items)
+                foreach (Item item in shopping_list.Samples)
                 {
                     float target_quantity = shopping_list.GetQuantity(item);
-                    float existing_quantity = craft.Cargo.GetQuantity(item.Name);
+                    float existing_quantity = craft.Cargo.GetQuantity(item);
 
                     if (target_quantity > existing_quantity)
                         purchase_actions.Add(() => 
                             here.Purchase(User,
                                             craft.Cargo,
-                                            item.Name,
+                                            item,
                                             target_quantity - existing_quantity));
 
                     else if (target_quantity < existing_quantity)
                         sale_actions.Add(() => here.Sell(
                             User, 
                             craft.Cargo,
-                            item.Name,
+                            item,
                             existing_quantity - target_quantity));
                 }
 
@@ -69,15 +69,11 @@ public class Arbitrageur : Division
             The.Stations.Select(station => station.OfficialMarket)
             .Where(market => market != here);
 
-        IEnumerable<Item> products = craft.Cargo.GetSampleItems()
-            .Union(here.Wares, item => item.Name);
-
-        Dictionary<string, float> owned_quantities = products
-            .ToDictionary(item => item.Name,
-                          item => craft.Cargo.GetQuantity(item.Name));
+        Manifest owned_products = new Manifest(craft.Cargo.Items);
+        Manifest products = owned_products.Collated(here.Manifest);
 
         float propellent_available =
-            here.GetTotalSupply(craft.Engine.Propellent.Name);
+            here.GetTotalSupply(craft.Engine.Propellent);
 
         float maximum_cost =
             0.9f *
@@ -105,23 +101,23 @@ public class Arbitrageur : Division
                 (item, quantity) =>
                 {
                     float opportunity_cost = 0;
-                    if (owned_quantities[item.Name] > 0)
+                    if (owned_products[item] > 0)
                     {
                         float withheld_quantity =
-                            Mathf.Min(owned_quantities[item.Name], quantity);
+                            Mathf.Min(owned_products[item], quantity);
 
                         opportunity_cost +=
-                            here.GetSaleValue(item.Name, withheld_quantity);
+                            here.GetSaleValue(item, withheld_quantity);
 
                         quantity -= withheld_quantity;
                     }
 
                     float purchase_cost =
-                        here.GetPurchaseCost(item.Name, quantity);
+                        here.GetPurchaseCost(item, quantity);
 
                     return opportunity_cost + purchase_cost;
                 },
-                (item, quantity) => there.GetSaleValue(item.Name, quantity));
+                (item, quantity) => there.GetSaleValue(item, quantity));
 
 
             //For each arbitrage, create shopping lists for each combination of 
@@ -148,7 +144,7 @@ public class Arbitrageur : Division
                 Manifest provisions = new Manifest();
                 provisions.Add(craft.Engine.Propellent, 
                                        propellent_required);
-                float fixed_costs = provisions.Items
+                float fixed_costs = provisions.Samples
                     .Sum(item => arbitrage.GetPurchaseCost(item, provisions[item]));
 
                 Func<Item, float, float> GetTransportCosts = 

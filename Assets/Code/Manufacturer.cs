@@ -38,10 +38,10 @@ public class Manufacturer : Division
             foreach (Item item in goods)
             {
                 float quantity = Mathf.Min(
-                    station.OfficialMarket.GetTotalDemand(item.Name),
+                    station.OfficialMarket.GetTotalDemand(item),
                     item.Quantity);
 
-                station.OfficialMarket.Sell(User, storage, item.Name, quantity);
+                station.OfficialMarket.Sell(User, storage, item, quantity);
             }
         }
     }
@@ -63,7 +63,7 @@ public class Manufacturer : Division
 
                 station.OfficialMarket.Sell(
                     User, storage, 
-                    machine.Item.Name, 0.2f * storage.GetQuantity(machine.Item.Name));
+                    machine.Item, 0.2f * storage.GetQuantity(machine.Item));
             }
         }
     }
@@ -79,13 +79,13 @@ public class Manufacturer : Division
             Station station = machine.Item.Station();
             Storage storage = GetManufacturingStorage(station);
 
-            foreach (string input_name in machine.Recipe.Inputs.Keys)
+            foreach (Item input in machine.Recipe.Inputs.Samples)
             {
-                float quantity = machine.Storage.GetQuantity(input_name);
+                float quantity = machine.Storage.GetQuantity(input);
 
-                float target_quantity = machine.Recipe.Inputs[input_name] *
+                float target_quantity = machine.Recipe.Inputs[input] *
                                     machine.CyclesPerDay *
-                                    storage.GetQuantity(machine.Item.Name) * 
+                                    storage.GetQuantity(machine.Item) * 
                                     Meeting.DaysBetweenSessions;
 
                 float purchase_quantity = target_quantity - quantity;
@@ -94,7 +94,7 @@ public class Manufacturer : Division
                     continue;
 
                 float maximum_purchase_quantity = station.OfficialMarket
-                    .GetPurchaseQuantity(input_name, User.PrimaryBankAccount.Balance);
+                    .GetPurchaseQuantity(input, User.PrimaryBankAccount.Balance);
                 purchase_quantity =
                     Mathf.Min(purchase_quantity,
                                 maximum_purchase_quantity);
@@ -102,7 +102,7 @@ public class Manufacturer : Division
                 station.OfficialMarket.Purchase(
                     User,
                     machine.Storage,
-                    input_name,
+                    input,
                     purchase_quantity);
             }
         }
@@ -132,7 +132,7 @@ public class Manufacturer : Division
                     float profit_per_day = GetProfitPerMachinePerDay(machine, station);
 
                     float purchase_quantity_ = station.OfficialMarket
-                        .GetPurchaseQuantity(machine.Item.Name, target_purchase_cost);
+                        .GetPurchaseQuantity(machine.Item, target_purchase_cost);
                     float quantity_per_credit = purchase_quantity_ /
                                                 target_purchase_cost;
 
@@ -152,12 +152,12 @@ public class Manufacturer : Division
                 break;
 
             float purchase_quantity = best_station.OfficialMarket
-                .GetPurchaseQuantity(best_machine.Item.Name, target_purchase_cost);
+                .GetPurchaseQuantity(best_machine.Item, target_purchase_cost);
 
             best_station.OfficialMarket
                 .Purchase(User,
                           GetManufacturingStorage(best_station),
-                          best_machine.Item.Name,
+                          best_machine.Item,
                           purchase_quantity);
         }
 
@@ -170,14 +170,15 @@ public class Manufacturer : Division
     float GetProfitPerMachinePerDay(Machine machine, Station station)
     {
         float input_costs_per_day = 0;
-        foreach (string input_name in machine.Recipe.Inputs.Keys)
+
+        foreach (Item input in machine.Recipe.Inputs.Samples)
         {
-            float quantity_per_day = machine.Recipe.Inputs[input_name] *
+            float quantity_per_day = machine.Recipe.Inputs[input] *
                                      machine.CyclesPerDay;
 
             input_costs_per_day += station.OfficialMarket
-                .GetPurchaseCost(input_name, quantity_per_day * 
-                                             Meeting.DaysBetweenSessions) / 
+                .GetPurchaseCost(input, quantity_per_day * 
+                                        Meeting.DaysBetweenSessions) / 
                 Meeting.DaysBetweenSessions;
         }
 
@@ -193,7 +194,7 @@ public class Manufacturer : Division
                                     replacement_costs_per_day;
 
         float sale_value_per_day = station.OfficialMarket
-            .GetSaleValue(machine.Recipe.Output.Name,
+            .GetSaleValue(machine.Recipe.Output,
                           machine.Recipe.OutputQuantity * machine.CyclesPerDay);
 
         return sale_value_per_day - total_costs_per_day;

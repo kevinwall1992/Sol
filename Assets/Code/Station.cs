@@ -51,13 +51,13 @@ public class Station : MonoBehaviour, Visitable
     public IEnumerable<Room> GetRooms(User owner)
     {
         return GetComponentsInChildren<Room>()
-            .Where(room => room.Item.Owner == owner);
+            .Where(room => room.Container.Owner == owner);
     }
       
     public Storage GetStorage(User owner)
     {
         return new Storage(GetComponentsInChildren<ItemContainer>()
-            .Where(container => container.Item.Owner == owner));
+            .Where(container => container.Owner == owner));
     }
 
 

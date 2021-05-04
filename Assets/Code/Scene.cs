@@ -22,6 +22,7 @@ public class Scene : MonoBehaviour
     public ItemPage ItemPage;
     public RefuelingPage RefuelingPage;
     public StationViewer StationViewer;
+    public ItemDatabase ItemDatabase;
 
     public Bank DefaultBank;
     public string SessionUsername;

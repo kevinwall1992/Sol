@@ -24,6 +24,7 @@ public static class The
     public static ItemPage ItemPage { get { return Scene.ItemPage; } }
     public static RefuelingPage RefuelingPage { get { return Scene.RefuelingPage; } }
     public static StationViewer StationViewer { get { return Scene.StationViewer; } }
+    public static ItemDatabase ItemDatabase { get { return Scene.ItemDatabase; } }
     public static Bank DefaultBank { get { return Scene.DefaultBank; } }
     public static string SessionUsername { get { return Scene.SessionUsername; } }
 

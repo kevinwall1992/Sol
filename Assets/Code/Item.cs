@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
+using System.Linq;
 
 [ExecuteAlways]
 public class Item : MonoBehaviour
 {
-    public User Owner;
-
     public string Name, Units, ShortName, Qualifier;
 
     [TextArea(15, 20)]
@@ -16,24 +15,62 @@ public class Item : MonoBehaviour
 
     public Sprite ProfilePicture, Icon;
 
-    public System.Func<string> GetQuantityString { get; set; }
+    System.Func<string> CustomGetQuantityString = null;
+    public System.Func<string> GetQuantityString
+    {
+        get
+        {
+            if(CustomGetQuantityString == null)
+                return () => Quantity.ToShortString() + Units;
+
+            return CustomGetQuantityString;
+        }
+
+        set { CustomGetQuantityString = value; }
+    }
 
     public ItemContainer Container
-    { get { return GetComponentInParent<ItemContainer>(); } }
+    {
+        get
+        {
+            if (transform.parent == null)
+                return null;
 
-    void Start()
+            return transform.parent.GetComponentInParent<ItemContainer>();
+        }
+    }
+
+    public IEnumerable<Script> Scripts
+    { get { return GetComponents<Script>(); } }
+
+    public IEnumerable<EquivalenceScript> EquivalenceScripts
+    { get { return GetComponents<EquivalenceScript>(); } }
+
+    public bool IsFungible
+    { get { return EquivalenceScripts.Count() > 0; } }
+    
+    void Update()
     {
         
     }
 
-    void Update()
-    {
-        Craft craft = this.Craft();
-        if (Owner == null && craft != null)
-            Owner = craft.Item.Owner;
 
-        if (GetQuantityString == null)
-            GetQuantityString = () => Quantity.ToShortString() + Units;
+    //Equivalency means that two Items are the same for all purposes. 
+
+    public bool IsEquivalent(Item other)
+    {
+        if (this == other)
+            return true;
+
+        if (!IsFungible)
+            return false;
+
+        IEnumerable<Vote> votes = EquivalenceScripts
+            .Select(script => script.IsEquivalent(other))
+            .Concat(other.EquivalenceScripts
+                .Select(script => script.IsEquivalent(this)));
+
+        return votes.IsUnanimous();
     }
 
     public Item RemoveQuantity(float quantity_removed)
@@ -56,11 +93,46 @@ public class Item : MonoBehaviour
         return copy;
     }
 
+
+    static IEqualityComparer<Item> equivalency_comparer;
+    public static IEqualityComparer<Item> EquivalencyComparer
+    {
+        get
+        {
+            if (equivalency_comparer == null)
+                equivalency_comparer = new CustomEqualityComparer<Item>(
+                    (a, b) => a.IsEquivalent(b),
+                    item => 0);
+
+            return equivalency_comparer;
+        }
+    }
+
+
     [RequireComponent(typeof(Item))]
     public abstract class Script : MonoBehaviour
     {
         public Item Item { get { return GetComponent<Item>(); } }
+
+        public T Copy<T>() where T : Script
+        {
+            if (!Item.HasComponent<T>())
+                return null;
+
+            return Item.Copy().GetComponent<T>();
+        }
     }
+
+    public abstract class EquivalenceScript : Script
+    {
+        public abstract Vote IsEquivalent(Item other);
+    }
+}
+
+
+public class ItemSet : NullableSet<Item>
+{
+    public ItemSet() : base(Item.EquivalencyComparer) { }
 }
 
 
@@ -80,6 +152,9 @@ public static class ItemExtensions
 
     public static bool IsPeople(this Item item) { return item.People(); }
     public static People People(this Item item) { return item.GetComponent<People>(); }
+
+    public static bool IsFungible(this Item item) { return item.GetComponent<Item.EquivalenceScript>() != null; }
+    public static bool IsUnique(this Item item) { return !item.IsFungible(); }
 
     public static float Mass(this Item item)
     { return item.Physical().Mass; }

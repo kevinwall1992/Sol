@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.IO;
+using System.Reflection;
+using System.Linq.Expressions;
+using RotaryHeart.Lib.SerializableDictionary;
 
 
 public static class Utility
@@ -58,6 +61,16 @@ public static class Utility
     public static Dictionary<T, U> ToDictionary<T, U>(this IEnumerable<Tuple<T, U>> tuples)
     {
         return tuples.ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
+    }
+
+    public static Dictionary<T, U> ToDictionary<T, U>(this IEnumerable<ValueTuple<T, U>> value_tuples)
+    {
+        return value_tuples.ToTuples().ToDictionary();
+    }
+
+    public static IEnumerable<Tuple<T, U>> ToTuples<T, U>(this IEnumerable<ValueTuple<T, U>> value_tuples)
+    {
+        return value_tuples.ToTuples();
     }
 
     public static List<T> CreateNullList<T>(int size) where T : class
@@ -350,6 +363,13 @@ public static class Utility
     }
 
     public static IEnumerable<V> Select<T, U, V>(
+        this SerializableDictionaryBase<T, U> dictionary,
+        Func<T, U, V> selector)
+    {
+        return dictionary.Select(pair => selector(pair.Key, pair.Value));
+    }
+
+    public static IEnumerable<V> Select<T, U, V>(
        this IEnumerable<ValueTuple<T, U>> pairs,
        Func<T, U, V> selector)
     {
@@ -398,6 +418,12 @@ public static class Utility
     public static int GetEnumSize<T>()
     {
         return GetEnumValues<T>().Count();
+    }
+
+    public static bool IsOverride(this MethodInfo method_info)
+    {
+        return method_info.GetBaseDefinition().DeclaringType != 
+               method_info.DeclaringType;
     }
 
     //Formats a float to 5 or less characters

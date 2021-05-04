@@ -64,9 +64,9 @@ public class MarketPageTransactionPanel : MonoBehaviour, MarketPage.Element
             if (IsOffer)
                 return CreditsPerUnit * Quantity;
             else if (IsPurchase)
-                return Market.GetPurchaseCost(Item.Name, Quantity);
+                return Market.GetPurchaseCost(Item, Quantity);
             else
-                return Market.GetSaleValue(Item.Name, Quantity);
+                return Market.GetSaleValue(Item, Quantity);
         }
     }
 
@@ -75,9 +75,9 @@ public class MarketPageTransactionPanel : MonoBehaviour, MarketPage.Element
         get
         {
             if (IsPurchase)
-                return Market.GetTotalSupply(Item.Name);
+                return Market.GetTotalSupply(Item);
             else
-                return SelectStorageButton.Storage.GetQuantity(Item.Name);
+                return SelectStorageButton.Storage.GetQuantity(Item);
         }
     }
 
@@ -119,8 +119,7 @@ public class MarketPageTransactionPanel : MonoBehaviour, MarketPage.Element
 
         float scaled_cost_per_unit =
             InputScale *
-            Market.GetPurchaseCost(Item.Name, 0.001f) /
-            0.001f;
+            Market.GetGoingPrice(Item);
         AdvertisedCreditsPerUnitText.text =
             scaled_cost_per_unit.ToShortMoneyString();
 

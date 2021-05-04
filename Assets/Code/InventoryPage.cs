@@ -20,7 +20,7 @@ public class InventoryPage : Page
     private void Update()
     {
         if (ItemPanel.Items == null)
-            ItemPanel.Items = Storage.GetSampleItems();
+            ItemPanel.Items = Storage.Manifest.Samples;
 
         if (ItemPanel.SelectedItem != null)
         {

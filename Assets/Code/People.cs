@@ -72,11 +72,11 @@ public class People : User.Script
                 break;
 
             float quantity = 
-                Market.GetPurchaseQuantity(most_important_need.ItemName, credits);
+                Market.GetPurchaseQuantity(most_important_need.Sample, credits);
 
             Market.Purchase(User,
                             Storage,
-                            most_important_need.ItemName, 
+                            most_important_need.Sample, 
                             quantity);
         }
 
@@ -176,17 +176,22 @@ public class People : User.Script
         public float MaximumDeathRate;
         public float MaximumGrowthRate;
 
+        public Item Sample { get { return The.ItemDatabase.GetSample(ItemName); } }
+
         public ItemNeed()
         {
             GetFulfillment = 
-                people => people.Storage.GetQuantity(ItemName) / 
+                people => people.Storage.GetQuantity(Sample) / 
                           (people.Population * people.ShoppingTrip.DaysBetweenSessions);
 
-            GetMarginalFulfillment = 
-                (people, credits) => 
-                people.Item.Station().OfficialMarket
-                    .GetPurchaseQuantity(ItemName, credits) /
-                    (people.Population * people.ShoppingTrip.DaysBetweenSessions);
+            GetMarginalFulfillment =
+            (people, credits) =>
+            {
+                Market market = people.Item.Station().OfficialMarket;
+
+                return market.GetPurchaseQuantity(Sample, credits) /
+                       (people.Population * people.ShoppingTrip.DaysBetweenSessions);
+            };
 
             FulfillmentToGrowthRateModifier = 
             delegate (float quantity)
