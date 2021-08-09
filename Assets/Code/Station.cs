@@ -50,16 +50,9 @@ public class Station : MonoBehaviour, Visitable
 
     public IEnumerable<Room> GetRooms(User owner)
     {
-        return GetComponentsInChildren<Room>()
-            .Where(room => room.Container.Owner == owner);
+        return Craft.GetInventory(owner).Items
+            .SelectComponents<Item, Room>();
     }
-      
-    public Storage GetStorage(User owner)
-    {
-        return new Storage(GetComponentsInChildren<ItemContainer>()
-            .Where(container => container.Owner == owner));
-    }
-
 
     public class Module : Craft.Part
     {

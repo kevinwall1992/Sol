@@ -1,19 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-[ExecuteAlways]
-[RequireComponent(typeof(SolidItemContainer))]
 public class Room : Craft.Part
 {
     public float Area;
 
-    public float Volume { get { return Area * Floor.CeilingHeight; } }
+    public float Volume { get { return Area * 2.4f; } }
 
-    public Ring.Floor Floor
-    { get { return GetComponentInParent<Ring.Floor>(); } }
+    public Pocket RoomPocketPrefab;
 
-    public ItemContainer Container
-    { get { return GetComponent<ItemContainer>(); } }
+    public override Manifest BoundItems
+    {
+        get
+        {
+            Manifest manifest = new Manifest();
+            manifest[RoomPocketPrefab.Item] = 
+                Volume / RoomPocketPrefab.Size;
+
+            return manifest;
+        }
+    }
 
 
     public class Furniture : Item

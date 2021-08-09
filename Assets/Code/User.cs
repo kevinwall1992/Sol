@@ -20,7 +20,7 @@ public class User : MonoBehaviour
     }
 
     public IEnumerable<Craft> Crafts
-    { get { return The.Crafts.Where(craft => craft.Owner == this); } }
+    { get { return The.Crafts.Where(craft => craft.GetOwner() == this); } }
 
     private void Start()
     {
@@ -36,6 +36,17 @@ public class User : MonoBehaviour
         if (PrimaryBankAccount == null && BankAccounts.Count() > 0)
              BankAccounts.First();
     }
+
+    public Inventory GetInventory(Craft craft)
+    {
+        return craft.GetInventory(this);
+    }
+
+    public Inventory GetInventory(Station station)
+    {
+        return station.Craft.GetInventory(this);
+    }
+
 
     [RequireComponent(typeof(User))]
     public class Script : MonoBehaviour

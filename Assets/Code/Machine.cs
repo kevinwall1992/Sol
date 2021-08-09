@@ -20,12 +20,12 @@ public class Machine : Item.Script
     public float QuantityPerSecond
     { get { return Recipe.OutputQuantity * CyclesPerSecond; } }
 
-    public Storage Storage
-    { get { return Item.Station().GetStorage(Item.Container.Owner); } }
+    public Inventory Inventory
+    { get { return Item.Inventory; } }
 
     private void Update()
     {
-        if (!IsOn || Storage.GetUnusedVolumeFor(Recipe.Output) == 0)
+        if (!IsOn || Inventory.GetSpaceAvailable(Recipe.Output) == 0)
             return;
 
         float cycles = Item.Quantity *
@@ -33,16 +33,16 @@ public class Machine : Item.Script
                        The.Clock.DeltaTime;
 
         cycles = Mathf.Min(cycles, 
-            Recipe.Inputs.Samples.Min(sample => Storage.GetQuantity(sample) /
+            Recipe.Inputs.Samples.Min(sample => Inventory.GetQuantity(sample) /
                                                 Recipe.Inputs[sample]));
 
         foreach (Item sample in Recipe.Inputs.Samples)
         {
             float quantity = Recipe.Inputs[sample] * cycles;
 
-            Storage.RetrieveQuantity(sample, quantity);
+            Inventory.TakeOut(sample, quantity);
         }
 
-        Storage.StoreQuantity(Recipe.Output, cycles * Recipe.OutputQuantity);
+        Inventory.PutIn(Recipe.Output, cycles * Recipe.OutputQuantity);
     }
 }

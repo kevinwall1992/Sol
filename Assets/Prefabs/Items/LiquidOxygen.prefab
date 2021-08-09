@@ -111,5 +111,9 @@ PrefabInstance:
       propertyPath: Name
       value: Liquid Oxygen
       objectReference: {fileID: 0}
+    - target: {fileID: 9123380315007085376, guid: 87d3073dc1da7024daa4fe99e0a675aa, type: 3}
+      propertyPath: Type
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87d3073dc1da7024daa4fe99e0a675aa, type: 3}

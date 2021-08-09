@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class SaleOffer
 {
     public User Seller;
-    public Storage Source;
+    public Inventory Source;
 
     public Item Sample;
 
@@ -18,7 +18,7 @@ public class SaleOffer
     public float CostPerUnit;
 
 
-    public SaleOffer(User seller, Storage source,
+    public SaleOffer(User seller, Inventory source,
                      Item example, float quantity, float cost_per_unit)
     {
         Seller = seller;
@@ -31,21 +31,21 @@ public class SaleOffer
 
     public SaleOffer() { }
 
-    public float Transact(User buyer, Storage destination, float quantity)
+    public bool Transact(User buyer, Inventory destination, float quantity)
     {
         if (quantity > OfferedSupply ||
             quantity > AvailableSupply)
-            return 0;
+            return false;
 
-        Item item = Source.Retrieve(Sample, quantity);
-        OfferedSupply -= item.Quantity;
+        Source.TakeOut(Sample, quantity);
+        OfferedSupply -= quantity;
 
-        destination.Store(item);
+        destination.PutIn(Sample, quantity);
 
         Seller.PrimaryBankAccount.Deposit(
-            buyer.PrimaryBankAccount.Withdraw(item.Quantity * CostPerUnit));
+            buyer.PrimaryBankAccount.Withdraw(quantity * CostPerUnit));
 
-        return item.Quantity;
+        return true;
     }
 }
 
@@ -53,7 +53,7 @@ public class SaleOffer
 public class PurchaseOffer
 {
     public User Buyer;
-    public Storage Destination;
+    public Inventory Destination;
 
     public Item Sample;
 
@@ -63,14 +63,14 @@ public class PurchaseOffer
         get
         {
             return Mathf.Min(OfferedDemand,
-                             Destination.GetMaximumVolumeOf(Sample));
+                             Destination.GetSpaceAvailable(Sample));
         }
     }
 
     public float ValuePerUnit;
 
     public PurchaseOffer(User buyer,
-                         Storage destination,
+                         Inventory destination,
                          Item example,
                          float quantity,
                          float cost_per_unit)
@@ -84,26 +84,26 @@ public class PurchaseOffer
 
     public PurchaseOffer() { }
 
-    public float Transact(User seller, Storage source,
+    public bool Transact(User seller, Inventory source,
                          float quantity)
     {
         if (quantity > OfferedDemand ||
             quantity > AvailableDemand)
-            return 0;
+            return false;
 
-        Item item = source.Retrieve(Sample, quantity);
+        source.TakeOut(Sample, quantity);
 
-        OfferedDemand -= item.Quantity;
+        OfferedDemand -= quantity;
 
         //Temporary hack for testing purposes
         if (Destination != null)
-            Destination.Store(item);
+            Destination.PutIn(Sample, quantity);
         else if (Buyer.HasComponent<StationManagement>())
-            Buyer.GetComponent<StationManagement>().Stations.First().Craft.Cargo.Store(item);
+            Buyer.GetComponent<StationManagement>().Stations.First().Craft.Cargo.PutIn(Sample, quantity);
 
         seller.PrimaryBankAccount.Deposit(
-            Buyer.PrimaryBankAccount.Withdraw(item.Quantity * ValuePerUnit));
+            Buyer.PrimaryBankAccount.Withdraw(quantity * ValuePerUnit));
 
-        return item.Quantity;
+        return true;
     }
 }

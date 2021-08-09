@@ -5,7 +5,7 @@ using System.Linq;
 
 public class Manifest
 {
-    Dictionary<Item, float> quantities =
+    public Dictionary<Item, float> quantities =
         new Dictionary<Item, float>(Item.EquivalencyComparer);
 
     public IEnumerable<Item> Samples

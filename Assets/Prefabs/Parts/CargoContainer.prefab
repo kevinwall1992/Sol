@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2685874469992360618
+--- !u!1 &3065123460065207902
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1528081961778778163}
-  - component: {fileID: 5340092135517338885}
-  - component: {fileID: 2761816459599646283}
-  - component: {fileID: 1476872632008952240}
-  - component: {fileID: 886578985757926787}
+  - component: {fileID: 2394665655449289052}
+  - component: {fileID: 1514122272780253157}
+  - component: {fileID: 4575567860436961959}
+  - component: {fileID: 3288191553960534437}
   m_Layer: 0
   m_Name: CargoContainer
   m_TagString: Untagged
@@ -20,13 +19,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1528081961778778163
+--- !u!224 &2394665655449289052
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685874469992360618}
+  m_GameObject: {fileID: 3065123460065207902}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -39,66 +38,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5340092135517338885
+--- !u!114 &1514122272780253157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685874469992360618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VolumePerUnit: 200000
---- !u!114 &2761816459599646283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685874469992360618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3a1e71825f6cfe438eb1f99203888d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1476872632008952240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685874469992360618}
+  m_GameObject: {fileID: 3065123460065207902}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
   Name: Cargo Container
   Units: 
   ShortName: 
   Qualifier: 
   Description: 
   Quantity: 1
+  Type: 0
   ProfilePicture: {fileID: 0}
   Icon: {fileID: 0}
---- !u!114 &886578985757926787
+--- !u!114 &4575567860436961959
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2685874469992360618}
+  m_GameObject: {fileID: 3065123460065207902}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MassPerUnit: 1000
-  VolumePerUnit: 10
+  MassPerUnit: 5000
+  VolumePerUnit: 0
   SpecificHeatCapacity: 0
   DefaultTemperature: 294
   HeatEnergy: 0
+--- !u!114 &3288191553960534437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065123460065207902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 986f38374efbada409c22ec120db59bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PocketPrefab: {fileID: 2503345857355044579, guid: ead6cf4ff273f5f42a35b48d51c8c0a0, type: 3}
+  CubicMetersPerUnit: 113

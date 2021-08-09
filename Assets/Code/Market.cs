@@ -27,16 +27,16 @@ public class Market : MonoBehaviour
         //This a hack until we get rid of in-editor offers
         foreach (PurchaseOffer offer in PurchaseOffers)
             if (offer.Destination == null)
-                offer.Destination = Station.GetStorage(offer.Buyer);
+                offer.Destination = Station.Craft.GetInventory(offer.Buyer);
 
         foreach (SaleOffer offer in SaleOffers)
             if (offer.Source == null)
-                offer.Source = Station.GetStorage(offer.Seller);
+                offer.Source = Station.Craft.GetInventory(offer.Seller);
     }
 
     private void Update()
     {
-
+        
     }
 
     public PurchaseOffer PostOffer(PurchaseOffer purchase_offer)
@@ -210,15 +210,15 @@ public class Market : MonoBehaviour
     }
 
     //The following two methods are all-or-nothing. 
-    public bool Purchase(User buyer, Storage destination,
+    public bool Purchase(User buyer, Inventory destination,
                          Item example, float quantity)
     {
         if (quantity > GetTotalSupply(example) ||
             quantity > GetTotalSupply(example))
             return false;
 
-        if (quantity * example.GetVolumePerUnit() >
-            destination.GetUnusedVolumeFor(example))
+        if (quantity * example.UnitSize >
+            destination.GetSpaceAvailable(example))
             return false;
 
         foreach (SaleOffer offer in GetSortedSaleOffersFor(example))
@@ -226,13 +226,15 @@ public class Market : MonoBehaviour
             if (quantity <= 0)
                 break;
 
-            quantity -= offer.Transact(buyer, destination, quantity);
+            float transaction_quantity = Mathf.Min(offer.AvailableSupply, quantity);
+            offer.Transact(buyer, destination, quantity);
+            quantity -= transaction_quantity;
         }
 
         return true;
     }
 
-    public bool Sell(User seller, Storage source,
+    public bool Sell(User seller, Inventory source,
                      Item example, float quantity)
     {
         if (quantity > source.GetQuantity(example))
@@ -245,7 +247,9 @@ public class Market : MonoBehaviour
             if (quantity <= 0)
                 break;
 
-            quantity -= offer.Transact(seller, source, quantity);
+            float transaction_quantity = Mathf.Min(offer.AvailableDemand, quantity);
+            offer.Transact(seller, source, quantity);
+            quantity -= transaction_quantity;
         }
 
         return true;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bridge : LifeSupport
+public class Bridge : Craft.Part
 {
 
 }

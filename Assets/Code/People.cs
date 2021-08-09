@@ -21,20 +21,10 @@ public class People : User.Script
         set { Item.Quantity = value; }
     }
 
-    public Storage Housing
-    {
-        get
-        {
-            return new Storage(Item.Station().GetRooms(User)
-                .Where(room => room.HasComponent<Housing>())
-                .Select(room => room.Container));
-        }
-    }
-
     public Market Market { get { return Item.Station().OfficialMarket; } }
 
-    public Storage Storage
-    { get { return Item.Station().GetStorage(User); } }
+    public Inventory Inventory
+    { get { return Item.Station().Craft.GetInventory(User); } }
 
     public Item Item { get { return GetComponent<Item>(); } }
 
@@ -75,7 +65,7 @@ public class People : User.Script
                 Market.GetPurchasableQuantity(most_important_need.Sample, credits);
 
             Market.Purchase(User,
-                            Storage,
+                            Inventory,
                             most_important_need.Sample, 
                             quantity);
         }
@@ -86,9 +76,9 @@ public class People : User.Script
         //Nom nom
 
         foreach (ItemNeed need in ItemNeeds)
-            Storage.TouchItems(item => item.Quantity = 0, 
-                               item => item.Name == need.ItemName && 
-                                       !item.HasComponent<Housing>());
+            Inventory.Touch(item => item.Quantity = 0, 
+                           item => item.Name == need.ItemName && 
+                           !item.HasComponent<Housing>());
 
 
         //Get laid (/ to rest)
@@ -181,7 +171,7 @@ public class People : User.Script
         public ItemNeed()
         {
             GetFulfillment = 
-                people => people.Storage.GetQuantity(Sample) / 
+                people => people.Inventory.GetQuantity(Sample) / 
                           (people.Population * people.ShoppingTrip.DaysBetweenSessions);
 
             GetMarginalFulfillment =

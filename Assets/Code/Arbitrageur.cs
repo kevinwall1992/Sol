@@ -93,6 +93,8 @@ public class Arbitrageur : Division
             for (int i = 0; i < 20; i++)
                 cargo_masses.Add(0.1f * craft.CurbMass * Mathf.Pow(1.6f, i));
 
+            var boo0 = cargo_masses;
+
 
             //For each destination Market, create an Arbitrage describing the cost
             //to purchase goods here and the value of selling goods there.
@@ -157,7 +159,9 @@ public class Arbitrageur : Division
                     here, maximum_cost - fixed_costs,
                     new Arbitrage.LinearSpace(
                         cargo_mass, product => product.GetMassPerUnit()),
-                    fixed_costs);
+                    fixed_costs, 
+                    null, 
+                    item => item.IsPhysical());
 
                 float roi = arbitrage.GetROIPerYear(
                     shopping_list, 

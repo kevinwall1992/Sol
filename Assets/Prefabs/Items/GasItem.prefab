@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: Name
       value: Gas Item
       objectReference: {fileID: 0}
+    - target: {fileID: 380037332346156015, guid: 14884309a72425f409bcfac085525848, type: 3}
+      propertyPath: Type
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6118227334824784192, guid: 14884309a72425f409bcfac085525848, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

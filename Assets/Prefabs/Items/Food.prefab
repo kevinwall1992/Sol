@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: Name
       value: Food
       objectReference: {fileID: 0}
+    - target: {fileID: 380037332346156015, guid: 14884309a72425f409bcfac085525848, type: 3}
+      propertyPath: Type
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1394403825504710481, guid: 14884309a72425f409bcfac085525848, type: 3}
       propertyPath: MassPerUnit
       value: 1000

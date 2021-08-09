@@ -49,4 +49,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Item
+  Units: 
+  ShortName: 
+  Qualifier: 
+  Description: 
   Quantity: 1
+  Type: 0
+  ProfilePicture: {fileID: 0}
+  Icon: {fileID: 0}

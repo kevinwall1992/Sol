@@ -40,6 +40,10 @@ PrefabInstance:
       propertyPath: Name
       value: Physical Item
       objectReference: {fileID: 0}
+    - target: {fileID: 433131751897007534, guid: 00743d207019db2429cf4f22c8120380, type: 3}
+      propertyPath: Type
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6317615281148675841, guid: 00743d207019db2429cf4f22c8120380, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

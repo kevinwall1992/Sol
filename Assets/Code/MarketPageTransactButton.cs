@@ -32,8 +32,8 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
             if (The.SessionUser.PrimaryBankAccount.Balance <
                 TransactionPanel.TransactionCreditValue)
                 ErrorText.text = "Insufficient Credits";
-            else if (!TransactionPanel.Storage.CanFit(TransactionPanel.Item,
-                                                     TransactionPanel.Quantity))
+            else if (!TransactionPanel.Inventory.CanFit(TransactionPanel.Item,
+                                                       TransactionPanel.Quantity))
                 ErrorText.text = "Insufficient Space";
             else if (TransactionPanel.Quantity >
                     Market.GetTotalSupply(TransactionPanel.Item))
@@ -78,7 +78,7 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
             if (TransactionPanel.IsPurchase)
                 this.Market().PostOffer(new PurchaseOffer(
                     The.SessionUser,
-                    TransactionPanel.Storage,
+                    TransactionPanel.Inventory,
                     TransactionPanel.Item,
                     TransactionPanel.Quantity,
                     TransactionPanel.CreditsPerUnit));
@@ -86,7 +86,7 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
             {
                 this.Market().PostOffer(new SaleOffer(
                     The.SessionUser,
-                    TransactionPanel.Storage,
+                    TransactionPanel.Inventory,
                     TransactionPanel.Item,
                     TransactionPanel.Quantity,
                     TransactionPanel.CreditsPerUnit));
@@ -97,14 +97,14 @@ public class MarketPageTransactButton : Button.Script, MarketPage.Element
             if (TransactionPanel.IsPurchase)
                 this.Market().Purchase(
                     The.SessionUser,
-                    TransactionPanel.Storage,
+                    TransactionPanel.Inventory,
                     TransactionPanel.Item,
                     TransactionPanel.Quantity);
             else
             {
                 this.Market().Sell(
                     The.SessionUser, 
-                    TransactionPanel.Storage, 
+                    TransactionPanel.Inventory, 
                     TransactionPanel.Item, 
                     TransactionPanel.Quantity);
             }

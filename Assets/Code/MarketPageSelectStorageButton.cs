@@ -9,13 +9,12 @@ public class MarketPageSelectStorageButton : Button.Script, MarketPage.Element
     bool UseWarehouse
     { get { return storage_craft == null; } }
 
-    public Storage Storage
+    public Inventory Inventory
     {
         get
         {
             if (UseWarehouse)
-                return this.Market().Station
-                   .GetStorage(The.SessionUser);
+                return this.Market().Station.Craft.GetInventory(The.SessionUser);
             else
                 return storage_craft.Cargo;
         }

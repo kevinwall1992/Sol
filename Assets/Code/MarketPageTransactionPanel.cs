@@ -44,7 +44,7 @@ public class MarketPageTransactionPanel : MonoBehaviour, MarketPage.Element
                                  UnitsText, 
                                  PerUnitText;
 
-    public Storage Storage { get { return SelectStorageButton.Storage; } }
+    public Inventory Inventory { get { return SelectStorageButton.Inventory; } }
 
     public bool IsOffer
     {
@@ -77,7 +77,7 @@ public class MarketPageTransactionPanel : MonoBehaviour, MarketPage.Element
             if (IsPurchase)
                 return Market.GetTotalSupply(Item);
             else
-                return SelectStorageButton.Storage.GetQuantity(Item);
+                return Inventory.GetQuantity(Item);
         }
     }
 

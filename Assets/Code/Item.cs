@@ -13,7 +13,13 @@ public class Item : MonoBehaviour
 
     public float Quantity;
 
+    public PocketType Type = PocketType.None;
+
     public Sprite ProfilePicture, Icon;
+
+    public float UnitSize { get { return Pocket.GetUnitSize(this); } }
+    public float Size { get { return UnitSize * Quantity; } }
+
 
     System.Func<string> CustomGetQuantityString = null;
     public System.Func<string> GetQuantityString
@@ -29,14 +35,14 @@ public class Item : MonoBehaviour
         set { CustomGetQuantityString = value; }
     }
 
-    public ItemContainer Container
+    public Inventory Inventory
     {
         get
         {
             if (transform.parent == null)
                 return null;
 
-            return transform.parent.GetComponentInParent<ItemContainer>();
+            return transform.parent.GetComponentInParent<Inventory>();
         }
     }
 

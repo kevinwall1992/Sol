@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 2394665655449289052}
   - component: {fileID: 1514122272780253157}
   - component: {fileID: 4575567860436961959}
-  - component: {fileID: 2448671280928062846}
-  - component: {fileID: 517166250021444723}
   - component: {fileID: 1061475716178044379}
+  - component: {fileID: 5720590458646600141}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -52,13 +51,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
   Name: Room
   Units: 
   ShortName: 
   Qualifier: 
   Description: 
   Quantity: 1
+  Type: 0
   ProfilePicture: {fileID: 0}
   Icon: {fileID: 0}
 --- !u!114 &4575567860436961959
@@ -78,31 +77,6 @@ MonoBehaviour:
   SpecificHeatCapacity: 0
   DefaultTemperature: 294
   HeatEnergy: 0
---- !u!114 &2448671280928062846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3065123460065207902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Volume: 50
---- !u!114 &517166250021444723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3065123460065207902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a110b1cd445e422458a193a5385f82ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1061475716178044379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,3 +89,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84d1a4d80e59fa4490d69754db20f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Area: 20
+  RoomPocketPrefab: {fileID: 2503345857355044579, guid: c019688389b1c204f9cd2b9feefbf57a, type: 3}
+--- !u!114 &5720590458646600141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065123460065207902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3334ea3e8c337a459a0d34be8f34f12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 4
+  BaseSize: 48

@@ -12,22 +12,11 @@ public class Engine : Craft.Part
 
     public Craft Craft { get { return this.Craft(); } }
 
-    //Is this useful when you can just use Craft.Cargo?
-    Storage PropellentStorage
-    {
-        get
-        {
-            return Craft.Cargo.GetSubset(
-                container => container.IsStorable(Propellent));
-        }
-    }
-
     public float PropellentMass
     {
         get
         {
-            return PropellentStorage.ItemContainers
-                .Sum(container => container.ItemMass);
+            return Craft.Cargo.GetQuantity(Propellent) * Propellent.GetMassPerUnit();
         }
     }
 
@@ -35,7 +24,7 @@ public class Engine : Craft.Part
     {
         get
         {
-            return PropellentStorage.GetMaximumVolumeOf(Propellent);
+            return Craft.Cargo.GetSize(Propellent.Type);
         }
     }
 
@@ -69,10 +58,9 @@ public class Engine : Craft.Part
         if (PropellentMass < propellent_mass)
             return;
 
-        Item propellent = PropellentStorage.Retrieve(
+        Craft.Cargo.TakeOut(
             Propellent,
             propellent_mass / Propellent.Physical().MassPerUnit);
-        GameObject.Destroy(propellent.gameObject);
 
         Craft.Motion = maneuver.ResultingMotion;
     }
@@ -292,8 +280,8 @@ public class Engine : Craft.Part
 
     public bool PurchasePropellent(float propellent_mass, Market market)
     {
-        return market.Purchase(Craft.Owner,
-                               PropellentStorage,
+        return market.Purchase(Craft.GetOwner(),
+                               Craft.Cargo,
                                Propellent,
                                PropellentMassToUnits(propellent_mass));
     }
@@ -303,7 +291,7 @@ public class Engine : Craft.Part
         if (PropellentMass < propellent_mass)
             propellent_mass = PropellentMass;
 
-        return market.Sell(Craft.Owner, Craft.Cargo, Propellent,
+        return market.Sell(Craft.GetOwner(), Craft.Cargo, Propellent,
                PropellentMassToUnits(propellent_mass));
     }
 
@@ -315,8 +303,4 @@ public class Engine : Craft.Part
 
         return true;
     }
-
-
-    [System.Serializable]
-    public class TankDictionary : SerializableDictionaryBase<string, FluidContainer> { }
 }

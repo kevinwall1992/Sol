@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &490939057105268616
+--- !u!1 &3065123460065207902
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7464959667496144468}
-  - component: {fileID: 8866652003357993205}
-  - component: {fileID: 2161058962585514277}
-  - component: {fileID: 8637398186124223546}
-  - component: {fileID: 3658875894853928531}
+  - component: {fileID: 2394665655449289052}
+  - component: {fileID: 1514122272780253157}
+  - component: {fileID: 4575567860436961959}
+  - component: {fileID: 8127844510865180504}
   m_Layer: 0
-  m_Name: LifeSupport
+  m_Name: LiquidTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &7464959667496144468
+--- !u!224 &2394665655449289052
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490939057105268616}
+  m_GameObject: {fileID: 3065123460065207902}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -39,66 +38,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8866652003357993205
+--- !u!114 &1514122272780253157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490939057105268616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 257799fc299eb6649b0f3a192130fc23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VolumePerUnit: 20
---- !u!114 &2161058962585514277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490939057105268616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bf71d850dea486428b9df8a66c63fab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8637398186124223546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490939057105268616}
+  m_GameObject: {fileID: 3065123460065207902}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abca5fefec7445a49b1df962800e927a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
-  Name: Life Support
+  Name: Liquid Tank
   Units: 
   ShortName: 
   Qualifier: 
   Description: 
   Quantity: 1
+  Type: 0
   ProfilePicture: {fileID: 0}
   Icon: {fileID: 0}
---- !u!114 &3658875894853928531
+--- !u!114 &4575567860436961959
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490939057105268616}
+  m_GameObject: {fileID: 3065123460065207902}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2edcb73d5f914f43bdf9cd6f4e07632, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MassPerUnit: 1000
-  VolumePerUnit: 10
+  MassPerUnit: 30000
+  VolumePerUnit: 0
   SpecificHeatCapacity: 0
   DefaultTemperature: 294
   HeatEnergy: 0
+--- !u!114 &8127844510865180504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065123460065207902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 986f38374efbada409c22ec120db59bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PocketPrefab: {fileID: 2503345857355044579, guid: 3eae7830f387eb64dac9e068488526ab, type: 3}
+  CubicMetersPerUnit: 113

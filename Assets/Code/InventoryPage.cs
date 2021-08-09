@@ -9,7 +9,7 @@ public class InventoryPage : Page
 
     public TMPro.TextMeshProUGUI AddressLine1, AddressLine2;
 
-    public Storage Storage;
+    public Inventory Inventory;
 
 
     private void Start()
@@ -20,7 +20,7 @@ public class InventoryPage : Page
     private void Update()
     {
         if (ItemPanel.Items == null)
-            ItemPanel.Items = Storage.Manifest.Samples;
+            ItemPanel.Items = Inventory.Manifest.Samples;
 
         if (ItemPanel.SelectedItem != null)
         {

@@ -50,8 +50,8 @@ public class TransportCraftPanel : UIElement
             FuelBar.Value = Craft.Engine.GetVelocityChangeAvailable() / 1000;
         }
 
-        StorageBar.MaximumValue = Craft.Cargo.ItemContainers.Sum(container => container.Volume);
-        StorageBar.Value = Craft.Cargo.ItemContainers.Sum(container => container.ItemVolume);
+        StorageBar.MaximumValue = Craft.Cargo.GetSize(PocketType.Solid);
+        StorageBar.Value = Craft.Cargo.GetSpaceUsed(PocketType.Solid);
 
         EasePositionController.TargetPosition = GetTargetPosition();
     }

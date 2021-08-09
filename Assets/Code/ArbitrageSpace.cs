@@ -26,18 +26,20 @@ public partial class Arbitrage
             (item, credits) => market.GetPurchasableQuantity(item, credits));
 
     }
-    public static CompoundSpace CreateStorageSpace(
-        Storage storage, 
+
+    public static CompoundSpace CreateInventorySpace(
+        Inventory inventory, 
         Manifest items = null)
     {   
         CompoundSpace space = 
-            new CompoundSpace(storage.GetItemContainers()
-            .Select(item_container => 
-                new LinearSpace(item_container.Volume,
-                                item => item.Physical().VolumePerUnit,
-                                item_container.IsStorable)));
+            new CompoundSpace(inventory.GetPocketTypes()
+            .Select(pocket_type => 
+                new LinearSpace(inventory.GetSize(pocket_type),
+                                item => item.Physical().VolumePerUnit == 0 ? 
+                                    0 : item.Physical().VolumePerUnit,
+                                item => item.Type == pocket_type)));
 
-        if(items != null)
+        if (items != null)
             foreach (Item item in items.Samples)
                 space.Pack(item, items[item]);
 
@@ -86,9 +88,14 @@ public partial class Arbitrage
         const float ZenoFraction = 0.9f;
         public virtual float GetMarginalQuantity(Item item)
         {
+            float marginal_quantity = GetCapacity(item);
+
+            if (marginal_quantity == 0 || 
+                marginal_quantity == float.PositiveInfinity)
+                return marginal_quantity;
+
             float epsilon_ratio = GetCapacityFraction(item, EpsilonQuantity) / 
                                   EpsilonQuantity;
-            float marginal_quantity = GetCapacity(item);
 
             Func<float> GetError = () =>
             {
@@ -162,7 +169,6 @@ public partial class Arbitrage
 
         public float VolumeRemaining
         { get { return TotalVolume - VolumeUsed; } }
-
 
         public LinearSpace(float total_volume,
                            Func<Item, float> Measure_,

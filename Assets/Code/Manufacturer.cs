@@ -10,8 +10,8 @@ public class Manufacturer : Division
         get
         {
             return The.Stations
-                .Select(station => GetManufacturingStorage(station))
-                .SelectMany(storage => storage.Items)
+                .Select(station => User.GetInventory(station))
+                .SelectMany(inventory => inventory.Items)
                 .SelectComponents<Item, Machine>();
         }
     }
@@ -30,9 +30,9 @@ public class Manufacturer : Division
     {
         foreach (Station station in The.Stations)
         {
-            Storage storage = GetManufacturingStorage(station);
+            Inventory inventory = User.GetInventory(station);
 
-            IEnumerable<Item> goods = storage.Items.Where(
+            IEnumerable<Item> goods = inventory.Items.Where(
                 item => !item.HasComponent<Machine>());
 
             foreach (Item item in goods)
@@ -41,14 +41,9 @@ public class Manufacturer : Division
                     station.OfficialMarket.GetTotalDemand(item),
                     item.Quantity);
 
-                station.OfficialMarket.Sell(User, storage, item, quantity);
+                station.OfficialMarket.Sell(User, inventory, item, quantity);
             }
         }
-    }
-
-    Storage GetManufacturingStorage(Station station)
-    {
-        return new Storage(station.GetRooms(User).Select(room => room.Container));
     }
 
     void SellMachines()
@@ -56,15 +51,13 @@ public class Manufacturer : Division
         foreach (Machine machine in Machines)
         {
             Station station = machine.Item.Station();
+            Inventory inventory = User.GetInventory(station);
+            float quantity = inventory.GetQuantity(machine.Item);
 
             if (GetProfitPerMachinePerDay(machine, machine.Item.Station()) < 0)
-            {
-                Storage storage = GetManufacturingStorage(station);
-
                 station.OfficialMarket.Sell(
-                    User, storage, 
-                    machine.Item, 0.2f * storage.GetQuantity(machine.Item));
-            }
+                    User, inventory, 
+                    machine.Item, 0.2f * quantity);
         }
     }
 
@@ -77,15 +70,15 @@ public class Manufacturer : Division
         foreach (Machine machine in sorted_machines)
         {
             Station station = machine.Item.Station();
-            Storage storage = GetManufacturingStorage(station);
+            Inventory inventory = User.GetInventory(station);
 
             foreach (Item input in machine.Recipe.Inputs.Samples)
             {
-                float quantity = machine.Storage.GetQuantity(input);
+                float quantity = inventory.GetQuantity(input);
 
                 float target_quantity = machine.Recipe.Inputs[input] *
                                     machine.CyclesPerDay *
-                                    storage.GetQuantity(machine.Item) * 
+                                    inventory.GetQuantity(machine.Item) * 
                                     Meeting.DaysBetweenSessions;
 
                 float purchase_quantity = target_quantity - quantity;
@@ -101,7 +94,7 @@ public class Manufacturer : Division
 
                 station.OfficialMarket.Purchase(
                     User,
-                    machine.Storage,
+                    inventory,
                     input,
                     purchase_quantity);
             }
@@ -156,15 +149,15 @@ public class Manufacturer : Division
 
             best_station.OfficialMarket
                 .Purchase(User,
-                          GetManufacturingStorage(best_station),
+                          User.GetInventory(best_station),
                           best_machine.Item,
                           purchase_quantity);
         }
 
         foreach(Station station in The.Stations)
-            GetManufacturingStorage(station)
-                .TouchItems(item => item.GetComponent<Machine>().IsOn = true,
-                            item => item.HasComponent<Machine>());
+            User.GetInventory(station)
+                .Touch(item => item.GetComponent<Machine>().IsOn = true,
+                       item => item.HasComponent<Machine>());
     }
 
     float GetProfitPerMachinePerDay(Machine machine, Station station)

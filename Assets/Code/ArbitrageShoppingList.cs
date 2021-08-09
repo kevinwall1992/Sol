@@ -48,6 +48,10 @@ public partial class Arbitrage
         if (IsProductLegal == null)
             IsProductLegal = product => true;
 
+        products = new Manifest(products.Samples
+            .Where(product => IsProductLegal(product))
+            .Select(product => (product, products.GetQuantity(product))));
+
 
         //Functions
 
@@ -344,14 +348,14 @@ public partial class Arbitrage
 
 
     //Creates a shopping list where one of the constraints is that products 
-    //must fit within a given Storage volume.
+    //must fit within a given Inventory.
     //Optional parameter "junk" describes products which are presupposed to be 
     //on board and thus reduce available space. 
 
     public Manifest MakeShoppingList(
             Manifest products,
             Func<Item, float, float> GetTransportCosts,
-            Storage storage, Manifest junk,
+            Inventory inventory, Manifest junk,
             LinearSpace fill_space = null,
             float fixed_costs = 0,
             IEnumerable <Space> constraint_spaces = null,
@@ -360,7 +364,7 @@ public partial class Arbitrage
         if (constraint_spaces == null)
             constraint_spaces = Enumerable.Empty<Space>();
         constraint_spaces = constraint_spaces.Append(
-            CreateStorageSpace(storage, junk));
+            CreateInventorySpace(inventory, junk));
 
         return MakeShoppingList(
             products,
@@ -404,7 +408,7 @@ public partial class Arbitrage
     public Manifest MakeShoppingList(
         Manifest products,
         Func<Item, float, float> GetTransportCosts,
-        Storage storage, Manifest junk,
+        Inventory inventory, Manifest junk,
         Market market, float budget,
         LinearSpace fill_space = null,
         float fixed_costs = 0,
@@ -414,7 +418,7 @@ public partial class Arbitrage
         if (constraint_spaces == null)
             constraint_spaces = Enumerable.Empty<Space>();
         constraint_spaces = constraint_spaces.Append(
-            CreateStorageSpace(storage, junk));
+            CreateInventorySpace(inventory, junk));
 
         return MakeShoppingList(
             products,
